@@ -1,14 +1,6 @@
 #include "Piece.h"
 
-Piece::Piece(char pieceId, char color, sf::Texture* texture, sf::RenderWindow* window) :id(pieceId), color(color), t(texture), w(window), s(sf::Sprite()) {
-
-	s.setTexture(*t);
-	s.setScale(5, 5);
-	square = sf::Vector2i(0, 0);
-}
-
-Piece::Piece(char pieceId, char color, sf::Texture* texture, sf::RenderWindow* window, sf::Vector2i sq)
-	: Piece(pieceId, color, texture, window)
+Piece::Piece(char pieceId, char color, sf::Vector2i sq):id(pieceId), color(color)
 {
 	setSquare(sq);
 }
@@ -17,17 +9,20 @@ char Piece::getId() {
 	return id;
 }
 
-sf::FloatRect Piece::getBoundingBox() {
-	return s.getGlobalBounds();
+sf::FloatRect Piece::getBoundingBox(sf::RenderWindow* w) {
+	sf::Vector2f coords = Ui::getTopLeftCorner(w, square);
+	return sf::FloatRect(coords.x, coords.y, Ui::squareLength, Ui::squareLength);
 }
 
-void Piece::drawPiece() {
+void Piece::drawPiece(sf::RenderWindow* w, sf::Texture* t) {
 	if (!visible) return;
-	s.setPosition(Ui::getTopLeftCorner(square));
-	w->draw(s);
+	drawPiece(w, t, Ui::getTopLeftCorner(w, square));
 }
 
-void Piece::drawPiece(sf::Vector2f coords) {
+void Piece::drawPiece(sf::RenderWindow* w, sf::Texture* t, sf::Vector2f coords) {
+	sf::Sprite s;
+	s.setTexture(*t);
+	s.setScale(5, 5);
 	s.setPosition(coords);
 	w->draw(s);
 }

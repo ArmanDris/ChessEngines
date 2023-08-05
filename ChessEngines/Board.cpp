@@ -1,99 +1,11 @@
 #include "Board.h"
-#include "Piece.h"
 
-Board::Board(sf::RenderWindow* w) :window(w) {
-	if (!font.loadFromFile("Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
-
-	if (!black_pawnTexture.loadFromFile("black_pawn.png")) { std::cout << "Error!"; }
-	if (!black_rookTexture.loadFromFile("black_rook.png")) { std::cout << "Error!"; }
-	if (!black_knightTexture.loadFromFile("black_knight.png")) { std::cout << "Error!"; }
-	if (!black_bishopTexture.loadFromFile("black_bishop.png")) { std::cout << "Error!"; }
-	if (!black_queenTexture.loadFromFile("black_queen.png")) { std::cout << "Error!"; }
-	if (!black_kingTexture.loadFromFile("black_king.png")) { std::cout << "Error!"; }
-
-	if (!white_pawnTexture.loadFromFile("white_pawn.png")) { std::cout << "Error!"; }
-	if (!white_rookTexture.loadFromFile("white_rook.png")) { std::cout << "Error!"; }
-	if (!white_knightTexture.loadFromFile("white_knight.png")) { std::cout << "Error!"; }
-	if (!white_bishopTexture.loadFromFile("white_bishop.png")) { std::cout << "Error!"; }
-	if (!white_queenTexture.loadFromFile("white_queen.png")) { std::cout << "Error!"; }
-	if (!white_kingTexture.loadFromFile("white_king.png")) { std::cout << "Error!"; }
-
-	if (!circle_texture.loadFromFile("circle.png")) { std::cout << "Error!"; }
-	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
-
+Board::Board() {
 	placeStartingPieces();
-	drawBoard();
-}
-
-void Board::drawBoard() {
-
-	sf::RectangleShape square(sf::Vector2f(Ui::squareLength, Ui::squareLength));
-	// Draw squares first
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if ((i + j) % 2 == 0) {
-				square.setFillColor(sf::Color(240, 218, 181));
-			}
-			else {
-				square.setFillColor(sf::Color(181, 135, 99));
-			}
-
-			square.setPosition(Ui::getTopLeftCorner(sf::Vector2i(i, j)));
-			window->draw(square);
-		}
-	}
-
-	drawPlayerTurn();
-	drawPotenialMoves();
-
-	// Draw pieces next
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (board[i][j]) {
-				board[i][j]->drawPiece();
-			}
-		}
-	}
-
-	// Draw holding piece last so it is on top
-	if (holdingPiece) {
-		sf::Vector2f adjustecdCoords = sf::Vector2f(mouseCoords.x - Ui::squareLength / 2, mouseCoords.y - Ui::squareLength / 2);
-		holdingPiece->drawPiece(adjustecdCoords);
-	}
-
 }
 
 bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 	return makeMove(board[oldSquare.x][oldSquare.y], newSquare);
-}
-
-void Board::hold(sf::Vector2f p) {
-	holdingPiece = getPieceAt(p);
-	if (!holdingPiece) { return; }
-	if (holdingPiece) { holdingPiece->visible = false; }
-}
-
-void Board::drop(sf::Vector2f p) {
-	if (!holdingPiece) { return; }
-	holdingPiece->visible = true;
-
-	sf::Vector2i newSquare = getSquareAt(mouseCoords);
-	sf::Vector2i oldSquare = holdingPiece->getSquare();
-
-	// If placed on invalid square, return
-	if (newSquare.x == -1) {
-		holdingPiece = nullptr;
-		return;
-	}
-
-	makeMove(holdingPiece, newSquare);
-
-	// Reset holding piece
-	holdingPiece = nullptr;
-}
-
-void Board::hover(sf::Vector2f p) {
-	mouseCoords = p;
 }
 
 Board::~Board() {
@@ -104,49 +16,6 @@ Board::~Board() {
 			if (board[i][j]) {
 				delete board[i][j];
 			}
-		}
-	}
-}
-
-void Board::drawPlayerTurn() {
-	sf::Sprite king;
-	if (whiteTurn) { king.setTexture(white_kingTexture); }
-	else { king.setTexture(black_kingTexture); }
-	king.setScale(4, 4);
-
-	sf::Text text;
-	text.setFont(font);
-	if (whiteTurn) { text.setString(" White's Turn"); }
-	else { text.setString(" Black's Turn"); }
-	if (whiteVictory) { text.setString(" White Wins!!!"); }
-	if (blackVictory) { text.setString(" Black Wins!!!"); }
-	if (draw) { text.setString(" Draw"); }
-	text.setCharacterSize(48);
-	text.setStyle(sf::Text::Bold);
-	text.setFillColor(sf::Color::White);
-	float textWidth = text.getLocalBounds().width;
-	float kingWidth = king.getGlobalBounds().width;
-	float overallWidth = textWidth + kingWidth;
-	float centerOfWindow = window->getSize().x / 2;
-
-	king.setPosition(sf::Vector2f(centerOfWindow - overallWidth / 2, 20));
-	window->draw(king);
-	text.setPosition(sf::Vector2f(centerOfWindow - overallWidth / 2 + kingWidth, 20));
-	window->draw(text);
-}
-
-void Board::drawPotenialMoves() {
-	if (!holdingPiece) { return; }
-
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (!validMove(holdingPiece, sf::Vector2i(i, j))) { continue; }
-
-			sf::Sprite s;
-			if (board[i][j]) { s.setTexture(circle_texture); }
-			else { s.setTexture(dot_texture); }
-			s.setPosition(Ui::getTopLeftCorner(sf::Vector2i(i, j)));
-			window->draw(s);
 		}
 	}
 }
@@ -193,39 +62,39 @@ void Board::placePiece(char id, char color, sf::Vector2i square) {
 	switch (id) {
 	case 'p':
 		if (color == 'w')
-			board[x][y] = new Piece('p', 'w', &white_pawnTexture, window, square);
+			board[x][y] = new Piece('p', 'w', square);
 		else
-			board[x][y] = new Piece('p', 'b', &black_pawnTexture, window, square);
+			board[x][y] = new Piece('p', 'b', square);
 		break;
 	case 'r':
 		if (color == 'w')
-			board[x][y] = new Piece('r', 'w', &white_rookTexture, window, square);
+			board[x][y] = new Piece('r', 'w', square);
 		else
-			board[x][y] = new Piece('r', 'b', &black_rookTexture, window, square);
+			board[x][y] = new Piece('r', 'b', square);
 		break;
 	case 'n':
 		if (color == 'w')
-			board[x][y] = new Piece('n', 'w', &white_knightTexture, window, square);
+			board[x][y] = new Piece('n', 'w', square);
 		else
-			board[x][y] = new Piece('n', 'b', &black_knightTexture, window, square);
+			board[x][y] = new Piece('n', 'b', square);
 		break;
 	case 'b':
 		if (color == 'w')
-			board[x][y] = new Piece('b', 'w', &white_bishopTexture, window, square);
+			board[x][y] = new Piece('b', 'w', square);
 		else
-			board[x][y] = new Piece('b', 'b', &black_bishopTexture, window, square);
+			board[x][y] = new Piece('b', 'b', square);
 		break;
 	case 'q':
 		if (color == 'w')
-			board[x][y] = new Piece('q', 'w', &white_queenTexture, window, square);
+			board[x][y] = new Piece('q', 'w', square);
 		else
-			board[x][y] = new Piece('q', 'b', &black_queenTexture, window, square);
+			board[x][y] = new Piece('q', 'b', square);
 		break;
 	case 'k':
 		if (color == 'w')
-			board[x][y] = new Piece('k', 'w', &white_kingTexture, window, square);
+			board[x][y] = new Piece('k', 'w', square);
 		else
-			board[x][y] = new Piece('k', 'b', &black_kingTexture, window, square);
+			board[x][y] = new Piece('k', 'b', square);
 		break;
 	default:
 		std::cout << "Invalid piece id: " << id << std::endl;
@@ -235,7 +104,6 @@ void Board::placePiece(char id, char color, sf::Vector2i square) {
 
 // Returns true if a move is excecuted
 bool Board::makeMove(Piece* piece, sf::Vector2i newSquare) {
-	if (isGameOver()) { return false; }
 	if (!validMove(piece, newSquare)) { return false; }
 
 	sf::Vector2i oldSquare = piece->getSquare();
@@ -256,6 +124,7 @@ bool Board::makeMove(Piece* piece, sf::Vector2i newSquare) {
 	promotePawns();
 	logMove(oldSquare, newSquare);
 	changeTurn();
+	checkGameOver();
 	return true;
 }
 
@@ -310,7 +179,7 @@ void Board::castle(Piece* piece, sf::Vector2i newSquare) {
 }
 
 // Sets whiteVictory or blackVictory to true if the player has no valid moves
-bool Board::isGameOver() {
+bool Board::checkGameOver() {
 	int numMoves = getPossibleMoves().size();
 
 	if (whiteTurn && numMoves == 0 && isKingInCheck('w')) { blackVictory = true; return true; }
@@ -335,11 +204,11 @@ void Board::promotePawns() {
 	for (int x = 0; x < 8; x++) {
 		if (board[x][0] && board[x][0]->getId() == 'p') {
 			delete board[x][0];
-			board[x][0] = new Piece('q', 'w', &white_queenTexture, window, sf::Vector2i(x, 0));
+			placePiece('q', 'w', sf::Vector2i(x, 0));
 		}
 		if (board[x][7] && board[x][7]->getId() == 'p') {
 			delete board[x][7];
-			board[x][7] = new Piece('q', 'b', &black_queenTexture, window, sf::Vector2i(x, 7));
+			placePiece('q', 'b', sf::Vector2i(x, 7));
 		}
 	}
 }
@@ -645,56 +514,9 @@ bool Board::hasRookMoved(sf::Vector2i startingSquare) {
 	return false;
 }
 
-Piece* Board::getPieceAt(sf::Vector2f p) {
-	// Cycle through board
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (!board[i][j]) { continue; }
-			if (board[i][j]->getBoundingBox().contains(p)) {
-				return board[i][j];
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-sf::Vector2i Board::getSquareAt(sf::Vector2f p) {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			sf::FloatRect square(Ui::getTopLeftCorner(sf::Vector2i(i, j)), sf::Vector2f(Ui::squareLength, Ui::squareLength));
-			if (square.contains(p)) {
-				return sf::Vector2i(i, j);
-			}
-		}
-	}
-
-	return sf::Vector2i(-1, -1);
-}
-
 void Board::changeTurn() {
 	if (whiteTurn) { whiteTurn = false; }
 	else { whiteTurn = true; }
-}
-
-void Board::resetBoard() {
-	// Free the memory of every object still on the board
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; ++j) {
-			if (board[i][j]) {
-				delete board[i][j];
-				board[i][j] = nullptr;
-				placeStartingPieces();
-			}
-		}
-	}
-
-	whiteTurn = true;
-	whiteVictory = false;
-	blackVictory = false;
-	draw = false;
-
-	holdingPiece = nullptr;
 }
 
 std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getPossibleMoves() {
@@ -730,30 +552,30 @@ void Board::saveLog(std::string saveLog) {
 	file.close();
 }
 
-bool Board::makeRandomBlackMove() {
-	if (whiteTurn) return false;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
-	if (moves.size() == 0) return false;
-	// Random number generation setup
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
-	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
-	makeMove(move.first, move.second);
-	return true;
-}
-
-bool Board::makeRandomWhiteMove() {
-	if (!whiteTurn) return false;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
-	if (moves.size() == 0) return false;
-
-	// Random number generation setup
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
-
-	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
-	makeMove(move.first, move.second);
-	return true;
-}
+//bool Board::makeRandomBlackMove() {
+//	if (whiteTurn) return false;
+//	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
+//	if (moves.size() == 0) return false;
+//	// Random number generation setup
+//	std::random_device rd;
+//	std::mt19937 gen(rd());
+//	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
+//	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
+//	makeMove(move.first, move.second);
+//	return true;
+//}
+//
+//bool Board::makeRandomWhiteMove() {
+//	if (!whiteTurn) return false;
+//	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
+//	if (moves.size() == 0) return false;
+//
+//	// Random number generation setup
+//	std::random_device rd;
+//	std::mt19937 gen(rd());
+//	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
+//
+//	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
+//	makeMove(move.first, move.second);
+//	return true;
+//}

@@ -6,28 +6,24 @@ class Piece
 {
 public:
 	// Constructor for the squares of the board
-	Piece(char pieceId, char color, sf::Texture* texture, sf::RenderWindow* window);
-	Piece(char pieceId, char color, sf::Texture* texture, sf::RenderWindow* window, sf::Vector2i sq);
+	Piece(char pieceId, char color, sf::Vector2i sq = sf::Vector2i(0, 0));
 	Piece(const Piece& p) = default;
 
 	bool moved = false;
 	bool justMovedUpTwo = false;
 	bool visible = true;
 
-	char getId();
 	void setSquare(sf::Vector2i square);
-	sf::Vector2i getSquare();
+	char getId();
 	char getColor();
-	sf::FloatRect getBoundingBox();
-	void drawPiece();
-	void drawPiece(sf::Vector2f coords);
+	sf::Vector2i getSquare();
+	sf::FloatRect getBoundingBox(sf::RenderWindow* w);
+	void drawPiece(sf::RenderWindow* w, sf::Texture* texture);
+	void drawPiece(sf::RenderWindow* w, sf::Texture* texture, sf::Vector2f coords);
 
 protected:
 	char id;
 	char color;
-	sf::Texture* t;
-	sf::Sprite s;
-	sf::RenderWindow* w;
 	sf::Vector2i square;
 };
 

@@ -4,7 +4,7 @@
 class Ui
 {
 public:
-	static sf::Vector2f getTopLeftCorner(sf::Vector2i square);
+	static sf::Vector2f getTopLeftCorner(sf::RenderWindow* w, sf::Vector2i square);
 	static int squareLength;
 private:
 	Ui() {} // Private constructor to prevent direct instantiation
