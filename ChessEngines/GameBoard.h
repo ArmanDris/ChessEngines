@@ -1,10 +1,12 @@
 #pragma once
 #include "Board.h"
+#include "RandomEngine.h"
 
 class GameBoard : Board
 {
 public:
 	GameBoard();
+	void setPlayer(RandomEngine* player, char color);
 	void drawBoard(sf::RenderWindow* w);
 	void resetBoard();
 
@@ -15,6 +17,12 @@ public:
 	~GameBoard();
 
 private:
+	RandomEngine* white_player = nullptr;
+	RandomEngine* black_player = nullptr;
+
+	void getWhiteMove();
+	void getBlackMove();
+
 	Piece* holdingPiece = nullptr;
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);
 

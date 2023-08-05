@@ -21,6 +21,16 @@ GameBoard::GameBoard() {
 	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
 }
 
+void GameBoard::setPlayer(RandomEngine* player, char color)
+{
+	if (color == 'w') {
+		white_player = player;
+	}
+	else {
+		black_player = player;
+	}
+}
+
 void GameBoard::drawBoard(sf::RenderWindow* w) {
 
 	sf::RectangleShape square(sf::Vector2f(Ui::squareLength, Ui::squareLength));
@@ -109,6 +119,16 @@ void GameBoard::hover(sf::Vector2f p) {
 }
 
 GameBoard::~GameBoard()
+{
+}
+
+void GameBoard::getWhiteMove()
+{
+	if (!white_player) return;
+	makeMove(white_player->makeMove());
+}
+
+void GameBoard::getBlackMove()
 {
 }
 

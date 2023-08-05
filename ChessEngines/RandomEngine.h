@@ -6,6 +6,7 @@
 
 class RandomEngine : Board
 {
-	bool makeRandomMove(Piece b[8][8]);
+public:
+	std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece b[8][8]);
 };
 

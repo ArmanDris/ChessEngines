@@ -551,31 +551,3 @@ void Board::saveLog(std::string saveLog) {
 	}
 	file.close();
 }
-
-//bool Board::makeRandomBlackMove() {
-//	if (whiteTurn) return false;
-//	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
-//	if (moves.size() == 0) return false;
-//	// Random number generation setup
-//	std::random_device rd;
-//	std::mt19937 gen(rd());
-//	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
-//	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
-//	makeMove(move.first, move.second);
-//	return true;
-//}
-//
-//bool Board::makeRandomWhiteMove() {
-//	if (!whiteTurn) return false;
-//	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
-//	if (moves.size() == 0) return false;
-//
-//	// Random number generation setup
-//	std::random_device rd;
-//	std::mt19937 gen(rd());
-//	std::uniform_int_distribution<std::size_t> dis(0, moves.size() - 1);
-//
-//	std::pair<sf::Vector2i, sf::Vector2i> move = moves[dis(gen)];
-//	makeMove(move.first, move.second);
-//	return true;
-//}
