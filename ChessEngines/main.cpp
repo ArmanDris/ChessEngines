@@ -29,6 +29,7 @@ int main() {
         }
 
         b.drawBoard(&window);
+        b.handleCPUMoves();
         window.display();
     }
 

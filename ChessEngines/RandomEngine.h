@@ -7,6 +7,6 @@
 class RandomEngine : Board
 {
 public:
-	std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece b[8][8]);
+	std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece* b[8][8], char turn);
 };
 

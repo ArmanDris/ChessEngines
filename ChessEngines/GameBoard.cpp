@@ -69,6 +69,18 @@ void GameBoard::drawBoard(sf::RenderWindow* w) {
 
 }
 
+void GameBoard::handleCPUMoves()
+{
+	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
+
+	if (elapsed_time_ms < move_delay_ms) return;
+
+	if (whiteTurn) makeWhiteMove();
+	else           makeBlackMove();
+
+	c.restart();
+}
+
 void GameBoard::resetBoard() {
 	// Free the memory of every object still on the board
 	for (int i = 0; i < 8; i++) {
@@ -122,14 +134,18 @@ GameBoard::~GameBoard()
 {
 }
 
-void GameBoard::getWhiteMove()
+void GameBoard::makeWhiteMove()
 {
 	if (!white_player) return;
-	makeMove(white_player->makeMove());
+	auto move = white_player->makeMove(board, 'w');
+	makeMove(move.first, move.second);
 }
 
-void GameBoard::getBlackMove()
+void GameBoard::makeBlackMove()
 {
+	if (!white_player) return;
+	auto move = white_player->makeMove(board, 'b');
+	makeMove(move.first, move.second);
 }
 
 sf::Texture* GameBoard::getTexture(Piece* p) {

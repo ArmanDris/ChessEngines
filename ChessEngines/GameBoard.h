@@ -8,6 +8,7 @@ public:
 	GameBoard();
 	void setPlayer(RandomEngine* player, char color);
 	void drawBoard(sf::RenderWindow* w);
+	void handleCPUMoves();
 	void resetBoard();
 
 	void hold(sf::RenderWindow* w, sf::Vector2f p);
@@ -20,8 +21,11 @@ private:
 	RandomEngine* white_player = nullptr;
 	RandomEngine* black_player = nullptr;
 
-	void getWhiteMove();
-	void getBlackMove();
+	sf::Clock c;
+	int move_delay_ms = 1000;
+
+	void makeWhiteMove();
+	void makeBlackMove();
 
 	Piece* holdingPiece = nullptr;
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);

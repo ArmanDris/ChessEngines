@@ -519,6 +519,23 @@ void Board::changeTurn() {
 	else { whiteTurn = true; }
 }
 
+void Board::importBoard(Piece* b[8][8])
+{
+	// Loop through the board
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; ++j) {
+			// If there is a piece on the board
+			if (b[i][j]) {
+				// Create a new piece on the board
+				board[i][j] = new Piece(*b[i][j]);
+			}
+			else {
+				board[i][j] = nullptr;
+			}
+		}
+	}
+}
+
 std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getPossibleMoves() {
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
 

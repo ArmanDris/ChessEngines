@@ -53,6 +53,8 @@ protected:
 	void promotePawns();
 	void changeTurn();
 
+	void importBoard(Piece * b[8][8]);
+
 	bool validMove(Piece* piece, sf::Vector2i newSquare);
 	bool pieceCanMoveTo(Piece* piece, sf::Vector2i newSquare);
 	bool validMovePawn(Piece* piece, sf::Vector2i newSquare);

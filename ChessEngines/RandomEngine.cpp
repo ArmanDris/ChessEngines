@@ -1,8 +1,13 @@
 #include "RandomEngine.h"
 
 // Makes a random move
-std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::makeMove(Piece b[8][8]) {
-	board = b;
+std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::makeMove(Piece* b[8][8], char turn) {
+	if (turn == 'w') whiteTurn = true;
+	else             whiteTurn = false;
+
+	importBoard(b);
+	return { sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
+
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
 	if (moves.size() == 0) return {sf::Vector2i(-1, -1), sf::Vector2i(-1, -1)};
 	// Random number generation setup
