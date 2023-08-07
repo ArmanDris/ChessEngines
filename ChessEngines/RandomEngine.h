@@ -3,10 +3,11 @@
 #include <random>
 #include "Board.h"
 #include "Piece.h"
+#include "Engine.h"
 
-class RandomEngine : Board
+class RandomEngine : public Board, public Engine
 {
 public:
-	std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece* b[8][8], char turn);
+	std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece* b[8][8], char turn) override;
 };
 

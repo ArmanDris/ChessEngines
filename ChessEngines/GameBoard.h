@@ -1,12 +1,12 @@
 #pragma once
 #include "Board.h"
-#include "RandomEngine.h"
+#include "Engine.h"
 
 class GameBoard : Board
 {
 public:
 	GameBoard();
-	void setPlayer(RandomEngine* player, char color);
+	void setPlayer(Engine* player, char color);
 	void drawBoard(sf::RenderWindow* w);
 	void handleCPUMoves();
 	void resetBoard();
@@ -18,12 +18,12 @@ public:
 	~GameBoard();
 
 private:
-	RandomEngine* white_player = nullptr;
-	RandomEngine* black_player = nullptr;
+	Engine* white_player = nullptr;
+	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 0;
-	int win_delay_ms = 3000;
+	int move_delay_ms = 500;
+	int win_delay_ms = 1000;
 
 	void makeWhiteMove();
 	void makeBlackMove();

@@ -21,7 +21,7 @@ GameBoard::GameBoard() {
 	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
 }
 
-void GameBoard::setPlayer(RandomEngine* player, char color)
+void GameBoard::setPlayer(Engine* player, char color)
 {
 	if (color == 'w') {
 		white_player = player;

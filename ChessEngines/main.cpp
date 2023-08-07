@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 #include "GameBoard.h"
+#include "RandomEngine.h"
+#include "Engine.h"
 
 
 int main() {
