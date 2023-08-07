@@ -2,14 +2,20 @@
 #include "Board.h"
 #include "GameBoard.h"
 
+
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Chess", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "Chess", sf::Style::Default);
 
     sf::Image icon;
     if (!icon.loadFromFile("black_king.png")) { std::cout << "Failed to load king.png"; }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
+    RandomEngine player1;
+    RandomEngine player2;
+
+    b.setPlayer(&player1, 'w');
+    b.setPlayer(&player2, 'b');
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -26,6 +32,9 @@ int main() {
 
             if (event.type == sf::Event::MouseMoved)
                 b.hover(sf::Vector2f(event.mouseMove.x, event.mouseMove.y));
+
+            if (event.type == sf::Event::Resized)
+                window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
         }
 
         b.drawBoard(&window);

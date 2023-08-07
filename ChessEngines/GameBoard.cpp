@@ -43,7 +43,6 @@ void GameBoard::drawBoard(sf::RenderWindow* w) {
 			else {
 				square.setFillColor(sf::Color(181, 135, 99));
 			}
-
 			square.setPosition(Ui::getTopLeftCorner(w, sf::Vector2i(i, j)));
 			w->draw(square);
 		}
@@ -73,10 +72,13 @@ void GameBoard::handleCPUMoves()
 {
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
+	if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) resetBoard();
+	if (checkGameOver()) return;
+
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if (whiteTurn) makeWhiteMove();
-	else           makeBlackMove();
+	if (whiteTurn) { makeWhiteMove(); }
+	else           { makeBlackMove(); }
 
 	c.restart();
 }
@@ -143,7 +145,7 @@ void GameBoard::makeWhiteMove()
 
 void GameBoard::makeBlackMove()
 {
-	if (!white_player) return;
+	if (!black_player) return;
 	auto move = white_player->makeMove(board, 'b');
 	makeMove(move.first, move.second);
 }

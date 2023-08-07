@@ -104,6 +104,7 @@ void Board::placePiece(char id, char color, sf::Vector2i square) {
 
 // Returns true if a move is excecuted
 bool Board::makeMove(Piece* piece, sf::Vector2i newSquare) {
+	if (checkGameOver()) { return false; }
 	if (!validMove(piece, newSquare)) { return false; }
 
 	sf::Vector2i oldSquare = piece->getSquare();

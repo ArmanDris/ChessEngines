@@ -22,7 +22,8 @@ private:
 	RandomEngine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 1000;
+	int move_delay_ms = 0;
+	int win_delay_ms = 3000;
 
 	void makeWhiteMove();
 	void makeBlackMove();

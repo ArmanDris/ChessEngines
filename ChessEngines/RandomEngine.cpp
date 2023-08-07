@@ -6,10 +6,9 @@ std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::makeMove(Piece* b[8][8], cha
 	else             whiteTurn = false;
 
 	importBoard(b);
-	return { sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();
-	if (moves.size() == 0) return {sf::Vector2i(-1, -1), sf::Vector2i(-1, -1)};
+	if (moves.size() == 0) throw std::invalid_argument("No possible moves");
 	// Random number generation setup
 	std::random_device rd;
 	std::mt19937 gen(rd());
