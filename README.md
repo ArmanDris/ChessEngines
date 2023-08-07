@@ -9,17 +9,16 @@ Now the GameBoard supports engines playing as black and white 🥳. My idea for 
      1. Check enemy king
      2. Take undefended enemy piece
      3. Take defended enemy piece
-     4. Support undefended piece
-     5. Castle
-     6. Random Move
+     4. Castle
+     5. Random Move
   
  - (HipsterEngine) I could also make one that plays similarly but prioritises like this:
      1. Support undefended piece
      2. Move undefended piece out of danger
      3. Take undefended enemy piece
      4. Check enemy king
-     5. Tanke defended enemy piece
-     6. Random Move
+     5. Random Move
+   
 After I make these two I can see if I can make them better by taking into account piece values.
 
 ### 08 - 05
