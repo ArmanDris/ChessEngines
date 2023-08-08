@@ -1,11 +1,32 @@
 #include "Piece.h"
 
-Piece::Piece(char pieceId, char color, sf::Vector2i sq):id(pieceId), color(color)
+std::string typeToString(Type type)
+{
+	switch (type) {
+	case Type::None:   return "None";
+	case Type::Pawn:   return "Pawn";
+	case Type::Rook:   return "Rook";
+	case Type::Knight: return "Knight";
+	case Type::Bishop: return "Bishop";
+	case Type::Queen:  return "Queen";
+	case Type::King:   return "King";
+	default:           return "Unknown";
+	}
+}
+
+Piece::Piece()
+{
+	id = Type::None;
+	color = Color::None;
+	square = sf::Vector2i(-1, -1);
+}
+
+Piece::Piece(Type pieceId, Color color, sf::Vector2i sq):id(pieceId), color(color)
 {
 	setSquare(sq);
 }
 
-char Piece::getId() {
+Type Piece::getId() {
 	return id;
 }
 
@@ -35,6 +56,6 @@ sf::Vector2i Piece::getSquare() {
 	return square;
 }
 
-char Piece::getColor() {
+Color Piece::getColor() {
 	return color;
 }

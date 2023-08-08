@@ -3,7 +3,7 @@
 #include "GameBoard.h"
 #include "Engine.h"
 #include "RandomEngine.h"
-#include "DrunkEngine.h"
+//#include "DrunkEngine.h"
 
 
 int main() {
@@ -17,8 +17,8 @@ int main() {
     RandomEngine player1;
     RandomEngine player2;
 
-    b.setPlayer(&player1, 'w');
-    b.setPlayer(&player2, 'b');
+    b.setPlayer(&player1, Color::White);
+    b.setPlayer(&player2, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -41,7 +41,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        b.handleCPUMoves();
+        //b.handleCPUMoves();
         window.display();
     }
 

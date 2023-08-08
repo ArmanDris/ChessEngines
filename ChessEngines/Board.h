@@ -13,6 +13,7 @@
 // Bishop: b
 // Queen: q
 // King: k
+// Empty: e
 
 class Board
 {
@@ -25,15 +26,15 @@ public:
 	~Board();
 
 protected:
-	Piece* board[8][8] = {
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-		{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
+	Piece board[8][8] = {
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> log;
@@ -44,18 +45,14 @@ protected:
 	bool draw = false;
 
 	void placeStartingPieces();
-	void placePiece(char id, char color, sf::Vector2i square);
-	bool makeMove(Piece* piece, sf::Vector2i newSquare);
-	void movePiece(Piece* piece, sf::Vector2i newSquare);
-	void takePiece(sf::Vector2i square);
+	void placePiece(Type id, Color color, sf::Vector2i square);
+	bool makeMove(Piece& piece, sf::Vector2i newSquare);
+	void movePiece(Piece& piece, sf::Vector2i newSquare);
 	void removeAllMovedUpTwo();
-	void castle(Piece* piece, sf::Vector2i newSquare);
+	void castle(Piece& piece, sf::Vector2i newSquare);
 	void promotePawns();
 	void changeTurn();
 	void setTurn(char turn);
-
-	void cloneBoard(Piece* board_copy[8][8]);
-	void importBoard(Piece* b[8][8]);
 
 	bool validMove(Piece* piece, sf::Vector2i newSquare);
 	bool pieceCanMoveTo(Piece* piece, sf::Vector2i newSquare);
@@ -65,8 +62,8 @@ protected:
 	bool validMoveBishop(Piece* piece, sf::Vector2i newSquare);
 	bool validMoveQueen(Piece* piece, sf::Vector2i newSquare);
 	bool validMoveKing(Piece* piece, sf::Vector2i newSquare);
-	bool isSquareInCheck(sf::Vector2i sq, char color);
-	bool isKingInCheck(char color);
+	bool isSquareInCheck(sf::Vector2i sq, Color color);
+	bool isKingInCheck(Color color);
 	bool willMoveCauseCheckForColor(Piece* p, sf::Vector2i newSquare);
 	bool hasRookMoved(sf::Vector2i startingSquare);
 	bool moveIsCastling(Piece* piece, sf::Vector2i newSquare);

@@ -21,14 +21,10 @@ GameBoard::GameBoard() {
 	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
 }
 
-void GameBoard::setPlayer(Engine* player, char color)
+void GameBoard::setPlayer(Engine* player, Color color)
 {
-	if (color == 'w') {
-		white_player = player;
-	}
-	else {
-		black_player = player;
-	}
+	if (color == Color::White) white_player = player;
+	if (color == Color::Black) black_player = player;
 }
 
 void GameBoard::drawBoard(sf::RenderWindow* w) {
@@ -49,13 +45,13 @@ void GameBoard::drawBoard(sf::RenderWindow* w) {
 	}
 
 	drawPlayerTurn(w);
-	drawPotenialMoves(w);
+	// !!! drawPotenialMoves(w);
 
 	// Draw pieces next
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j]) {
-				board[i][j]->drawPiece(w, getTexture(board[i][j]));
+				board[i][j].drawPiece(w, getTexture(&board[i][j]));
 			}
 		}
 	}
@@ -77,26 +73,22 @@ void GameBoard::handleCPUMoves()
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	Piece * board_copy[8][8];
-	cloneBoard(board_copy);
-
-	if      (white_player &&  whiteTurn) { makeWhiteMove(board_copy); }
-	else if (black_player && !whiteTurn) { makeBlackMove(board_copy); }
+	if      (white_player &&  whiteTurn) { makeWhiteMove(); }
+	else if (black_player && !whiteTurn) { makeBlackMove(); }
 
 	c.restart();
 }
 
 void GameBoard::resetBoard() {
-	// Free the memory of every object still on the board
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; ++j) {
 			if (board[i][j]) {
-				delete board[i][j];
-				board[i][j] = nullptr;
-				placeStartingPieces();
+				board[i][j] = Piece();
 			}
 		}
 	}
+
+	placeStartingPieces();
 
 	whiteTurn = true;
 	whiteVictory = false;
@@ -109,7 +101,8 @@ void GameBoard::resetBoard() {
 void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
 	holdingPiece = getPieceAt(w, p);
 	if (!holdingPiece) { return; }
-	if (holdingPiece) { holdingPiece->visible = false; }
+
+	holdingPiece->visible = false;
 }
 
 void GameBoard::drop(sf::RenderWindow* w, sf::Vector2f p) {
@@ -139,50 +132,50 @@ GameBoard::~GameBoard()
 {
 }
 
-void GameBoard::makeWhiteMove(Piece* board_copy[8][8])
+void GameBoard::makeWhiteMove()
 {
-	auto move = white_player->returnMove(board_copy, 'w');
+	auto move = white_player->returnMove(board, 'w');
 	makeMove(move.first, move.second);
 }
 
-void GameBoard::makeBlackMove(Piece* board_copy[8][8])
+void GameBoard::makeBlackMove()
 {
-	auto move = black_player->returnMove(board_copy, 'b');
+	auto move = black_player->returnMove(board, 'b');
 	std::cout << move.first.x << "," << move.first.y << " " << move.second.x << "," << move.second.y << std::endl;
 	makeMove(move.first, move.second);
 }
 
 sf::Texture* GameBoard::getTexture(Piece* p) {
-	char piece = p->getId();
-	char color = p->getColor();
+	Type piece = p->getId();
+	Color color = p->getColor();
 
 	switch (piece) {
-	case 'p':
-		if (color == 'w') return &white_pawnTexture;
-		else			  return &black_pawnTexture;
+	case Type::Pawn:
+		if (color == Color::White) return &white_pawnTexture;
+		if (color == Color::Black) return &black_pawnTexture;
 		break;
-	case 'r':
-		if (color == 'w') return &white_rookTexture;
-		else			  return &black_rookTexture;
+	case Type::Rook:
+		if (color == Color::White) return &white_rookTexture;
+		if (color == Color::Black) return &black_rookTexture;
 		break;
-	case 'n':
-		if (color == 'w') return &white_knightTexture;
-		else			  return &black_knightTexture;
+	case Type::Knight:
+		if (color == Color::White) return &white_knightTexture;
+		if (color == Color::Black) return &black_knightTexture;
 		break;
-	case 'b':
-		if (color == 'w') return &white_bishopTexture;
-		else			  return &black_bishopTexture;
+	case Type::Bishop:
+		if (color == Color::White) return &white_bishopTexture;
+		if (color == Color::Black) return &black_bishopTexture;
 		break;
-	case 'q':
-		if (color == 'w') return &white_queenTexture;
-		else			  return &black_queenTexture;
+	case Type::Queen:
+		if (color == Color::White) return &white_queenTexture;
+		if (color == Color::Black) return &black_queenTexture;
 		break;
-	case 'k':
-		if (color == 'w') return &white_kingTexture;
-		else			  return &black_kingTexture;
+	case Type::King:
+		if (color == Color::White) return &white_kingTexture;
+		if (color == Color::Black) return &black_kingTexture;
 		break;
 	default:
-		std::cout << "Error! Invalid piece id: " << piece << std::endl;
+		std::cout << "Error! Invalid piece id: " << typeToString(piece) << std::endl;
 		return nullptr;
 		break;
 	}
@@ -235,9 +228,8 @@ Piece* GameBoard::getPieceAt(sf::RenderWindow* w, sf::Vector2f p) {
 	// Cycle through board
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (!board[i][j]) { continue; }
-			if (board[i][j]->getBoundingBox(w).contains(p)) {
-				return board[i][j];
+			if (board[i][j] && board[i][j].getBoundingBox(w).contains(p)) {
+				return &board[i][j];
 			}
 		}
 	}

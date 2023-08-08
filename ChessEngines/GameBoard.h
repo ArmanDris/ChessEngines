@@ -6,7 +6,7 @@ class GameBoard : Board
 {
 public:
 	GameBoard();
-	void setPlayer(Engine* player, char color);
+	void setPlayer(Engine* player, Color color);
 	void drawBoard(sf::RenderWindow* w);
 	void handleCPUMoves();
 	void resetBoard();
@@ -22,11 +22,11 @@ private:
 	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 1000;
+	int move_delay_ms = 10;
 	int win_delay_ms = 1000;
 
-	void makeWhiteMove(Piece* board_copy[8][8]);
-	void makeBlackMove(Piece* board_copy[8][8]);
+	void makeWhiteMove();
+	void makeBlackMove();
 
 	Piece* holdingPiece = nullptr;
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);
