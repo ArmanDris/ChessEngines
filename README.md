@@ -3,6 +3,9 @@ Chess engines
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
+### 8 -08
+ - Need to remember to remove the taken piece after en passent
+
 ### 8 - 07
 Now the GameBoard supports engines playing as black and white 🥳. My idea for the first real engine I will make is:
  - (DrunkEngine) Look through all the moves and rank them in this order
