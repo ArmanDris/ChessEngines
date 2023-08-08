@@ -1,10 +1,8 @@
 #include "RandomEngine.h"
 
 // Makes a random move
-std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::makeMove(Piece* b[8][8], char turn) {
-	if (turn == 'w') whiteTurn = true;
-	else             whiteTurn = false;
-
+std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(Piece* b[8][8], char turn) {
+	setTurn(turn);
 	importBoard(b);
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getPossibleMoves();

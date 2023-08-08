@@ -5,6 +5,6 @@
 class Engine
 {
 public:
-	virtual std::pair<sf::Vector2i, sf::Vector2i> makeMove(Piece* b[8][8], char turn) = 0;
+	virtual std::pair<sf::Vector2i, sf::Vector2i> returnMove(Piece* b[8][8], char turn) = 0;
 };
 

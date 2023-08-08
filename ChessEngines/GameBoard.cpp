@@ -77,8 +77,11 @@ void GameBoard::handleCPUMoves()
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if (whiteTurn) { makeWhiteMove(); }
-	else           { makeBlackMove(); }
+	Piece * board_copy[8][8];
+	cloneBoard(board_copy);
+
+	if      (white_player &&  whiteTurn) { makeWhiteMove(board_copy); }
+	else if (black_player && !whiteTurn) { makeBlackMove(board_copy); }
 
 	c.restart();
 }
@@ -136,17 +139,16 @@ GameBoard::~GameBoard()
 {
 }
 
-void GameBoard::makeWhiteMove()
+void GameBoard::makeWhiteMove(Piece* board_copy[8][8])
 {
-	if (!white_player) return;
-	auto move = white_player->makeMove(board, 'w');
+	auto move = white_player->returnMove(board_copy, 'w');
 	makeMove(move.first, move.second);
 }
 
-void GameBoard::makeBlackMove()
+void GameBoard::makeBlackMove(Piece* board_copy[8][8])
 {
-	if (!black_player) return;
-	auto move = white_player->makeMove(board, 'b');
+	auto move = black_player->returnMove(board_copy, 'b');
+	std::cout << move.first.x << "," << move.first.y << " " << move.second.x << "," << move.second.y << std::endl;
 	makeMove(move.first, move.second);
 }
 

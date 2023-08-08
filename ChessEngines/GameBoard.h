@@ -22,11 +22,11 @@ private:
 	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 500;
+	int move_delay_ms = 1000;
 	int win_delay_ms = 1000;
 
-	void makeWhiteMove();
-	void makeBlackMove();
+	void makeWhiteMove(Piece* board_copy[8][8]);
+	void makeBlackMove(Piece* board_copy[8][8]);
 
 	Piece* holdingPiece = nullptr;
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);

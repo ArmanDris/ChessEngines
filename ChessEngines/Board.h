@@ -52,8 +52,10 @@ protected:
 	void castle(Piece* piece, sf::Vector2i newSquare);
 	void promotePawns();
 	void changeTurn();
+	void setTurn(char turn);
 
-	void importBoard(Piece * b[8][8]);
+	void cloneBoard(Piece* board_copy[8][8]);
+	void importBoard(Piece* b[8][8]);
 
 	bool validMove(Piece* piece, sf::Vector2i newSquare);
 	bool pieceCanMoveTo(Piece* piece, sf::Vector2i newSquare);
@@ -67,6 +69,7 @@ protected:
 	bool isKingInCheck(char color);
 	bool willMoveCauseCheckForColor(Piece* p, sf::Vector2i newSquare);
 	bool hasRookMoved(sf::Vector2i startingSquare);
+	bool moveIsCastling(Piece* piece, sf::Vector2i newSquare);
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> getPossibleMoves();
 

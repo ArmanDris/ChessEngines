@@ -114,13 +114,9 @@ bool Board::makeMove(Piece* piece, sf::Vector2i newSquare) {
 	removeAllMovedUpTwo();
 	if (abs(oldSquare.y - newSquare.y) > 1) { piece->justMovedUpTwo = true; }
 
-	// Specil King Logic (castling)
-	if (piece->getId() == 'k' && abs(oldSquare.x - newSquare.x) > 1) {
-		castle(piece, newSquare);
-	}
-	else {
-		movePiece(piece, newSquare);
-	}
+	// Preform move
+	if (moveIsCastling(piece, newSquare)) castle(piece, newSquare);
+	else                                  movePiece(piece, newSquare);
 
 	promotePawns();
 	logMove(oldSquare, newSquare);
@@ -515,24 +511,48 @@ bool Board::hasRookMoved(sf::Vector2i startingSquare) {
 	return false;
 }
 
-void Board::changeTurn() {
-	if (whiteTurn) { whiteTurn = false; }
-	else { whiteTurn = true; }
+bool Board::moveIsCastling(Piece* piece, sf::Vector2i newSquare)
+{
+	sf::Vector2i oldSquare = piece->getSquare();
+	return (piece->getId() == 'k') && (abs(oldSquare.x - newSquare.x) > 1);
 }
 
-void Board::importBoard(Piece* b[8][8])
+void Board::changeTurn() {
+	if (whiteTurn) { whiteTurn = false; }
+	else           { whiteTurn = true; }
+}
+
+void Board::setTurn(char turn)
+{
+	if (turn == 'w') { whiteTurn = true; }
+	else			 { whiteTurn = false; }
+}
+
+// Preforms a deep copy of board to board_copy
+void Board::cloneBoard(Piece* board_copy[8][8])
 {
 	// Loop through the board
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; ++j) {
 			// If there is a piece on the board
-			if (b[i][j]) {
-				// Create a new piece on the board
-				board[i][j] = new Piece(*b[i][j]);
+			if (board[i][j]) board_copy[i][j] = new Piece(*board[i][j]);
+			else             board_copy[i][j] = nullptr;
+		}
+	}
+}
+
+// Preforms a deep copy of b to board then deletes all the memory in b
+void Board::importBoard(Piece* b[8][8])
+{
+	// Loop through the board
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; ++j) {
+			if (b[i][j]) { 
+				board[i][j] = new Piece(*b[i][j]); 
+				delete b[i][j]; 
 			}
-			else {
+			else
 				board[i][j] = nullptr;
-			}
 		}
 	}
 }
