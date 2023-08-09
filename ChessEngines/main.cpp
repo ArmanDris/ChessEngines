@@ -14,18 +14,18 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
-    RandomEngine player1;
-    RandomEngine player2;
+    RandomEngine p1;
+    RandomEngine p2;
 
-    b.setPlayer(&player1, Color::White);
-    b.setPlayer(&player2, Color::Black);
+    b.setPlayer(&p1, Color::White);
+    b.setPlayer(&p2, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::Closed) { std::cout << "Saved log"; b.saveLog(); window.close(); }
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
                 b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
@@ -41,7 +41,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        //b.handleCPUMoves();
+        b.preformCPUMoves();
         window.display();
     }
 

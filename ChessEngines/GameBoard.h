@@ -2,13 +2,13 @@
 #include "Board.h"
 #include "Engine.h"
 
-class GameBoard : Board
+class GameBoard : public Board
 {
 public:
 	GameBoard();
 	void setPlayer(Engine* player, Color color);
-	void drawBoard(sf::RenderWindow* w);
-	void handleCPUMoves();
+	void drawBoard(sf::RenderWindow* w) const;
+	void preformCPUMoves();
 	void resetBoard();
 
 	void hold(sf::RenderWindow* w, sf::Vector2f p);
@@ -22,16 +22,17 @@ private:
 	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 10;
-	int win_delay_ms = 1000;
+	int move_delay_ms = 0;
+	int win_delay_ms = 10000;
 
 	void makeWhiteMove();
 	void makeBlackMove();
 
-	Piece* holdingPiece = nullptr;
+	Piece holdingPiece = Piece();
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);
+	sf::Vector2i holdingPiece_original_square = sf::Vector2i(-1, -1);
 
-	sf::Texture* getTexture(Piece* p);
+	const sf::Texture* getTexture(sf::Vector2i sq) const;
 	sf::Texture black_pawnTexture;
 	sf::Texture black_rookTexture;
 	sf::Texture black_knightTexture;
@@ -51,9 +52,8 @@ private:
 
 	sf::Font font;
 
-	void drawPlayerTurn(sf::RenderWindow* w);
-	void drawPotenialMoves(sf::RenderWindow* w);
-	Piece* getPieceAt(sf::RenderWindow* w, sf::Vector2f p);
-	sf::Vector2i getSquareAt(sf::RenderWindow* w, sf::Vector2f p);
+	void drawPlayerTurn(sf::RenderWindow* w) const;
+	void drawPotenialMoves(sf::RenderWindow* w) const;
+	sf::Vector2i getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const;
 };
 

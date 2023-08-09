@@ -14,33 +14,29 @@ std::string typeToString(Type type)
 	}
 }
 
+std::string colorToString(Color color)
+{
+	switch (color) {
+	case Color::White:   return "W";
+	case Color::Black:   return "B";
+	case Color::None:    return "None";
+	default:             return "Unknown";
+	}
+}
+
 Piece::Piece()
 {
-	id = Type::None;
+	type = Type::None;
 	color = Color::None;
-	square = sf::Vector2i(-1, -1);
 }
 
-Piece::Piece(Type pieceId, Color color, sf::Vector2i sq):id(pieceId), color(color)
-{
-	setSquare(sq);
+Piece::Piece(Type pieceId, Color color):type(pieceId), color(color) {}
+
+Type Piece::getType() const {
+	return type;
 }
 
-Type Piece::getId() {
-	return id;
-}
-
-sf::FloatRect Piece::getBoundingBox(sf::RenderWindow* w) {
-	sf::Vector2f coords = Ui::getTopLeftCorner(w, square);
-	return sf::FloatRect(coords.x, coords.y, Ui::squareLength, Ui::squareLength);
-}
-
-void Piece::drawPiece(sf::RenderWindow* w, sf::Texture* t) {
-	if (!visible) return;
-	drawPiece(w, t, Ui::getTopLeftCorner(w, square));
-}
-
-void Piece::drawPiece(sf::RenderWindow* w, sf::Texture* t, sf::Vector2f coords) {
+void Piece::drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const {
 	sf::Sprite s;
 	s.setTexture(*t);
 	s.setScale(5, 5);
@@ -48,14 +44,6 @@ void Piece::drawPiece(sf::RenderWindow* w, sf::Texture* t, sf::Vector2f coords) 
 	w->draw(s);
 }
 
-void Piece::setSquare(sf::Vector2i sq) {
-	square = sq;
-}
-
-sf::Vector2i Piece::getSquare() {
-	return square;
-}
-
-Color Piece::getColor() {
+Color Piece::getColor() const {
 	return color;
 }

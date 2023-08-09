@@ -7,33 +7,26 @@ enum class Color { None, White, Black };
 
 std::string typeToString(Type type);
 
+std::string colorToString(Color color);
+
 
 class Piece
 {
 public:
 	Piece();
-	Piece(Type pieceId, Color color, sf::Vector2i sq);
+	Piece(Type pieceId, Color color);
 	Piece(const Piece& p) = default;
 
-	bool moved = false;
-	bool justMovedUpTwo = false;
-	bool visible = true;
-
-	void setSquare(sf::Vector2i square);
-	Type getId();
-	Color getColor();
-	sf::Vector2i getSquare();
-	sf::FloatRect getBoundingBox(sf::RenderWindow* w);
-	void drawPiece(sf::RenderWindow* w, sf::Texture* texture);
-	void drawPiece(sf::RenderWindow* w, sf::Texture* texture, sf::Vector2f coords);
+	Type getType() const;
+	Color getColor() const;
+	void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const;
 
 	explicit operator bool() const {
-		return id != Type::None;
+		return type != Type::None;
 	}
 
 protected:
-	Type id;
+	Type type;
 	Color color;
-	sf::Vector2i square;
 };
 

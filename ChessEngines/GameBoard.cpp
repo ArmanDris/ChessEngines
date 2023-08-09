@@ -27,7 +27,7 @@ void GameBoard::setPlayer(Engine* player, Color color)
 	if (color == Color::Black) black_player = player;
 }
 
-void GameBoard::drawBoard(sf::RenderWindow* w) {
+void GameBoard::drawBoard(sf::RenderWindow* w) const {
 
 	sf::RectangleShape square(sf::Vector2f(Ui::squareLength, Ui::squareLength));
 	// Draw squares first
@@ -45,13 +45,14 @@ void GameBoard::drawBoard(sf::RenderWindow* w) {
 	}
 
 	drawPlayerTurn(w);
-	// !!! drawPotenialMoves(w);
+	drawPotenialMoves(w);
 
 	// Draw pieces next
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (board[i][j]) {
-				board[i][j].drawPiece(w, getTexture(&board[i][j]));
+			sf::Vector2i sq(i, j);
+			if (board[i][j] && sq != holdingPiece_original_square) {
+				board[i][j].drawPiece(w, Ui::getTopLeftCorner(w, sq), getTexture(sf::Vector2i(i, j)));
 			}
 		}
 	}
@@ -59,12 +60,12 @@ void GameBoard::drawBoard(sf::RenderWindow* w) {
 	// Draw holding piece last so it is on top
 	if (holdingPiece) {
 		sf::Vector2f adjustecdCoords = sf::Vector2f(mouseCoords.x - Ui::squareLength / 2, mouseCoords.y - Ui::squareLength / 2);
-		holdingPiece->drawPiece(w, getTexture(holdingPiece), adjustecdCoords);
+		holdingPiece.drawPiece(w, adjustecdCoords, getTexture(holdingPiece_original_square));
 	}
 
 }
 
-void GameBoard::handleCPUMoves()
+void GameBoard::preformCPUMoves()
 {
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
@@ -95,33 +96,29 @@ void GameBoard::resetBoard() {
 	blackVictory = false;
 	draw = false;
 
-	holdingPiece = nullptr;
+	holdingPiece = Piece();
 }
 
 void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
-	holdingPiece = getPieceAt(w, p);
-	if (!holdingPiece) { return; }
+	sf::Vector2i clicked_square = getSquareAt(w, p);
+	if (clicked_square.x == -1) { return; }
 
-	holdingPiece->visible = false;
+	holdingPiece = Piece(board[clicked_square.x][clicked_square.y]);
+	holdingPiece_original_square = clicked_square;
 }
 
 void GameBoard::drop(sf::RenderWindow* w, sf::Vector2f p) {
 	if (!holdingPiece) { return; }
-	holdingPiece->visible = true;
 
 	sf::Vector2i newSquare = getSquareAt(w, mouseCoords);
-	sf::Vector2i oldSquare = holdingPiece->getSquare();
+	sf::Vector2i oldSquare = holdingPiece_original_square;
 
-	// If placed on invalid square, return
-	if (newSquare.x == -1) {
-		holdingPiece = nullptr;
-		return;
-	}
-
-	makeMove(holdingPiece, newSquare);
+	// If placed on valid square, make move
+	if (newSquare.x != -1) makeMove(oldSquare, newSquare);
 
 	// Reset holding piece
-	holdingPiece = nullptr;
+	holdingPiece = Piece();
+	holdingPiece_original_square = sf::Vector2i(-1, -1);
 }
 
 void GameBoard::hover(sf::Vector2f p) {
@@ -141,47 +138,50 @@ void GameBoard::makeWhiteMove()
 void GameBoard::makeBlackMove()
 {
 	auto move = black_player->returnMove(board, 'b');
-	std::cout << move.first.x << "," << move.first.y << " " << move.second.x << "," << move.second.y << std::endl;
 	makeMove(move.first, move.second);
 }
 
-sf::Texture* GameBoard::getTexture(Piece* p) {
-	Type piece = p->getId();
-	Color color = p->getColor();
+const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
+	const Type piece = board[sq.x][sq.y].getType();
+	const Color color = board[sq.x][sq.y].getColor();
+
+	const sf::Texture* texture = nullptr;
 
 	switch (piece) {
 	case Type::Pawn:
-		if (color == Color::White) return &white_pawnTexture;
-		if (color == Color::Black) return &black_pawnTexture;
+		if (color == Color::White) texture = &white_pawnTexture;
+		if (color == Color::Black) texture = &black_pawnTexture;
 		break;
 	case Type::Rook:
-		if (color == Color::White) return &white_rookTexture;
-		if (color == Color::Black) return &black_rookTexture;
+		if (color == Color::White) texture = &white_rookTexture;
+		if (color == Color::Black) texture = &black_rookTexture;
 		break;
 	case Type::Knight:
-		if (color == Color::White) return &white_knightTexture;
-		if (color == Color::Black) return &black_knightTexture;
+		if (color == Color::White) texture = &white_knightTexture;
+		if (color == Color::Black) texture = &black_knightTexture;
 		break;
 	case Type::Bishop:
-		if (color == Color::White) return &white_bishopTexture;
-		if (color == Color::Black) return &black_bishopTexture;
+		if (color == Color::White) texture = &white_bishopTexture;
+		if (color == Color::Black) texture = &black_bishopTexture;
 		break;
 	case Type::Queen:
-		if (color == Color::White) return &white_queenTexture;
-		if (color == Color::Black) return &black_queenTexture;
+		if (color == Color::White) texture = &white_queenTexture;
+		if (color == Color::Black) texture = &black_queenTexture;
 		break;
 	case Type::King:
-		if (color == Color::White) return &white_kingTexture;
-		if (color == Color::Black) return &black_kingTexture;
+		if (color == Color::White) texture = &white_kingTexture;
+		if (color == Color::Black) texture = &black_kingTexture;
 		break;
 	default:
 		std::cout << "Error! Invalid piece id: " << typeToString(piece) << std::endl;
-		return nullptr;
+		texture = nullptr;
 		break;
 	}
+
+	return texture;
 }
 
-void GameBoard::drawPlayerTurn(sf::RenderWindow* w) {
+void GameBoard::drawPlayerTurn(sf::RenderWindow* w) const  {
 	sf::Sprite king;
 	if (whiteTurn) { king.setTexture(white_kingTexture); }
 	else { king.setTexture(black_kingTexture); }
@@ -208,12 +208,13 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow* w) {
 	w->draw(text);
 }
 
-void GameBoard::drawPotenialMoves(sf::RenderWindow* w) {
+void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
+{
 	if (!holdingPiece) { return; }
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (!validMove(holdingPiece, sf::Vector2i(i, j))) { continue; }
+			if (!piece_is_attacking_square(holdingPiece_original_square, sf::Vector2i(i, j))) { continue; }
 
 			sf::Sprite s;
 			if (board[i][j]) { s.setTexture(circle_texture); }
@@ -224,20 +225,7 @@ void GameBoard::drawPotenialMoves(sf::RenderWindow* w) {
 	}
 }
 
-Piece* GameBoard::getPieceAt(sf::RenderWindow* w, sf::Vector2f p) {
-	// Cycle through board
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (board[i][j] && board[i][j].getBoundingBox(w).contains(p)) {
-				return &board[i][j];
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) {
+sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const  {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			sf::FloatRect square(Ui::getTopLeftCorner(w, sf::Vector2i(i, j)), sf::Vector2f(Ui::squareLength, Ui::squareLength));
