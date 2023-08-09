@@ -4,10 +4,6 @@ Board::Board() {
 	placeStartingPieces();
 }
 
-Board::~Board() {
-	saveLog();
-}
-
 const Piece& Board::operator[](sf::Vector2i square) const
 {
 	return board[square.x][square.y];

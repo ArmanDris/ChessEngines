@@ -23,12 +23,31 @@ public:
 	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void saveLog(std::string fileName = "log.txt");
 
-	~Board();
-
 	const Piece& operator[](sf::Vector2i square) const;
 	Piece& operator[](sf::Vector2i square);
 
 protected:
+	struct Piece {
+		Piece();
+		Piece(Type t, Color c):type(t), color(c) {}
+		Piece(const Piece& p) = default;
+
+		const Type type = Type::None;
+		const Color color = Color::None;
+		void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const
+		{
+			sf::Sprite s;
+			s.setTexture(*t);
+			s.setScale(5, 5);
+			s.setPosition(coords);
+			w->draw(s);
+		}
+
+		explicit operator bool() const {
+			return type != Type::None;
+		}
+	};
+
 	Piece board[8][8] = {
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
