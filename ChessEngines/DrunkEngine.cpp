@@ -3,16 +3,17 @@
 
 std::pair<sf::Vector2i, sf::Vector2i> DrunkEngine::returnMove(Piece b[8][8], char turn)
 {
-	return {sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
-	//setTurn(turn);
-	//
-	//moves = getPossibleMoves();
-	//std::cout << "Possible Moves: " << moves.size() << std::endl;
-	//char enemy_color = (turn == 'w') ? 'b' : 'w';
+	//return {sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
+	setTurn(turn);
+	importBoard(b);
+	moves = get_moves();
+	if (moves.size() == 0) throw std::exception("No moves available");
 
-	//std::random_device rd;
-	//std::mt19937 gen(rd());
-	//std::shuffle(moves.begin(), moves.end(), gen);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::shuffle(moves.begin(), moves.end(), gen);
+
+	return moves[0];
 
 	//// Cycle though moves
 	//for (std::pair<sf::Vector2i, sf::Vector2i> move : moves) {

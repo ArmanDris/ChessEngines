@@ -26,7 +26,7 @@ public:
 	}
 
 protected:
-	Type type;
-	Color color;
+	Type type = Type::None;
+	Color color = Color::None;
 };
 

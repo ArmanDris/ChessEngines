@@ -3,7 +3,7 @@
 #include "GameBoard.h"
 #include "Engine.h"
 #include "RandomEngine.h"
-//#include "DrunkEngine.h"
+#include "DrunkEngine.h"
 
 
 int main() {
@@ -15,7 +15,7 @@ int main() {
 
     GameBoard b;
     RandomEngine p1;
-    RandomEngine p2;
+    DrunkEngine p2;
 
     b.setPlayer(&p1, Color::White);
     b.setPlayer(&p2, Color::Black);
@@ -25,7 +25,7 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) { std::cout << "Saved log"; b.saveLog(); window.close(); }
+            if (event.type == sf::Event::Closed) { window.close(); }
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
                 b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
@@ -41,7 +41,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        b.preformCPUMoves();
+        //b.preformCPUMoves();
         window.display();
     }
 

@@ -6,15 +6,6 @@
 #include <vector>
 #include <fstream>
 
-// Piece IDs
-// Pawn: p
-// Rook: r
-// Knight: n
-// Bishop: b
-// Queen: q
-// King: k
-// Empty: e
-
 class Board
 {
 public:
@@ -23,31 +14,14 @@ public:
 	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void saveLog(std::string fileName = "log.txt");
 
-	const Piece& operator[](sf::Vector2i square) const;
-	Piece& operator[](sf::Vector2i square);
+	// Overload [] operator to access elements using sf::Vector2i
+	Piece& operator[](sf::Vector2i square)
+	{
+		return board[square.x][square.y];
+	}
+
 
 protected:
-	struct Piece {
-		Piece();
-		Piece(Type t, Color c):type(t), color(c) {}
-		Piece(const Piece& p) = default;
-
-		const Type type = Type::None;
-		const Color color = Color::None;
-		void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const
-		{
-			sf::Sprite s;
-			s.setTexture(*t);
-			s.setScale(5, 5);
-			s.setPosition(coords);
-			w->draw(s);
-		}
-
-		explicit operator bool() const {
-			return type != Type::None;
-		}
-	};
-
 	Piece board[8][8] = {
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
@@ -72,6 +46,7 @@ protected:
 	void castle(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void changeTurn();
 	void setTurn(char turn);
+	void importBoard(Piece b[8][8]);
 
 	bool legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool piece_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
@@ -82,6 +57,7 @@ protected:
 	bool queen_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 
+	bool moveIsCastle(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool hasPieceMoved(sf::Vector2i startingSquare) const;
 	bool hasPieceJustMovedUpTwo(sf::Vector2i sq) const;
@@ -92,7 +68,7 @@ protected:
 	bool checkGameOver();
 
 
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_squares_pices_are_attacking();
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
 
 	void logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 };

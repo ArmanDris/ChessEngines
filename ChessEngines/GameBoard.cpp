@@ -214,7 +214,7 @@ void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (!piece_is_attacking_square(holdingPiece_original_square, sf::Vector2i(i, j))) { continue; }
+			if (!legal_move(holdingPiece_original_square, sf::Vector2i(i, j))) { continue; }
 
 			sf::Sprite s;
 			if (board[i][j]) { s.setTexture(circle_texture); }

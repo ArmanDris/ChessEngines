@@ -4,16 +4,6 @@ Board::Board() {
 	placeStartingPieces();
 }
 
-const Piece& Board::operator[](sf::Vector2i square) const
-{
-	return board[square.x][square.y];
-}
-
-Piece& Board::operator[](sf::Vector2i square)
-{
-	return board[square.x][square.y];
-}
-
 void Board::placeStartingPieces() {
 	board[0][0] = Piece(Type::Rook, Color::Black);
 	board[1][0] = Piece(Type::Knight, Color::Black);
@@ -64,6 +54,7 @@ bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 }
 
 // DO NOT CHANGE ORDER OF CONDITIONS, will break logic.
+// Will not check if move is legal
 void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 {
 	if (newSquare == oldSquare) return;
@@ -71,38 +62,46 @@ void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 	// En passant
 	if (moveIsEnPassent(oldSquare, newSquare))
 		board[newSquare.x][oldSquare.y] = Piece();
+	
+	// Castling
+	if (moveIsCastle(oldSquare, newSquare)) {
+		castle(oldSquare, newSquare);
+	}
+
+	// Pawn promotion
+	if (board[oldSquare.x][oldSquare.y].getType() == Type::Pawn && (newSquare.y == 0 || newSquare.y == 7))
+		board[oldSquare.x][oldSquare.y] = Piece(Type::Queen, board[oldSquare.x][oldSquare.y].getColor());
 
 	board[newSquare.x][newSquare.y] = board[oldSquare.x][oldSquare.y];
 	board[oldSquare.x][oldSquare.y] = Piece();
 
-	// Castling
-	if (board[newSquare.x][newSquare.y].getType() == Type::King && abs(oldSquare.x - newSquare.x) > 1)
-		castle(oldSquare, newSquare);
-
-	// Pawn promotion
-	if (board[newSquare.x][newSquare.y].getType() == Type::Pawn && (newSquare.y == 0 || newSquare.y == 7))
-		board[newSquare.x][newSquare.y] = Piece(Type::Queen, board[newSquare.x][newSquare.y].getColor());
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			board[i][j] = Piece();
+		}
+	}
 }
 
-void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
+void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare) 
+{
+	// The king move will have already been excecuted so just need to move rook
+	
 	// If the king is trying to castle left
-	if (newSquare.x < oldSquare.x) {
-		sf::Vector2i rook_square = sf::Vector2i(0, oldSquare.y);
-		movePiece(rook_square, sf::Vector2i(3, oldSquare.y));
-		movePiece(newSquare, sf::Vector2i(2, oldSquare.y));
+	if (oldSquare.x > newSquare.x) {
+		board[3][oldSquare.y] = Piece();//board[0][oldSquare.y];
+		board[0][oldSquare.y] = Piece();
 	}
 
 	// If the king is trying to castle right
-	if (newSquare.x > oldSquare.x) {
-		sf::Vector2i rook_square(7, oldSquare.y);
-		movePiece(rook_square, sf::Vector2i(5, oldSquare.y));
-		movePiece(newSquare, sf::Vector2i(6, oldSquare.y));
+	if (oldSquare.x < newSquare.x) {
+		board[5][oldSquare.y] = Piece();//board[7][oldSquare.y];
+		board[7][oldSquare.y] = Piece();
 	}
 }
 
 // Sets whiteVictory or blackVictory to true if the player has no valid moves
 bool Board::checkGameOver() {
-	int numMoves = get_squares_pices_are_attacking().size();
+	int numMoves = get_moves().size();
 
 	if (whiteTurn && numMoves == 0 && isKingInCheck(Color::White)) { blackVictory = true; return true; }
 	if (!whiteTurn && numMoves == 0 && isKingInCheck(Color::Black)) { whiteVictory = true; return true; }
@@ -127,6 +126,7 @@ bool Board::legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 	if ( whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::Black) return false;
 	if (!whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::White) return false;
 	if (willMoveCauseCheckForColor(oldSquare, newSquare)) return false;
+	if (moveIsCastle(oldSquare, newSquare)) return true;
 
 	return piece_is_attacking_square(oldSquare, newSquare);
 }
@@ -269,8 +269,8 @@ bool Board::queen_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSq
 	return false;
 }
 
-bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const {
-
+bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const 
+{
 	//// Check special case where king is trying to castle
 	//if (abs(newSquare.x - oldSquare.x) > 1 && newSquare.y == oldSquare.y) {
 	//	// If the king is trying to castle
@@ -306,7 +306,6 @@ bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSqu
 
 	//	return false;
 	//}
-	throw std::logic_error("I should move the castle logic somewhere else and keep this just for attacking squares.");
 
 	// Prevents the king from moving more than one square
 	if (abs(newSquare.x - oldSquare.x) > 1 || abs(newSquare.y - oldSquare.y) > 1) { return false; }
@@ -354,8 +353,52 @@ bool Board::hasPieceJustMovedUpTwo(sf::Vector2i sq) const
 	return false;
 }
 
+bool Board::moveIsCastle(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	Color king_color = board[oldSquare.x][oldSquare.y].getColor();
+	if (board[oldSquare.x][oldSquare.y].getType() != Type::King) return false; // Make sure piece is king
+	if (board[newSquare.x][newSquare.y]) return false;                         // Make sure new square is empty
+	if (oldSquare.y != newSquare.y) return false;                              // Make sure king is nor moving up/down
+	if (king_is_attacking_square(oldSquare, newSquare)) return false;          // Make sure king is moving more than one square
+	if (hasPieceMoved(oldSquare)) return false;  						       // Make sure king has not moved
+	if (isSquareInCheck(oldSquare, king_color)) return false;                  // Make sure king is not in check
+
+	// Castling right
+	if (oldSquare.x < newSquare.x) {
+		// If pieces between king and rook
+		for (int i = oldSquare.x + 1; i < 7; i++)
+			if (board[i][oldSquare.y]) return false;
+		// If rook has moved return false
+		if (king_color == Color::White && hasPieceMoved(sf::Vector2i(7, 7))) return false;
+		if (king_color == Color::Black && hasPieceMoved(sf::Vector2i(7, 0))) return false;
+		// If king will be in check return false
+		if (isSquareInCheck(sf::Vector2i(6, oldSquare.y), king_color)) return false;
+
+		// Otherwise return true
+		return true;
+	}
+
+	// Castling left
+	if (oldSquare.x > newSquare.x) {
+		// If pieces between king and rook
+		for (int i = 1; i < oldSquare.x; i++)
+			if (board[i][oldSquare.y]) return false;
+		// If rook has moved return false
+		if (king_color == Color::White && hasPieceMoved(sf::Vector2i(0, 7))) return false;
+		if (king_color == Color::Black && hasPieceMoved(sf::Vector2i(0, 0))) return false;
+		// If king will be in check return false
+		if (isSquareInCheck(sf::Vector2i(2, oldSquare.y), king_color)) return false;
+
+		// Otherwise return true
+		return true;
+	}
+	return false;
+}
+
 bool Board::moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
+	// Make sure is legal move
+	if (!pawn_is_attacking_square(oldSquare, newSquare)) return false;
 	// Piece must be a pawn
 	if (board[oldSquare.x][oldSquare.y].getType() != Type::Pawn) return false;
 
@@ -365,14 +408,16 @@ bool Board::moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) cons
 	return false;
 }
 
-// True if after moving p to newSquare, the king of the same color as p will be in check
+// True if after moving oldSquare to newSquare, the king of the same color as oldSquare will be in check
 bool Board::willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
+	Color color = board[oldSquare.x][oldSquare.y].getColor();
 	Board clone = *this;
 	clone.movePiece(oldSquare, newSquare);
-	return clone.isKingInCheck(board[oldSquare.x][oldSquare.y].getColor());
+	return clone.isKingInCheck(color);
 }
 
+// If square appears in log then return true
 bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
 	// loop through log
 	for (int i = 0; i < log.size(); i++) {
@@ -394,10 +439,12 @@ void Board::setTurn(char turn)
 	else { whiteTurn = false; }
 }
 
-// This is not called getMoves because of two reasons:
-// 1. It returns a list of moves for both black and white
-// 2. Some moves may put the king in check, so they are not valid
-std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_squares_pices_are_attacking() {
+void Board::importBoard(Piece b[8][8])
+{
+	for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) board[i][j] = b[i][j];
+}
+
+std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
 
 	for (int l = 0; l < 8; l++) {
@@ -407,7 +454,7 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_squares_pices_are_
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					sf::Vector2i newSquare(i, j);
-					if (piece_is_attacking_square(currentSquare, newSquare)) {
+					if (legal_move(currentSquare, newSquare)) {
 						moves.push_back({ currentSquare, newSquare });
 					}
 				}

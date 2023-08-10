@@ -3,9 +3,9 @@
 // Makes a random move
 std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(Piece b[8][8], char turn) {
 	setTurn(turn);
-	for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) board[i][j] = b[i][j];
+	importBoard(b);
 
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = get_squares_pices_are_attacking();
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = get_moves();
 	if (moves.size() == 0) throw std::invalid_argument("No possible moves");
 	// Random number generation setup
 	std::random_device rd;

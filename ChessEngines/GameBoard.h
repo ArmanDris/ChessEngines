@@ -23,7 +23,7 @@ private:
 
 	sf::Clock c;
 	int move_delay_ms = 0;
-	int win_delay_ms = 10000;
+	int win_delay_ms = 3000;
 
 	void makeWhiteMove();
 	void makeBlackMove();

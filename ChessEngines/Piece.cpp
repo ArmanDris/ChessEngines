@@ -24,11 +24,7 @@ std::string colorToString(Color color)
 	}
 }
 
-Piece::Piece()
-{
-	type = Type::None;
-	color = Color::None;
-}
+Piece::Piece() {}
 
 Piece::Piece(Type pieceId, Color color):type(pieceId), color(color) {}
 
