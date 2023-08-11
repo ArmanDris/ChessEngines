@@ -4,6 +4,9 @@ Chess engines
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
 ### 8 - 11
+It is suprising how much of an impact supporting undefended pieces has on DrunkEngine's ability. It went front having 50/50 odds against random moves to being able to confidently win.
+
+### 8 - 11
 I have finally made the game run smoothly again 😁. DrunkEngine still needs some logic but so far it is good. Engines now get passed a const reference to a board object so that they can set all their member variables equal to the GameBoard. This is important because en-passent and castling need the game log as well as the board state. This also cleans up the jank with needing to set the turn each time I call getMove(). Drunk move is also very very fun to watch.
 
 ### 8 - 09
