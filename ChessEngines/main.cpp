@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "RandomEngine.h"
 #include "DrunkEngine.h"
+#include "HippieEngine.h"
 
 
 int main() {
@@ -14,7 +15,7 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
-    RandomEngine p1;
+    HippieEngine p1;
     DrunkEngine p2;
 
     b.setPlayer(&p1, Color::White);

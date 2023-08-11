@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Piece.h"
+#include "Board.h"
 
 class Engine
 {
