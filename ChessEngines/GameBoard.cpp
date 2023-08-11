@@ -86,6 +86,14 @@ void GameBoard::preformCPUMoves()
 	c.restart();
 }
 
+void GameBoard::triggerMove()
+{
+	if (checkGameOver()) return;
+
+	if (white_player && whiteTurn)       { makeWhiteMove(); }
+	else if (black_player && !whiteTurn) { makeBlackMove(); }
+}
+
 void GameBoard::resetBoard() {
 	*this = GameBoard(white_player, black_player);
 }

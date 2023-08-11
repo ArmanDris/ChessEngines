@@ -15,7 +15,7 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
-    HippieEngine p1;
+    DrunkEngine p1;
     DrunkEngine p2;
 
     b.setPlayer(&p1, Color::White);
@@ -26,23 +26,35 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
-
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-                b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-
-            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
-                b.drop(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-
-            if (event.type == sf::Event::MouseMoved)
+            switch (event.type) {
+            case sf::Event::Closed:
+                window.close(); 
+                break;
+            case sf::Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                }
+                break;
+            case sf::Event::MouseButtonReleased:
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    b.drop(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                }
+                break;
+            case sf::Event::MouseMoved:
                 b.hover(sf::Vector2f(event.mouseMove.x, event.mouseMove.y));
-
-            if (event.type == sf::Event::Resized)
+                break;
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Space)
+                    b.triggerMove();
+				break;
+            case sf::Event::Resized:
                 window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+                break;
+            }
         }
 
         b.drawBoard(&window);
-        b.preformCPUMoves();
+        //b.preformCPUMoves();
         window.display();
     }
 

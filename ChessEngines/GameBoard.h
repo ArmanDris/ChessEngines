@@ -10,6 +10,7 @@ public:
 	void setPlayer(Engine* player, Color color);
 	void drawBoard(sf::RenderWindow* w) const;
 	void preformCPUMoves();
+	void triggerMove();
 	void resetBoard();
 
 	void hold(sf::RenderWindow* w, sf::Vector2f p);

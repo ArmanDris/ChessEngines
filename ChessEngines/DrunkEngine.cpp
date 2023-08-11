@@ -48,10 +48,11 @@ std::pair<sf::Vector2i, sf::Vector2i> DrunkEngine::returnMove(const Board& b)
 	}
 
 	if (wins_game.size() > 0)       return wins_game[0];
-	if (king_check.size() > 0)      return king_check[0];
-	if (take_undefended.size() > 0) return take_undefended[0];
-	if (take.size() > 0)            return take[0];
-	if (castle.size() > 0)          return castle[0];
+	//if (king_check.size() > 0)      return king_check[0];
+	//if (take_undefended.size() > 0) return take_undefended[0];
+	//if (take.size() > 0)            return take[0];
+	//if (castle.size() > 0)          return castle[0];
+	std::cout << "making random move" << std::endl;
 	return moves[0];
 
 }
@@ -59,7 +60,8 @@ std::pair<sf::Vector2i, sf::Vector2i> DrunkEngine::returnMove(const Board& b)
 bool DrunkEngine::moveWinsGame(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	DrunkEngine clone = *this;
-	clone.movePiece(oldSquare, newSquare);
+	clone.makeMove(oldSquare, newSquare);
+	clone.checkGameOver();
 	if (board[oldSquare.x][oldSquare.y].getColor() == Color::White && clone.whiteVictory) return true;
 	if (board[oldSquare.x][oldSquare.y].getColor() == Color::Black && clone.blackVictory) return true;
 	return false;
