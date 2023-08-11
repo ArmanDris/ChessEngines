@@ -12,14 +12,11 @@
 class DrunkEngine : public Board, public Engine
 {
 public:
-	std::pair<sf::Vector2i, sf::Vector2i> returnMove(Piece b[8][8], char turn) override;
+	std::pair<sf::Vector2i, sf::Vector2i> returnMove(const Board& b) override;
 private:
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
-
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> king_check;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> take_undefended;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> take;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> support_undefended;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> castle;
+	bool checkKing(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	bool takesUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	bool takes(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	bool supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 };
 

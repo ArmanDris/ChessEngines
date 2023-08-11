@@ -45,15 +45,14 @@ bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 	if (whiteVictory || blackVictory || draw) return false;
 	if (!legal_move(oldSquare, newSquare)) return false;
 
-	logMove(oldSquare, newSquare);
 	movePiece(oldSquare, newSquare);
+	logMove(oldSquare, newSquare);
 
 	changeTurn();
 	checkGameOver();
 	return true;
 }
 
-// DO NOT CHANGE ORDER OF CONDITIONS, will break logic.
 // Will not check if move is legal
 void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 {
@@ -64,9 +63,8 @@ void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 		board[newSquare.x][oldSquare.y] = Piece();
 	
 	// Castling
-	if (moveIsCastle(oldSquare, newSquare)) {
+	if (moveIsCastle(oldSquare, newSquare))
 		castle(oldSquare, newSquare);
-	}
 
 	// Pawn promotion
 	if (board[oldSquare.x][oldSquare.y].getType() == Type::Pawn && (newSquare.y == 0 || newSquare.y == 7))
@@ -74,12 +72,6 @@ void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 
 	board[newSquare.x][newSquare.y] = board[oldSquare.x][oldSquare.y];
 	board[oldSquare.x][oldSquare.y] = Piece();
-
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			board[i][j] = Piece();
-		}
-	}
 }
 
 void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare) 
@@ -88,13 +80,13 @@ void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 	
 	// If the king is trying to castle left
 	if (oldSquare.x > newSquare.x) {
-		board[3][oldSquare.y] = Piece();//board[0][oldSquare.y];
+		board[3][oldSquare.y] = board[0][oldSquare.y];
 		board[0][oldSquare.y] = Piece();
 	}
 
 	// If the king is trying to castle right
 	if (oldSquare.x < newSquare.x) {
-		board[5][oldSquare.y] = Piece();//board[7][oldSquare.y];
+		board[5][oldSquare.y] = board[7][oldSquare.y];
 		board[7][oldSquare.y] = Piece();
 	}
 }
@@ -176,7 +168,7 @@ bool Board::pawn_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSqu
 	// If pawn is trying to move diagonally
 	if (abs(newSquare.x - oldSquare.x) == 1 && abs(oldSquare.y - newSquare.y) == 1) {
 		// If there is a pawn that just moved up two squares behind newSquare (en passant)
-		if (hasPieceJustMovedUpTwo(sf::Vector2i(newSquare.x, oldSquare.y))) return true;
+		if (hasPawnJustMovedUpTwo(sf::Vector2i(newSquare.x, oldSquare.y))) return true;
 		// If there is no piece in front of it return false
 		if (!board[newSquare.x][newSquare.y]) { return false; }
 		return true;
@@ -339,7 +331,7 @@ bool Board::isKingInCheck(Color color) const {
 }
 
 // If a pawn just moved up two AND into sq
-bool Board::hasPieceJustMovedUpTwo(sf::Vector2i sq) const
+bool Board::hasPawnJustMovedUpTwo(sf::Vector2i sq) const
 {
 	if (log.size() == 0) return false;
 
@@ -360,6 +352,7 @@ bool Board::moveIsCastle(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 	if (board[newSquare.x][newSquare.y]) return false;                         // Make sure new square is empty
 	if (oldSquare.y != newSquare.y) return false;                              // Make sure king is nor moving up/down
 	if (king_is_attacking_square(oldSquare, newSquare)) return false;          // Make sure king is moving more than one square
+	if (abs(oldSquare.x - newSquare.x) > 2) return false;                     // Make sure king is mot moving three squares left on queen side
 	if (hasPieceMoved(oldSquare)) return false;  						       // Make sure king has not moved
 	if (isSquareInCheck(oldSquare, king_color)) return false;                  // Make sure king is not in check
 
@@ -398,7 +391,7 @@ bool Board::moveIsCastle(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 bool Board::moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	// Make sure is legal move
-	if (!pawn_is_attacking_square(oldSquare, newSquare)) return false;
+	if (pawn_is_attacking_square(oldSquare, newSquare)) return false;
 	// Piece must be a pawn
 	if (board[oldSquare.x][oldSquare.y].getType() != Type::Pawn) return false;
 
@@ -422,7 +415,7 @@ bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
 	// loop through log
 	for (int i = 0; i < log.size(); i++) {
 		// If the log contains starting square then return true
-		if (std::get<2>(log[i]) == startingSquare || std::get<5>(log[i]) == startingSquare) { return true; }
+		if (std::get<2>(log[i]) == startingSquare || std::get<5>(log[i]) == startingSquare) return true;
 	}
 
 	return false;
@@ -431,17 +424,6 @@ bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
 void Board::changeTurn() {
 	if (whiteTurn) { whiteTurn = false; }
 	else { whiteTurn = true; }
-}
-
-void Board::setTurn(char turn)
-{
-	if (turn == 'w') { whiteTurn = true; }
-	else { whiteTurn = false; }
-}
-
-void Board::importBoard(Piece b[8][8])
-{
-	for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) board[i][j] = b[i][j];
 }
 
 std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {

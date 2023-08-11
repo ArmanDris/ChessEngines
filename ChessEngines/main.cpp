@@ -25,7 +25,7 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) { window.close(); }
+            if (event.type == sf::Event::Closed) window.close();
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
                 b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
@@ -41,7 +41,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        //b.preformCPUMoves();
+        b.preformCPUMoves();
         window.display();
     }
 

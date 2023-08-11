@@ -21,6 +21,12 @@ GameBoard::GameBoard() {
 	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
 }
 
+GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard() 
+{
+	white_player = white;
+	black_player = black;
+}
+
 void GameBoard::setPlayer(Engine* player, Color color)
 {
 	if (color == Color::White) white_player = player;
@@ -81,22 +87,7 @@ void GameBoard::preformCPUMoves()
 }
 
 void GameBoard::resetBoard() {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; ++j) {
-			if (board[i][j]) {
-				board[i][j] = Piece();
-			}
-		}
-	}
-
-	placeStartingPieces();
-
-	whiteTurn = true;
-	whiteVictory = false;
-	blackVictory = false;
-	draw = false;
-
-	holdingPiece = Piece();
+	*this = GameBoard(white_player, black_player);
 }
 
 void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
@@ -131,13 +122,13 @@ GameBoard::~GameBoard()
 
 void GameBoard::makeWhiteMove()
 {
-	auto move = white_player->returnMove(board, 'w');
+	auto move = white_player->returnMove(*this);
 	makeMove(move.first, move.second);
 }
 
 void GameBoard::makeBlackMove()
 {
-	auto move = black_player->returnMove(board, 'b');
+	auto move = black_player->returnMove(*this);
 	makeMove(move.first, move.second);
 }
 

@@ -1,9 +1,8 @@
 #include "RandomEngine.h"
 
 // Makes a random move
-std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(Piece b[8][8], char turn) {
-	setTurn(turn);
-	importBoard(b);
+std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(const Board& b) {
+	static_cast<Board&>(*this) = b;
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = get_moves();
 	if (moves.size() == 0) throw std::invalid_argument("No possible moves");

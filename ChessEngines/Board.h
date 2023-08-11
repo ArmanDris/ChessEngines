@@ -20,7 +20,6 @@ public:
 		return board[square.x][square.y];
 	}
 
-
 protected:
 	Piece board[8][8] = {
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
@@ -45,8 +44,6 @@ protected:
 	void movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void castle(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void changeTurn();
-	void setTurn(char turn);
-	void importBoard(Piece b[8][8]);
 
 	bool legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool piece_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
@@ -60,7 +57,7 @@ protected:
 	bool moveIsCastle(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool hasPieceMoved(sf::Vector2i startingSquare) const;
-	bool hasPieceJustMovedUpTwo(sf::Vector2i sq) const;
+	bool hasPawnJustMovedUpTwo(sf::Vector2i sq) const;
 
 	bool isSquareInCheck(sf::Vector2i sq, Color color) const;
 	bool isKingInCheck(Color color) const;

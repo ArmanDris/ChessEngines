@@ -6,6 +6,7 @@ class GameBoard : public Board
 {
 public:
 	GameBoard();
+	GameBoard(Engine* white, Engine* black);
 	void setPlayer(Engine* player, Color color);
 	void drawBoard(sf::RenderWindow* w) const;
 	void preformCPUMoves();
@@ -22,8 +23,8 @@ private:
 	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 0;
-	int win_delay_ms = 3000;
+	int move_delay_ms = 500;
+	int win_delay_ms = 5000;
 
 	void makeWhiteMove();
 	void makeBlackMove();
