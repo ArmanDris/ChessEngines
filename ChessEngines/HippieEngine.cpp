@@ -26,6 +26,9 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 		sf::Vector2i oldSquare = move.first;
 		sf::Vector2i newSquare = move.second;
 
+		if (endsGame(oldSquare, newSquare))
+			ends_game.push_back(move);
+
 		// Check if move supports undefended piece
 		if (supportsUndefended(oldSquare, newSquare))
 			support_undefended.push_back(move);
@@ -41,19 +44,17 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 		if (takesUndefended(oldSquare, newSquare))
 			take_undefended.push_back(move);
 
-		if (endsGame(oldSquare, newSquare))
-			ends_game.push_back(move);
-
 		// Check if move checks enemy king
 		if (checkKing(oldSquare, newSquare))
 			king_check.push_back(move);
 	}
 
+	//if (ends_game.size() > 0)          return ends_game[0];
 	if (support_undefended.size() > 0) return support_undefended[0];
-	if (move_out_of_danger.size() > 0) return move_out_of_danger[0];
-	if (castle.size() > 0)             return castle[0];
-	if (take_undefended.size() > 0)    return take_undefended[0];
-	if (ends_game.size() > 0)               return ends_game[0];
+	//if (move_out_of_danger.size() > 0) return move_out_of_danger[0];
+	//if (castle.size() > 0)             return castle[0];
+	//if (take_undefended.size() > 0)    return take_undefended[0];
+	std::cout << "Making random move" << std::endl;
 	if (king_check.size() > 0)         return king_check[0];
 
 	return moves[0];
@@ -68,15 +69,38 @@ bool HippieEngine::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newSq
 		Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
 
 		// If there is an ally piece at x,y
-		if (board[x][y].getColor() == ally_color) {
-			// If ally piece is already defended continue
-			if (isSquareInCheck(sf::Vector2i(x, y), enemy_color)) continue;
-			// If after move ally piece is defended, return true
-			HippieEngine clone = *this;
-			clone.movePiece(oldSquare, newSquare);
-			if (clone.isSquareInCheck(sf::Vector2i(x, y), enemy_color)) return true;
+		if (board[x][y].getColor() != ally_color) continue;
+
+		// If x,y is this piece continue
+		if (x == oldSquare.x && y == oldSquare.y) continue;
+
+		// If ally piece is already defended continue
+		if (!pieceIsDefended(sf::Vector2i(x, y))) continue;
+
+		// If after move ally piece is defended, return true
+		HippieEngine clone = *this;
+		clone.movePiece(oldSquare, newSquare);
+		if (clone.pieceIsDefended(sf::Vector2i(x, y))) {
+			std::cout << typeToString(board[x][y].getType()) << " " << x << "," << y << " will be defended" << std::endl;
+			return true; 
 		}
 	}
+	return false;
+}
+
+// True if another piece can attack this piece
+bool HippieEngine::pieceIsDefended(sf::Vector2i oldSquare) const
+{
+	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		// If piece is not ally piece continue
+		if (board[x][y].getColor() != ally_color) continue;
+		// If piece is oldSquare continue
+		if (x == oldSquare.x && y == oldSquare.y) continue;
+		// If piece can move to oldSquare return true
+		if (piece_is_attacking_square(sf::Vector2i(x,y), oldSquare)) return true;
+	}
+
 	return false;
 }
 
@@ -95,8 +119,10 @@ bool HippieEngine::takesUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquar
 bool HippieEngine::endsGame(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	HippieEngine clone = *this;
-	clone.movePiece(oldSquare, newSquare);
-	return clone.checkGameOver();
+	clone.makeMove(oldSquare, newSquare);
+	if (board[oldSquare.x][oldSquare.y].getColor() == Color::White && clone.whiteVictory) return true;
+	if (board[oldSquare.x][oldSquare.y].getColor() == Color::Black && clone.blackVictory) return true;
+	return false;
 }
 
 bool HippieEngine::checkKing(sf::Vector2i oldSquare, sf::Vector2i newSquare) const

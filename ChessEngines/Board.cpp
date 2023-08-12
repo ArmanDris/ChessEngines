@@ -38,6 +38,17 @@ void Board::placeStartingPieces() {
 	board[5][6] = Piece(Type::Pawn, Color::White);
 	board[6][6] = Piece(Type::Pawn, Color::White);
 	board[7][6] = Piece(Type::Pawn, Color::White);
+
+	//board[0][0] = Piece(Type::Rook, Color::White);
+	//board[6][0] = Piece(Type::Bishop, Color::White);
+	//board[1][2] = Piece(Type::Knight, Color::White);
+	//board[3][3] = Piece(Type::King, Color::White);
+	//board[5][3] = Piece(Type::Pawn, Color::White);
+	//board[7][3] = Piece(Type::Knight, Color::White);
+
+	//board[4][1] = Piece(Type::King, Color::Black);
+	//board[6][7] = Piece(Type::Queen, Color::Black);
+
 }
 
 // Returns true if a move is excecuted

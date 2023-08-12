@@ -80,8 +80,8 @@ void GameBoard::preformCPUMoves()
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if      (white_player &&  whiteTurn) { makeWhiteMove(); }
-	else if (black_player && !whiteTurn) { makeBlackMove(); }
+	if      (white_player &&  whiteTurn) makeWhiteMove();
+	else if (black_player && !whiteTurn) makeBlackMove();
 
 	c.restart();
 }
