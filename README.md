@@ -1,5 +1,6 @@
 # ChessEngines
-Chess engines
+The heart of this program is in the GameBoard class. There you can play a chess game with no engines or you can pass pointers to engines to GameBoard.
+To make the engines automatically move call GameBoard::preformCPUMoves(); in the game loop. To trigger a engine move press the spacebar.
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
