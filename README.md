@@ -3,6 +3,9 @@ Chess engines
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
+### 8 - 13
+Fixed bug in supportsUndefended() in HippieEngine. The issue was isAttackingSquare() does not count same color pieces so it was nor working propertly in HippieEngine.
+
 ### 8 - 12
 DrunkEngine should be all set up. Putting it against RandomEngine it will win or draw every time. I see that right away Drunkbot will just take all the pieces and then lost all of its pieces trying to check the enemy king. I think that HippieEngine will be able to smoke them both when it is finished.
 
