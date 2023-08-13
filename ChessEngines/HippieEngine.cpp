@@ -64,25 +64,24 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 bool HippieEngine::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	// Loop through all ally pieces
-	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
-		Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
+	for (int x = 0; x < 8; x++) {
+		for (int y = 0; y < 8; y++) {
+			Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+			Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
 
-		// If there is an ally piece at x,y
-		if (board[x][y].getColor() != ally_color) continue;
+			// If there is an ally piece at x,y
+			if (board[x][y].getColor() != ally_color) continue;
 
-		// If x,y is this piece continue
-		if (x == oldSquare.x && y == oldSquare.y) continue;
+			// If ally piece is already defended continue
+			if (pieceIsDefended(sf::Vector2i(x, y))) continue;
 
-		// If ally piece is already defended continue
-		if (!pieceIsDefended(sf::Vector2i(x, y))) continue;
-
-		// If after move ally piece is defended, return true
-		HippieEngine clone = *this;
-		clone.movePiece(oldSquare, newSquare);
-		if (clone.pieceIsDefended(sf::Vector2i(x, y))) {
-			std::cout << typeToString(board[x][y].getType()) << " " << x << "," << y << " will be defended" << std::endl;
-			return true; 
+			// If after move ally piece is defended, return true
+			HippieEngine clone = *this;
+			clone.movePiece(oldSquare, newSquare);
+			if (clone.pieceIsDefended(sf::Vector2i(x, y))) {
+				std::cout << typeToString(board[x][y].getType()) << " " << x << "," << y << " can be defended" << std::endl;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -92,6 +91,7 @@ bool HippieEngine::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newSq
 bool HippieEngine::pieceIsDefended(sf::Vector2i oldSquare) const
 {
 	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		// If piece is not ally piece continue
 		if (board[x][y].getColor() != ally_color) continue;
@@ -100,6 +100,7 @@ bool HippieEngine::pieceIsDefended(sf::Vector2i oldSquare) const
 		// If piece can move to oldSquare return true
 		if (piece_is_attacking_square(sf::Vector2i(x,y), oldSquare)) return true;
 	}
+
 
 	return false;
 }

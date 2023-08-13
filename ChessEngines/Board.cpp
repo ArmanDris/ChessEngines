@@ -128,6 +128,7 @@ bool Board::legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	if ( whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::Black) return false;
 	if (!whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::White) return false;
+	if (board[oldSquare.x][oldSquare.y].getColor() == board[newSquare.x][newSquare.y].getColor()) return false;
 	if (willMoveCauseCheckForColor(oldSquare, newSquare)) return false;
 	if (moveIsCastle(oldSquare, newSquare)) return true;
 
@@ -138,7 +139,6 @@ bool Board::legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 bool Board::piece_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	if (!board[oldSquare.x][oldSquare.y]) return false;
-	if (board[oldSquare.x][oldSquare.y].getColor() == board[newSquare.x][newSquare.y].getColor()) return false;
 
 	switch (board[oldSquare.x][oldSquare.y].getType()) {
 	case Type::Pawn:   return pawn_is_attacking_square(oldSquare, newSquare);
