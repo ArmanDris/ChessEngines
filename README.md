@@ -1,8 +1,9 @@
 # ChessEngines
-The heart of this program is in the GameBoard class. There you can play a chess game with no engines or you can pass pointers to engines to GameBoard.
-To make the engines automatically move call GameBoard::preformCPUMoves(); in the game loop. To trigger a engine move press the spacebar.
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
+
+### 8 - 14
+I finished HippieEngine! Now I will try to make the best engine so far: BotFeaster. It will be the best I can come up with without looking more than one move into the game. Then I can finally work on engines that will be able to compete with the best human players.
 
 ### 8 - 13
 Fixed bug in supportsUndefended() in HippieEngine. The issue was isAttackingSquare() does not count same color pieces so it was nor working propertly in HippieEngine. I also adjusted HippieEngine's priorites to take undefended pieces otherwise it is too much of a push over.
