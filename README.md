@@ -1,10 +1,12 @@
 # ChessEngines
-Chess engines
+The heart of this program is in the GameBoard class. There you can play a chess game with no engines or you can pass pointers to engines to GameBoard.
+To make the engines automatically move call GameBoard::preformCPUMoves(); in the game loop. To trigger a engine move press the spacebar.
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
 ### 8 - 13
-Fixed bug in supportsUndefended() in HippieEngine. The issue was isAttackingSquare() does not count same color pieces so it was nor working propertly in HippieEngine.
+Fixed bug in supportsUndefended() in HippieEngine. The issue was isAttackingSquare() does not count same color pieces so it was nor working propertly in HippieEngine. I also adjusted HippieEngine's priorites to take undefended pieces otherwise it is too much of a push over.
+Still need to debug: support_undefended, move_out_of_danger, take_undefended
 
 ### 8 - 12
 DrunkEngine should be all set up. Putting it against RandomEngine it will win or draw every time. I see that right away Drunkbot will just take all the pieces and then lost all of its pieces trying to check the enemy king. I think that HippieEngine will be able to smoke them both when it is finished.
