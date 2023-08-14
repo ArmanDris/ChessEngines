@@ -59,7 +59,7 @@ protected:
 	bool hasPieceMoved(sf::Vector2i startingSquare) const;
 	bool hasPawnJustMovedUpTwo(sf::Vector2i sq) const;
 
-	bool isSquareInCheck(sf::Vector2i sq, Color color) const;
+	bool square_is_attacked_by(sf::Vector2i sq, Color color) const;
 	bool isKingInCheck(Color color) const;
 	bool willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool checkGameOver();

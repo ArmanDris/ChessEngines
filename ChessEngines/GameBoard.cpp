@@ -75,7 +75,7 @@ void GameBoard::preformCPUMoves()
 {
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
-	if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) resetBoard();
+	//if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
 	if (checkGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;

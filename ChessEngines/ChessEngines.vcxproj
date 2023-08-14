@@ -134,7 +134,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BotFeaster.cpp" />
     <ClCompile Include="DrunkEngine.cpp" />
+    <ClCompile Include="EngineHelpers.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="HippieEngine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -144,8 +146,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BotFeaster.h" />
     <ClInclude Include="DrunkEngine.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="EngineHelpers.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="HippieEngine.h" />
     <ClInclude Include="Piece.h" />
