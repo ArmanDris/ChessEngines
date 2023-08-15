@@ -7,11 +7,11 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
 
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> ends_game;
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> take_undefended;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> support_undefended;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> move_out_of_danger;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> castle;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> take_undefended;
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> ends_game;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> king_check;
 
 	moves = get_moves();
@@ -30,7 +30,7 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 			ends_game.push_back(move);
 
 		// Check if move takes undefended enemy piece
-		if (takesUndefended(oldSquare, newSquare))
+		if (takes_hanging(oldSquare, newSquare))
 			take_undefended.push_back(move);
 
 		// Check if move supports undefended piece
@@ -45,7 +45,7 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 			castle.push_back(move);
 
 		// Check if move checks enemy king
-		if (checkKing(oldSquare, newSquare))
+		if (checks_enemy(oldSquare, newSquare))
 			king_check.push_back(move);
 	}
 

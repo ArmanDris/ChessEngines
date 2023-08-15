@@ -31,11 +31,11 @@ std::pair<sf::Vector2i, sf::Vector2i> DrunkEngine::returnMove(const Board& b)
 
 
 		// Check if move checks enemy king
-		if (checkKing(oldSquare, newSquare))
+		if (checks_enemy(oldSquare, newSquare))
 			king_check.push_back(move);
 
 		// Check if move takes undefended enemy piece
-		if (takesUndefended(oldSquare, newSquare))
+		if (takes_hanging(oldSquare, newSquare))
 			take_undefended.push_back(move);
 
 		// Check if move takes enemy piece

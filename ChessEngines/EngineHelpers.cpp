@@ -10,7 +10,7 @@ bool EngineHelpers::wins_game(sf::Vector2i oldSquare, sf::Vector2i newSquare) co
 }
 
 // True if move takes undefended enemy piece
-bool EngineHelpers::takesUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+bool EngineHelpers::takes_hanging(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
 	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
@@ -57,7 +57,7 @@ bool EngineHelpers::moveOutOfDanger(sf::Vector2i oldSquare, sf::Vector2i newSqua
 	return false;
 }
 
-bool EngineHelpers::checkKing(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+bool EngineHelpers::checks_enemy(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
 	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
@@ -71,4 +71,97 @@ bool EngineHelpers::checkKing(sf::Vector2i oldSquare, sf::Vector2i newSquare) co
 bool EngineHelpers::takes(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	return board[newSquare.x][newSquare.y] || moveIsEnPassent(oldSquare, newSquare);
+}
+
+// True if taking a higher value piece
+bool EngineHelpers::trades_positive(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	if (!board[newSquare.x][newSquare.y]) return false;
+
+	int old_square_value = get_value(board[oldSquare.x][oldSquare.y]);
+	int new_square_value = get_value(board[newSquare.x][newSquare.y]);
+	return board[newSquare.x][newSquare.y] && old_square_value < new_square_value;
+}
+
+// True if retreats a high value piece being attacked by a lower value piece
+bool EngineHelpers::protects_high_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
+	if (!square_is_attacked_by(oldSquare, enemy_color)) return false;
+	EngineHelpers clone = *this;
+	clone.makeMove(oldSquare, newSquare);
+	if (!clone.square_is_attacked_by(newSquare, enemy_color)) return true;
+	return false;
+}
+
+// True if moves takes a piece of equal value
+bool EngineHelpers::trades_equal_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	if (!board[newSquare.x][newSquare.y]) return false;
+	int new_square_value = get_value(board[newSquare.x][newSquare.y]);
+	int old_square_value = get_value(board[oldSquare.x][oldSquare.y]);
+
+	if (new_square_value == old_square_value) return true;
+	return false;
+}
+
+int EngineHelpers::get_value(Piece p) const
+{
+	switch (p.getType()) {
+	case Type::Pawn: return 1;
+	case Type::Knight: return 3;
+	case Type::Bishop: return 3;
+	case Type::Rook: return 5;
+	case Type::Queen: return 9;
+	case Type::King: return 100;
+		return 0;
+	}
+}
+
+// Get lowest value piece of color c that is attacking sq
+int EngineHelpers::get_lowest_attacker(sf::Vector2i sq, Color c) const
+{
+	sf::Vector2i highest_value_attacker(-1, -1);
+	int value = 0;
+	// If any of the enemy pieces on the board can make a valid move into p then p is in check
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; ++j) {
+			if (sf::Vector2i(i, j) != sq) continue;
+			if (!board[i][j]) continue;
+			if (board[i][j].getColor() != c) continue;
+
+			if (piece_is_attacking_square(sf::Vector2i(i, j), sq) && get_value(board[i][j]) > value) {
+				highest_value_attacker = sf::Vector2i(i, j);
+				value = get_value(board[i][j]);
+			}
+		}
+	}
+	return value;
+}
+
+// True if newSquare is attacked by enemy and not defended by ally
+bool EngineHelpers::does_move_hang_pice(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
+
+	return square_is_attacked_by(newSquare, enemy_color) && !square_is_attacked_by(newSquare, ally_color);
+}
+
+// True if hangs piece or if allows an ally piece to be taken by an enemy piece of lower value
+bool EngineHelpers::does_move_lose_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
+	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
+
+	if (newSquare == sf::Vector2i(6, 3))
+		std::cout << "debug me\n";
+
+	if (does_move_hang_pice(oldSquare, newSquare)) return true;
+	if (!square_is_attacked_by(newSquare, enemy_color)) return false;
+
+	int value_of_lowest_value_attacker = get_lowest_attacker(newSquare, enemy_color);
+	// If value of lowest attacker is lower than get value then return true
+	return value_of_lowest_value_attacker < get_value(board[oldSquare.x][oldSquare.y]);
 }

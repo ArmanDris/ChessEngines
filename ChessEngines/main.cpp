@@ -5,6 +5,7 @@
 #include "RandomEngine.h"
 #include "DrunkEngine.h"
 #include "HippieEngine.h"
+#include "BotFeaster.h"
 
 
 int main() {
@@ -15,8 +16,8 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     HippieEngine hippie;
-    DrunkEngine drunk;
-    GameBoard b(nullptr, &hippie);
+    BotFeaster botF;
+    GameBoard b(nullptr, &botF);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -51,7 +52,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        b.preformCPUMoves();
+        //b.preformCPUMoves();
         window.display();
     }
 
