@@ -46,8 +46,8 @@ bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 	if (whiteVictory || blackVictory || draw) return false;
 	if (!legal_move(oldSquare, newSquare)) return false;
 
-	movePiece(oldSquare, newSquare);
 	logMove(oldSquare, newSquare);
+	movePiece(oldSquare, newSquare);
 
 	changeTurn();
 	checkGameOver();
@@ -102,6 +102,8 @@ bool Board::checkGameOver() {
 	if (whiteTurn && numMoves == 0 && !isKingInCheck(Color::White)) { draw = true; return true; }
 	if (!whiteTurn && numMoves == 0 && !isKingInCheck(Color::Black)) { draw = true; return true; }
 
+	if (fiftyMoveRule()) { draw = true; return true; }
+
 	// loop through board
 	int numPieces = 0;
 	for (int i = 0; i < 8; i++) {
@@ -112,6 +114,22 @@ bool Board::checkGameOver() {
 	if (numPieces == 2) { draw = true; return true; }
 
 	return false;
+}
+
+// If no pawn has moved or no piece has been taken in the last 50 moves then return true
+bool Board::fiftyMoveRule() const
+
+{
+	if (log.size() < 50) return false;
+
+	// Loop through last 50 log entries
+	for (int i = log.size() - 50; i < log.size(); i++) {
+		// If a pawn has moved return false
+		if (std::get<1>(log[i]) == Type::Pawn) return false;
+		// If a piece has been taken return false
+		if (std::get<4>(log[i]) != Type::None) return false;
+	}
+	return true;
 }
 
 bool Board::legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
@@ -264,42 +282,6 @@ bool Board::queen_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSq
 
 bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const 
 {
-	//// Check special case where king is trying to castle
-	//if (abs(newSquare.x - oldSquare.x) > 1 && newSquare.y == oldSquare.y) {
-	//	// If the king is trying to castle
-	//	sf::Vector2i startingSquare;
-	//	if (board[oldSquare.x][oldSquare.y].getColor() == Color::White) startingSquare = sf::Vector2i(4, 7);
-	//	else                                                            startingSquare = sf::Vector2i(4, 0);
-	//	if (hasPieceMoved(startingSquare)) return false;
-	//	// If king is in check or is trying to move into check
-	//	if (isSquareInCheck(sf::Vector2i(oldSquare.x, oldSquare.y), board[oldSquare.x][oldSquare.y].getColor())) { return false; }
-	//	if (isSquareInCheck(sf::Vector2i(newSquare.x, newSquare.y), board[oldSquare.x][oldSquare.y].getColor())) { return false; }
-
-	//	// If the king is trying to castle left
-	//	if (newSquare.x < oldSquare.x) {
-	//		// If the rook has moved
-	//		if (hasPieceMoved(sf::Vector2i(0, 0)) || hasPieceMoved(sf::Vector2i(0, 7))) { return false; }
-	//		// If there are pieces in the way
-	//		for (int i = 1; i < int(oldSquare.x); i++) {
-	//			if (board[i][int(oldSquare.y)]) { return false; }
-	//		}
-	//		return true;
-	//	}
-
-	//	// If the king is trying to castle right
-	//	if (newSquare.x > oldSquare.x) {
-	//		// If the rook has moved
-	//		if (hasPieceMoved(sf::Vector2i(7, 7)) || hasPieceMoved(sf::Vector2i(7, 0))) { return false; }
-	//		// If there are pieces in the way
-	//		for (int i = oldSquare.x + 1; i < 6; i++) {
-	//			if (board[i][int(oldSquare.y)]) { return false; }
-	//		}
-	//		return true;
-	//	}
-
-	//	return false;
-	//}
-
 	// Prevents the king from moving more than one square
 	if (abs(newSquare.x - oldSquare.x) > 1 || abs(newSquare.y - oldSquare.y) > 1) { return false; }
 
@@ -455,6 +437,16 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 void Board::logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 	log.push_back({ board[oldSquare.x][oldSquare.y].getColor(), board[oldSquare.x][oldSquare.y].getType(), oldSquare,
 					board[newSquare.x][newSquare.y].getColor(), board[newSquare.x][newSquare.y].getType(), newSquare });
+
+	// To output log uncomment this:
+	//int i = log.size() - 1;
+	//std::cout << colorToString(std::get<0>(log[i])) << " "
+	//	<< typeToString(std::get<1>(log[i])) << " "
+	//	<< std::get<2>(log[i]).x << "," << std::get<2>(log[i]).y << " "
+
+	//	<< colorToString(std::get<3>(log[i])) << " "
+	//	<< typeToString(std::get<4>(log[i])) << " "
+	//	<< std::get<5>(log[i]).x << "," << std::get<5>(log[i]).y << std::endl;
 }
 
 void Board::saveLog(std::string saveLog) {

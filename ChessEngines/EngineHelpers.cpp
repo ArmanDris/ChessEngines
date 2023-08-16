@@ -18,7 +18,7 @@ bool EngineHelpers::takes_hanging(sf::Vector2i oldSquare, sf::Vector2i newSquare
 	return board[newSquare.x][newSquare.y] && !square_is_attacked_by(newSquare, enemy_color);
 }
 
-// True if move supports undefended piece
+// True if move supports undefended piece under attack
 bool EngineHelpers::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
@@ -30,6 +30,9 @@ bool EngineHelpers::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newS
 
 			// If there is an ally piece at x,y
 			if (board[x][y].getColor() != ally_color) continue;
+
+			// If not under attack, continue
+			if (!square_is_attacked_by(sf::Vector2i(x, y), enemy_color)) continue;
 
 			// If ally piece is already defended continue
 			if (square_is_attacked_by(sf::Vector2i(x, y), ally_color)) continue;
@@ -146,22 +149,7 @@ bool EngineHelpers::does_move_hang_pice(sf::Vector2i oldSquare, sf::Vector2i new
 	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
 	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
 
-	return square_is_attacked_by(newSquare, enemy_color) && !square_is_attacked_by(newSquare, ally_color);
-}
-
-// True if hangs piece or if allows an ally piece to be taken by an enemy piece of lower value
-bool EngineHelpers::does_move_lose_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
-{
-	Color ally_color = board[oldSquare.x][oldSquare.y].getColor();
-	Color enemy_color = ally_color == Color::White ? Color::Black : Color::White;
-
-	if (newSquare == sf::Vector2i(6, 3))
-		std::cout << "debug me\n";
-
-	if (does_move_hang_pice(oldSquare, newSquare)) return true;
-	if (!square_is_attacked_by(newSquare, enemy_color)) return false;
-
-	int value_of_lowest_value_attacker = get_lowest_attacker(newSquare, enemy_color);
-	// If value of lowest attacker is lower than get value then return true
-	return value_of_lowest_value_attacker < get_value(board[oldSquare.x][oldSquare.y]);
+	EngineHelpers clone = *this;
+	clone.makeMove(oldSquare, newSquare);
+	return clone.square_is_attacked_by(newSquare, enemy_color) && !clone.square_is_attacked_by(newSquare, ally_color);
 }

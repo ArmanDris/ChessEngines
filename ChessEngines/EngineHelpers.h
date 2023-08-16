@@ -18,6 +18,5 @@ protected:
 	int get_value(Piece p) const;
 	int get_lowest_attacker(sf::Vector2i sq, Color c) const;
 	bool does_move_hang_pice(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
-	bool does_move_lose_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 };
 

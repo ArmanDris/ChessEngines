@@ -19,9 +19,9 @@ std::pair<sf::Vector2i, sf::Vector2i> BotFeaster::returnMove(const Board& b)
 	moves = get_moves();
 	if (moves.size() == 0) throw std::exception("No moves available");
 
-	//std::random_device rd;
-	//std::mt19937 gen(rd());
-	//std::shuffle(moves.begin(), moves.end(), gen);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::shuffle(moves.begin(), moves.end(), gen);
 
 	// Cycle though moves
 	for (std::pair<sf::Vector2i, sf::Vector2i> move : moves) {
@@ -38,13 +38,13 @@ std::pair<sf::Vector2i, sf::Vector2i> BotFeaster::returnMove(const Board& b)
 		if (trades_positive(oldSquare, newSquare))
 			move_trades_positive.push_back(move);
 
-		if (checks_enemy(oldSquare, newSquare) && !does_move_lose_value(oldSquare, newSquare))
+		if (checks_enemy(oldSquare, newSquare) && !does_move_hang_pice(oldSquare, newSquare))
 			move_checks_enemy.push_back(move);
 
-		if (protects_high_value(oldSquare, newSquare) && !does_move_lose_value(oldSquare, newSquare))
+		if (protects_high_value(oldSquare, newSquare) && !does_move_hang_pice(oldSquare, newSquare))
 			move_protects_high_value.push_back(move);
 
-		if (supportsUndefended(oldSquare, newSquare) && !does_move_lose_value(oldSquare, newSquare))
+		if (supportsUndefended(oldSquare, newSquare) && !does_move_hang_pice(oldSquare, newSquare))
 			move_supports_undefended.push_back(move);
 
 		if (moveIsCastle(oldSquare, newSquare))
@@ -56,13 +56,12 @@ std::pair<sf::Vector2i, sf::Vector2i> BotFeaster::returnMove(const Board& b)
 
 	// Eventually I want to cycle through these vectors and return the one that nets the most value
 	
-	//if (!move_takes_hanging.empty())		return move_takes_hanging[0];	// Tested. Works
-	//if (!move_trades_positive.empty())		return move_trades_positive[0]; // Tested. Works
-	if (!move_checks_enemy.empty())			return move_checks_enemy[0];	// Tested. Works
-	//if (!move_protects_high_value.empty())	return move_protects_high_value[0];	// Tested. Works
-	//if (!move_supports_undefended.empty())	return move_supports_undefended[0]; // Tested, may undefend a piece to defend a new piece
-	//if (!move_castles.empty())				return move_castles[0];			// Tested. Works
-	//if (!move_trades_equal.empty())			return move_trades_equal[0];		// Tested. Works
-	std::cout << "making random move" << std::endl;
+	if (!move_takes_hanging.empty())		return move_takes_hanging[0];		// Tested. Works
+	if (!move_trades_positive.empty())		return move_trades_positive[0];		// Tested. Works
+	if (!move_checks_enemy.empty())			return move_checks_enemy[0];		// Tested. Works
+	if (!move_protects_high_value.empty())	return move_protects_high_value[0];	// Tested. Works
+	if (!move_supports_undefended.empty())	return move_supports_undefended[0];	// 
+	if (!move_castles.empty())				return move_castles[0];				// Tested. Works
+	if (!move_trades_equal.empty())			return move_trades_equal[0];		// Tested. Works
 	return moves[0];
 }

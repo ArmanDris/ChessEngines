@@ -24,8 +24,8 @@ private:
 	Engine* black_player = nullptr;
 
 	sf::Clock c;
-	int move_delay_ms = 1000;
-	int win_delay_ms = 5000;
+	int move_delay_ms = 1500;
+	int win_delay_ms = 10000;
 
 	void makeWhiteMove();
 	void makeBlackMove();

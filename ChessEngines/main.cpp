@@ -16,8 +16,10 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     HippieEngine hippie;
+    DrunkEngine drunk;
     BotFeaster botF;
-    GameBoard b(nullptr, &botF);
+    RandomEngine random;
+    GameBoard b(&drunk, &botF);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -52,7 +54,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        //b.preformCPUMoves();
+        b.preformCPUMoves();
         window.display();
     }
 

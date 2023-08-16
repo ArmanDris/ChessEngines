@@ -63,6 +63,7 @@ protected:
 	bool isKingInCheck(Color color) const;
 	bool willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool checkGameOver();
+	bool fiftyMoveRule() const;
 
 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
