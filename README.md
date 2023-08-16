@@ -2,6 +2,9 @@
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
+### 8 - 16
+I finished BotFeaster! I also added the 50 move rule because that is the only bot good enough to not draw eventually. Now I am done with these simple engines and I can either move onto some very good engines or I can implement an elo rating system for the four engines I have made already.
+
 ### 8 - 14
 I finished HippieEngine! Now I will try to make the best engine so far: BotFeaster. It will be the best I can come up with without looking more than one move into the game. Then I can finally work on engines that will be able to compete with the best human players.
 
