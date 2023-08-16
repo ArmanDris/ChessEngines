@@ -177,10 +177,12 @@ bool Board::pawn_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSqu
 	// If pawn is trying to move to square two in front of it
 	if (newSquare.x == oldSquare.x && abs(newSquare.y - oldSquare.y) == 2) {
 		// If pawn is not in starting position return false
-		if (color == Color::White && oldSquare.y != 6) { return false; }
-		if (color == Color::Black && oldSquare.y != 1) { return false; }
+		if (color == Color::White && oldSquare.y != 6) return false;
+		if (color == Color::Black && oldSquare.y != 1) return false;
 		// If there is a piece in front of it return false
-		if (board[newSquare.x][newSquare.y]) { return false; }
+		if (color == Color::White && board[oldSquare.x][oldSquare.y - 1]) return false;
+		if (color == Color::Black && board[oldSquare.x][oldSquare.y + 1]) return false;
+
 		return true;
 	}
 
@@ -391,16 +393,18 @@ bool Board::moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) cons
 // True if after moving oldSquare to newSquare, the king of the same color as oldSquare will be in check
 bool Board::willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
+	// !!!
+	return false;
 	Color color = board[oldSquare.x][oldSquare.y].getColor();
 	Board clone = *this;
 	clone.movePiece(oldSquare, newSquare);
 	return clone.isKingInCheck(color);
 }
 
-// If square appears in log then return true
+// If square has moved return true
 bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
-	// loop through log
-	for (int i = 0; i < log.size(); i++) {
+	// do not look at move that is being made (most recent log entry)
+	for (int i = 0; i < log.size() - 1; i++) {
 		// If the log contains starting square then return true
 		if (std::get<2>(log[i]) == startingSquare || std::get<5>(log[i]) == startingSquare) return true;
 	}

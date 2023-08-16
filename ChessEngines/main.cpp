@@ -15,11 +15,11 @@ int main() {
     if (!icon.loadFromFile("black_king.png")) { std::cout << "Failed to load king.png"; }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    HippieEngine hippie;
-    DrunkEngine drunk;
-    BotFeaster botF;
     RandomEngine random;
-    GameBoard b(&drunk, &botF);
+    DrunkEngine drunk;
+    HippieEngine hippie;
+    BotFeaster botF;
+    GameBoard b(nullptr, nullptr);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
