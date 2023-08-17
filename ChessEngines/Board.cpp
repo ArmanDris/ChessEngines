@@ -1,5 +1,6 @@
 #include "Board.h"
 
+
 Board::Board() {
 	placeStartingPieces();
 }
@@ -191,7 +192,7 @@ bool Board::pawn_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSqu
 		// If there is a pawn that just moved up two squares behind newSquare (en passant)
 		if (hasPawnJustMovedUpTwo(sf::Vector2i(newSquare.x, oldSquare.y))) return true;
 		// If there is no piece in front of it return false
-		if (!board[newSquare.x][newSquare.y]) { return false; }
+		if (!board[newSquare.x][newSquare.y]) return false;
 		return true;
 	}
 
@@ -393,8 +394,6 @@ bool Board::moveIsEnPassent(sf::Vector2i oldSquare, sf::Vector2i newSquare) cons
 // True if after moving oldSquare to newSquare, the king of the same color as oldSquare will be in check
 bool Board::willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
-	// !!!
-	return false;
 	Color color = board[oldSquare.x][oldSquare.y].getColor();
 	Board clone = *this;
 	clone.movePiece(oldSquare, newSquare);
@@ -455,10 +454,31 @@ void Board::logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 
 void Board::saveLog(std::string saveLog) {
 	std::ofstream file(saveLog);
+
+	// Get the current system time
+	auto now = std::chrono::system_clock::now();
+	std::time_t time_now = std::chrono::system_clock::to_time_t(now);
+	std::tm tm_now;
+
+	// Use localtime_s() for safer handling
+	if (localtime_s(&tm_now, &time_now) == 0) {
+		char time_buffer[80];
+		std::strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", &tm_now);
+
+		// Print the formatted time at the top of the file
+		file << "Log saved on: " << time_buffer << std::endl;
+	}
+	else {
+		// Handle error
+		std::cerr << "Error getting local time." << std::endl;
+	}
+
+
+	file << "Piece being moved : Location piece is moving to" << std::endl << std::endl;
 	for (auto move : log) {
 		file << colorToString(std::get<0>(move)) << " "
 			<< typeToString(std::get<1>(move)) << " "
-			<< std::get<2>(move).x << "," << std::get<2>(move).y << " "
+			<< std::get<2>(move).x << "," << std::get<2>(move).y << " : "
 
 			<< colorToString(std::get<3>(move)) << " "
 			<< typeToString(std::get<4>(move)) << " "

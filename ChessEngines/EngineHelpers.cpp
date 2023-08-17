@@ -109,6 +109,11 @@ bool EngineHelpers::trades_equal_value(sf::Vector2i oldSquare, sf::Vector2i newS
 	return false;
 }
 
+bool EngineHelpers::moveIsPushPawn(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
+{
+	return board[oldSquare.x][oldSquare.y].getType() == Type::Pawn;
+}
+
 int EngineHelpers::get_value(Piece p) const
 {
 	switch (p.getType()) {

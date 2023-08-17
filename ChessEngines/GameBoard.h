@@ -11,7 +11,7 @@ public:
 	void drawBoard(sf::RenderWindow* w) const;
 	void preformCPUMoves();
 	void triggerMove();
-	void resetBoard();
+	void start_tournement(int num_games);
 
 	void hold(sf::RenderWindow* w, sf::Vector2f p);
 	void drop(sf::RenderWindow* w, sf::Vector2f p);
@@ -25,10 +25,12 @@ private:
 
 	sf::Clock c;
 	int move_delay_ms = 1500;
-	int win_delay_ms = 10000;
+	int win_delay_ms = 60000;
 
 	void makeWhiteMove();
 	void makeBlackMove();
+
+	void resetBoard();
 
 	Piece holdingPiece = Piece();
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);

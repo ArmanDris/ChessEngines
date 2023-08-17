@@ -10,13 +10,10 @@
 // 5. Move pieces being attacked by lower value away
 // 6. Defend pieces being attacked by equal or higher value
 // 7. Castle
-// 8. Random Move
-
-// Bot feaster will try to:
-// 1. Never hang a piece
-// 2. Never risk losing a piece to a lower value piece
-// 3. Always take a higher value piece
-// 4. Adjust priorities if it sees a very good move
+// 7. Push pawn
+// 8. Make equal trade
+// 8. Make random non-hanging move
+// 9. Random Move
 
 class BotFeaster : public Engine, public EngineHelpers
 {

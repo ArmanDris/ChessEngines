@@ -21,7 +21,7 @@ GameBoard::GameBoard() {
 	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
 }
 
-GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard() 
+GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
 {
 	white_player = white;
 	black_player = black;
@@ -73,14 +73,20 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 
 void GameBoard::preformCPUMoves()
 {
+
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
-	if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
+	if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) {
+		if (whiteVictory) std::cout << "White wins!\n";
+		if (blackVictory) std::cout << "Black wins!\n";
+		resetBoard();
+		return;
+	}
 	if (checkGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if      (white_player &&  whiteTurn) makeWhiteMove();
+	if (white_player &&  whiteTurn) makeWhiteMove();
 	else if (black_player && !whiteTurn) makeBlackMove();
 
 	c.restart();
@@ -92,6 +98,31 @@ void GameBoard::triggerMove()
 
 	if (white_player && whiteTurn)       { makeWhiteMove(); }
 	else if (black_player && !whiteTurn) { makeBlackMove(); }
+}
+
+void GameBoard::start_tournement(int num_games)
+{
+	int white_wins = 0;
+	int black_wins = 0;
+	int draws = 0;
+
+	GameBoard tnmnt_board(white_player, black_player);
+
+	for (int i = 0; i < num_games; i++) {
+		tnmnt_board.resetBoard();
+		while (!tnmnt_board.checkGameOver()) {
+			if (tnmnt_board.whiteTurn) tnmnt_board.makeWhiteMove();
+			else		               tnmnt_board.makeBlackMove();
+		}
+		std::cout << "Game " << i + 1 << " complete!\n";
+		if (tnmnt_board.whiteVictory) white_wins++;
+		if (tnmnt_board.blackVictory) black_wins++;
+		if (tnmnt_board.draw) draws++;
+	}
+
+	std::cout << "White wins: " << white_wins << "\n";
+	std::cout << "Black wins: " << black_wins << "\n";
+	std::cout << "Draws: " << draws << "\n";
 }
 
 void GameBoard::resetBoard() {

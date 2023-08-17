@@ -19,7 +19,11 @@ int main() {
     DrunkEngine drunk;
     HippieEngine hippie;
     BotFeaster botF;
-    GameBoard b(nullptr, nullptr);
+    GameBoard b;
+    b.setPlayer(&botF, Color::White);
+    b.setPlayer(&random, Color::Black);
+
+    b.start_tournement(500);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -54,7 +58,7 @@ int main() {
         }
 
         b.drawBoard(&window);
-        b.preformCPUMoves();
+        //b.preformCPUMoves();
         window.display();
     }
 

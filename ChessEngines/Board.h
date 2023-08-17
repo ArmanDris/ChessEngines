@@ -5,6 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <chrono>
+#include <ctime> // for std::time_t and std::tm
+#include <iomanip> // for std::put_time
 
 class Board
 {
@@ -12,7 +15,6 @@ public:
 	Board();
 
 	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
-	void saveLog(std::string fileName = "log.txt");
 
 	// Overload [] operator to access elements using sf::Vector2i
 	Piece& operator[](sf::Vector2i square)
@@ -69,4 +71,5 @@ protected:
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
 
 	void logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	void saveLog(std::string fileName = "log.txt");
 };

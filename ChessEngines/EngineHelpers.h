@@ -14,6 +14,7 @@ protected:
 	bool trades_positive(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool protects_high_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 	bool trades_equal_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
+	bool moveIsPushPawn(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
 
 	int get_value(Piece p) const;
 	int get_lowest_attacker(sf::Vector2i sq, Color c) const;
