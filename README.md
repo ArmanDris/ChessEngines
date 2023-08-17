@@ -2,6 +2,40 @@
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
+## The three simple chess Engines:
+1. RandomEngine
+Will just make a random legal move
+2. Drunk engine
+Prioritieses moves in this order:
+ i.   Move wins game
+ ii.  Check enemy king
+ iii. Take undefended enemy piece
+ iv.  Castle
+ v.   Random Move
+3. Hippie Engine
+Prioritieses moves in this order:
+ i.   Move ends game
+ ii.  Take undefended enemy piece
+ iii. Support undefended piece
+ iv.  Move undefended piece out of danger
+ v.   Castle
+ vi.  Check enemy king
+ vii. Random Move
+4. BotFeaster
+Bot feaster has additional logic to not hang pieces.Prioritises moves in this order:
+ i.    Move wins game
+ ii.   Take hanging enemy piece
+ iii.  Make positive trade
+ iv.   Check enemy king
+ v.    Move pieces being attacked by lower value away
+ vi.   Defend pieces being attacked by equal or higher value
+ vii.  Castle
+ viii. Random Move
+
+## Tournament Results
+DrunkEngine(White) vs. BotFeaster(Black)
+White wins: 22, Black wins: 338, Draws: 140
+
 ### 8 - 16
 I finished BotFeaster! I also added the 50 move rule because that is the only bot good enough to not draw eventually. Now I am done with these simple engines and I can either move onto some very good engines or I can implement an elo rating system for the four engines I have made already.
 
