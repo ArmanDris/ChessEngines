@@ -46,6 +46,8 @@ White wins: 280, Black wins: 0, Draws: 220
 White wins: 24, Black wins: 7, Draws: 69
 ### BotFeaster(White) vs. RandomEngine(Black)
 White wins: 50, Black wins: 0, Draws: 0
+### BotFeaster(White) vs, HippieEngine(Black)
+White wins: 47, Black wins: 0, Draws: 3
 
 
 ### 8 - 16
