@@ -32,9 +32,11 @@ Bot feaster has additional logic to not hang pieces.Prioritises moves in this or
  vii.  Castle
  viii. Random Move
 
-## Tournament Results
-DrunkEngine(White) vs. BotFeaster(Black) <br>
+# Tournament Results
+##DrunkEngine(White) vs. BotFeaster(Black) <br>
 White wins: 22, Black wins: 338, Draws: 140
+##DrunkEngine(White) vs. HippieEngine(Black) <br>
+
 
 ### 8 - 16
 I finished BotFeaster! I also added the 50 move rule because that is the only bot good enough to not draw eventually. Now I am done with these simple engines and I can either move onto some very good engines or I can implement an elo rating system for the four engines I have made already.
