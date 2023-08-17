@@ -33,9 +33,9 @@ Bot feaster has additional logic to not hang pieces.Prioritises moves in this or
  viii. Random Move <br>
 
 # Tournament Results
-##DrunkEngine(White) vs. BotFeaster(Black) <br>
+## DrunkEngine(White) vs. BotFeaster(Black) <br>
 White wins: 22, Black wins: 338, Draws: 140
-##DrunkEngine(White) vs. HippieEngine(Black) <br>
+## DrunkEngine(White) vs. HippieEngine(Black) <br>
 
 
 ### 8 - 16
