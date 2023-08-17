@@ -4,14 +4,14 @@ This project is built on top of the chess game I made 😀. I want to make some 
 
 ## The three simple chess Engines:
 1. RandomEngine
-Will just make a random legal move
+Will just make a random legal move <br> <br>
 2. Drunk engine
 Prioritieses moves in this order: <br>
  i.   Move wins game <br>
  ii.  Check enemy king <br>
  iii. Take undefended enemy piece <br>
  iv.  Castle <br>
- v.   Random Move <br>
+ v.   Random Move <br> <br>
 3. Hippie Engine
 Prioritieses moves in this order: <br>
  i.   Move ends game <br>
@@ -20,7 +20,7 @@ Prioritieses moves in this order: <br>
  iv.  Move undefended piece out of danger <br>
  v.   Castle <br>
  vi.  Check enemy king <br>
- vii. Random Move <br>
+ vii. Random Move <br> <br>
 4. BotFeaster
 Bot feaster has additional logic to not hang pieces.Prioritises moves in this order:
  i.    Move wins game <br>
