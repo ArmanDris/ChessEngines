@@ -6,31 +6,31 @@ This project is built on top of the chess game I made 😀. I want to make some 
 1. RandomEngine
 Will just make a random legal move
 2. Drunk engine
-Prioritieses moves in this order:
- i.   Move wins game
- ii.  Check enemy king
- iii. Take undefended enemy piece
- iv.  Castle
- v.   Random Move
+Prioritieses moves in this order: <br>
+ i.   Move wins game <br>
+ ii.  Check enemy king <br>
+ iii. Take undefended enemy piece <br>
+ iv.  Castle <br>
+ v.   Random Move <br>
 3. Hippie Engine
-Prioritieses moves in this order:
- i.   Move ends game
- ii.  Take undefended enemy piece
- iii. Support undefended piece
- iv.  Move undefended piece out of danger
- v.   Castle
- vi.  Check enemy king
- vii. Random Move
+Prioritieses moves in this order: <br>
+ i.   Move ends game <br>
+ ii.  Take undefended enemy piece <br>
+ iii. Support undefended piece <br>
+ iv.  Move undefended piece out of danger <br>
+ v.   Castle <br>
+ vi.  Check enemy king <br>
+ vii. Random Move <br>
 4. BotFeaster
 Bot feaster has additional logic to not hang pieces.Prioritises moves in this order:
- i.    Move wins game
- ii.   Take hanging enemy piece
- iii.  Make positive trade
- iv.   Check enemy king
- v.    Move pieces being attacked by lower value away
- vi.   Defend pieces being attacked by equal or higher value
- vii.  Castle
- viii. Random Move
+ i.    Move wins game <br>
+ ii.   Take hanging enemy piece <br>
+ iii.  Make positive trade <br>
+ iv.   Check enemy king <br>
+ v.    Move pieces being attacked by lower value away <br>
+ vi.   Defend pieces being attacked by equal or higher value <br>
+ vii.  Castle <br>
+ viii. Random Move <br>
 
 # Tournament Results
 ##DrunkEngine(White) vs. BotFeaster(Black) <br>
