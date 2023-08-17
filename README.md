@@ -39,6 +39,8 @@ White wins: 22, Black wins: 338, Draws: 140
 White wins: 27, Black wins: 127, Draws: 346
 ## DrunkEngine(White) vs. RandomEngine(Black) <br>
 White wins: 280, Black wins: 0, Draws: 220
+## HippieEngine(White) vs. DrunkEngine(Black) <br>
+White wins: 24, Black wins: 7, Draws: 69
 
 
 ### 8 - 16
