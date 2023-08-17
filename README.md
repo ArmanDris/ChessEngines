@@ -30,9 +30,9 @@ Bot feaster has additional logic to not hang pieces.Prioritises moves in this or
  v.    Move pieces being attacked by lower value away <br>
  vi.   Defend pieces being attacked by equal or higher value <br>
  vii.  Castle <br>
- viii. Push pawn
- ix.   Make equal trade
- x.    Make random non-hanging move
+ viii. Push pawn <br>
+ ix.   Make equal trade <br>
+ x.    Make random non-hanging move <br>
  xi.   Random Move <br>
 
 # Tournament Results
