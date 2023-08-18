@@ -40,6 +40,20 @@ void Piece::drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Textur
 	w->draw(s);
 }
 
+int Piece::getValue() const
+{
+	switch (type) {
+	case Type::None: return 0;
+	case Type::Pawn: return 1;
+	case Type::Knight: return 3;
+	case Type::Bishop: return 3;
+	case Type::Rook: return 5;
+	case Type::Queen: return 9;
+	case Type::King: return 100;
+	}
+	return 0;
+}
+
 Color Piece::getColor() const {
 	return color;
 }

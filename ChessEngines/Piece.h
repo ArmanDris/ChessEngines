@@ -25,6 +25,8 @@ public:
 		return type != Type::None;
 	}
 
+	int getValue() const;
+
 protected:
 	Type type = Type::None;
 	Color color = Color::None;

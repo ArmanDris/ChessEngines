@@ -81,8 +81,8 @@ bool EngineHelpers::trades_positive(sf::Vector2i oldSquare, sf::Vector2i newSqua
 {
 	if (!board[newSquare.x][newSquare.y]) return false;
 
-	int old_square_value = get_value(board[oldSquare.x][oldSquare.y]);
-	int new_square_value = get_value(board[newSquare.x][newSquare.y]);
+	int old_square_value = board[oldSquare.x][oldSquare.y].getValue();
+	int new_square_value = board[newSquare.x][newSquare.y].getValue();
 	return board[newSquare.x][newSquare.y] && old_square_value < new_square_value;
 }
 
@@ -102,8 +102,8 @@ bool EngineHelpers::protects_high_value(sf::Vector2i oldSquare, sf::Vector2i new
 bool EngineHelpers::trades_equal_value(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	if (!board[newSquare.x][newSquare.y]) return false;
-	int new_square_value = get_value(board[newSquare.x][newSquare.y]);
-	int old_square_value = get_value(board[oldSquare.x][oldSquare.y]);
+	int new_square_value = board[newSquare.x][newSquare.y].getValue();
+	int old_square_value = board[oldSquare.x][oldSquare.y].getValue();
 
 	if (new_square_value == old_square_value) return true;
 	return false;
@@ -112,19 +112,6 @@ bool EngineHelpers::trades_equal_value(sf::Vector2i oldSquare, sf::Vector2i newS
 bool EngineHelpers::moveIsPushPawn(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	return board[oldSquare.x][oldSquare.y].getType() == Type::Pawn;
-}
-
-int EngineHelpers::get_value(Piece p) const
-{
-	switch (p.getType()) {
-	case Type::Pawn: return 1;
-	case Type::Knight: return 3;
-	case Type::Bishop: return 3;
-	case Type::Rook: return 5;
-	case Type::Queen: return 9;
-	case Type::King: return 100;
-		return 0;
-	}
 }
 
 // Get lowest value piece of color c that is attacking sq
@@ -139,9 +126,9 @@ int EngineHelpers::get_lowest_attacker(sf::Vector2i sq, Color c) const
 			if (!board[i][j]) continue;
 			if (board[i][j].getColor() != c) continue;
 
-			if (piece_is_attacking_square(sf::Vector2i(i, j), sq) && get_value(board[i][j]) > value) {
+			if (piece_is_attacking_square(sf::Vector2i(i, j), sq) && board[i][j].getValue() > value) {
 				highest_value_attacker = sf::Vector2i(i, j);
-				value = get_value(board[i][j]);
+				value = board[i][j].getValue();
 			}
 		}
 	}

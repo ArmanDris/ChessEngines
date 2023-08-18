@@ -140,6 +140,7 @@
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="HippieEngine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MinMaxEngine.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="RandomEngine.cpp" />
     <ClCompile Include="Ui.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="EngineHelpers.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="HippieEngine.h" />
+    <ClInclude Include="MinMaxEngine.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Ui.h" />

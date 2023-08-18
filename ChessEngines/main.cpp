@@ -6,6 +6,7 @@
 #include "DrunkEngine.h"
 #include "HippieEngine.h"
 #include "BotFeaster.h"
+#include "MinMaxEngine.h"
 
 
 int main() {
@@ -19,11 +20,10 @@ int main() {
     DrunkEngine drunk;
     HippieEngine hippie;
     BotFeaster botF;
+    MinMaxEngine minMax;
     GameBoard b;
     b.setPlayer(&botF, Color::White);
-    b.setPlayer(&random, Color::Black);
-
-    b.start_tournement(500);
+    b.setPlayer(&minMax, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -58,7 +58,6 @@ int main() {
         }
 
         b.drawBoard(&window);
-        //b.preformCPUMoves();
         window.display();
     }
 

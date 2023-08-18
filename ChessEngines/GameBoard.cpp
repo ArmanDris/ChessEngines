@@ -76,17 +76,11 @@ void GameBoard::preformCPUMoves()
 
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
-	if (checkGameOver() && elapsed_time_ms > move_delay_ms + win_delay_ms) {
-		if (whiteVictory) std::cout << "White wins!\n";
-		if (blackVictory) std::cout << "Black wins!\n";
-		resetBoard();
-		return;
-	}
 	if (checkGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if (white_player &&  whiteTurn) makeWhiteMove();
+	if      (white_player &&  whiteTurn) makeWhiteMove();
 	else if (black_player && !whiteTurn) makeBlackMove();
 
 	c.restart();
@@ -96,7 +90,7 @@ void GameBoard::triggerMove()
 {
 	if (checkGameOver()) return;
 
-	if (white_player && whiteTurn)       { makeWhiteMove(); }
+	if      (white_player &&  whiteTurn)  { makeWhiteMove(); }
 	else if (black_player && !whiteTurn) { makeBlackMove(); }
 }
 
