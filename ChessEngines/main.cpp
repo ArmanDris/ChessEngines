@@ -2,10 +2,7 @@
 #include "Board.h"
 #include "GameBoard.h"
 #include "Engine.h"
-#include "RandomEngine.h"
-#include "DrunkEngine.h"
-#include "HippieEngine.h"
-#include "BotFeaster.h"
+#include "SimpleEngines.h"
 #include "MinMaxEngine.h"
 
 
@@ -19,11 +16,11 @@ int main() {
     RandomEngine random;
     DrunkEngine drunk;
     HippieEngine hippie;
-    BotFeaster botF;
+    BotFeasterEngine botF;
     MinMaxEngine minMax;
     GameBoard b;
-    b.setPlayer(&botF, Color::White);
-    b.setPlayer(&minMax, Color::Black);
+    b.setPlayer(nullptr, Color::White);
+    b.setPlayer(nullptr, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -58,6 +55,7 @@ int main() {
         }
 
         b.drawBoard(&window);
+        b.preformCPUMoves(1000);
         window.display();
     }
 

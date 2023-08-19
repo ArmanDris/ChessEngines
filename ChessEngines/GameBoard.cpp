@@ -71,7 +71,7 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 
 }
 
-void GameBoard::preformCPUMoves()
+void GameBoard::preformCPUMoves(int move_delay_ms)
 {
 
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();

@@ -183,6 +183,8 @@ bool Board::pawn_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSqu
 		// If there is a piece in front of it return false
 		if (color == Color::White && board[oldSquare.x][oldSquare.y - 1]) return false;
 		if (color == Color::Black && board[oldSquare.x][oldSquare.y + 1]) return false;
+		// If there is a piece two in front of it return false
+		if (board[newSquare.x][newSquare.y]) return false;
 
 		return true;
 	}
