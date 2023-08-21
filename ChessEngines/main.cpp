@@ -19,8 +19,8 @@ int main() {
     BotFeasterEngine botF;
     MinMaxEngine minMax;
     GameBoard b;
-    b.setPlayer(nullptr, Color::White);
-    b.setPlayer(nullptr, Color::Black);
+    b.setPlayer(&botF, Color::White);
+    b.setPlayer(&botF, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -45,9 +45,11 @@ int main() {
                 b.hover(sf::Vector2f(event.mouseMove.x, event.mouseMove.y));
                 break;
             case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Space)
-                    b.triggerMove();
-				break;
+                switch (event.key.code) {
+                case sf::Keyboard::Space: b.triggerMove(); break;
+                case sf::Keyboard::Left: b.undoMove(); break;
+                }
+                break;
             case sf::Event::Resized:
                 window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                 break;
@@ -55,7 +57,6 @@ int main() {
         }
 
         b.drawBoard(&window);
-        b.preformCPUMoves(1000);
         window.display();
     }
 

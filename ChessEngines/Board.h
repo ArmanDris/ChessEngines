@@ -15,6 +15,7 @@ public:
 	Board();
 
 	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	void undoMove();
 
 	// Overload [] operator to access elements using sf::Vector2i
 	Piece& operator[](sf::Vector2i square)
@@ -34,7 +35,7 @@ protected:
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
-	std::vector<std::tuple<Color, Type, sf::Vector2i, Color, Type,  sf::Vector2i>> log;
+	std::vector<std::tuple<Piece, sf::Vector2i, Piece,  sf::Vector2i>> log;
 
 	bool whiteTurn = true;
 

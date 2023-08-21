@@ -55,6 +55,31 @@ bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 	return true;
 }
 
+void Board::undoMove()
+{
+	// !!! NEED TO ADD SUPPORT FOR CASTLING AND EN PASSENT !!!
+	if (log.size() == 0) return;
+	auto last_log = log.back();
+
+	Piece old_piece = std::get<0>(last_log);
+	sf::Vector2i old_square = std::get<1>(last_log);
+
+	Piece new_piece = std::get<2>(last_log);
+	sf::Vector2i new_square = std::get<3>(last_log);
+
+	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1)
+		std::cout << "undo castle" << std::endl;
+
+	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.y != new_square.y)
+		std::cout << "undo en passent" << std::endl;
+
+	board[old_square.x][old_square.y] = old_piece;
+	board[new_square.x][new_square.y] = new_piece;
+
+	log.pop_back();
+	changeTurn();
+}
+
 // Will not check if move is legal
 void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 {
@@ -126,9 +151,9 @@ bool Board::fiftyMoveRule() const
 	// Loop through last 50 log entries
 	for (int i = log.size() - 50; i < log.size(); i++) {
 		// If a pawn has moved return false
-		if (std::get<1>(log[i]) == Type::Pawn) return false;
+		if (std::get<0>(log[i]).getType() == Type::Pawn) return false;
 		// If a piece has been taken return false
-		if (std::get<4>(log[i]) != Type::None) return false;
+		if (std::get<2>(log[i]).getType() != Type::None) return false;
 	}
 	return true;
 }
@@ -322,10 +347,10 @@ bool Board::hasPawnJustMovedUpTwo(sf::Vector2i sq) const
 {
 	if (log.size() == 0) return false;
 
-	std::tuple<Color, Type, sf::Vector2i, Color, Type, sf::Vector2i> last_move = log.back();
-	if (std::get<1>(last_move) == Type::Pawn &&  // If last entry is a pawn
-		abs(std::get<2>(last_move).y - std::get<5>(last_move).y) == 2 && // If it moved up two
-		std::get<5>(last_move) == sq) { // If it moved into sq
+	auto last_move = log.back();
+	if (std::get<0>(last_move).getType() == Type::Pawn &&  // If last entry is a pawn
+		abs(std::get<1>(last_move).y - std::get<3>(last_move).y) == 2 && // If it moved up two
+		std::get<3>(last_move) == sq) { // If it moved into sq
 		return true; // Then return true
 	}
 
@@ -407,7 +432,7 @@ bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
 	// do not look at move that is being made (most recent log entry)
 	for (int i = 0; i < log.size() - 1; i++) {
 		// If the log contains starting square then return true
-		if (std::get<2>(log[i]) == startingSquare || std::get<5>(log[i]) == startingSquare) return true;
+		if (std::get<1>(log[i]) == startingSquare || std::get<3>(log[i]) == startingSquare) return true;
 	}
 
 	return false;
@@ -440,18 +465,8 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 }
 
 void Board::logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
-	log.push_back({ board[oldSquare.x][oldSquare.y].getColor(), board[oldSquare.x][oldSquare.y].getType(), oldSquare,
-					board[newSquare.x][newSquare.y].getColor(), board[newSquare.x][newSquare.y].getType(), newSquare });
-
-	// To output log uncomment this:
-	//int i = log.size() - 1;
-	//std::cout << colorToString(std::get<0>(log[i])) << " "
-	//	<< typeToString(std::get<1>(log[i])) << " "
-	//	<< std::get<2>(log[i]).x << "," << std::get<2>(log[i]).y << " "
-
-	//	<< colorToString(std::get<3>(log[i])) << " "
-	//	<< typeToString(std::get<4>(log[i])) << " "
-	//	<< std::get<5>(log[i]).x << "," << std::get<5>(log[i]).y << std::endl;
+	log.push_back({ board[oldSquare.x][oldSquare.y], oldSquare,
+					board[newSquare.x][newSquare.y], newSquare });
 }
 
 void Board::saveLog(std::string saveLog) {
@@ -478,13 +493,13 @@ void Board::saveLog(std::string saveLog) {
 
 	file << "Piece being moved : Location piece is moving to" << std::endl << std::endl;
 	for (auto move : log) {
-		file << colorToString(std::get<0>(move)) << " "
-			<< typeToString(std::get<1>(move)) << " "
-			<< std::get<2>(move).x << "," << std::get<2>(move).y << " : "
+		file << colorToString(std::get<0>(move).getColor()) << " "
+			<< typeToString(std::get<0>(move).getType()) << " "
+			<< std::get<1>(move).x << "," << std::get<1>(move).y << " : "
 
-			<< colorToString(std::get<3>(move)) << " "
-			<< typeToString(std::get<4>(move)) << " "
-			<< std::get<5>(move).x << "," << std::get<5>(move).y << std::endl;
+			<< colorToString(std::get<2>(move).getColor()) << " "
+			<< typeToString(std::get<2>(move).getType()) << " "
+			<< std::get<3>(move).x << "," << std::get<3>(move).y << std::endl;
 	}
 	file.close();
 }
