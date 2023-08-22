@@ -70,8 +70,13 @@ void Board::undoMove()
 	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1)
 		std::cout << "undo castle" << std::endl;
 
-	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.y != new_square.y)
-		std::cout << "undo en passent" << std::endl;
+	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.y != new_square.y) {
+		// Should place a pawn behind the new square
+		if (old_piece.getColor() == Color::White)
+			board[new_square.x][new_square.y + 1] = Piece(Type::Pawn, Color::Black);
+		else
+			board[new_square.x][new_square.y - 1] = Piece(Type::Pawn, Color::White);
+	}
 
 	board[old_square.x][old_square.y] = old_piece;
 	board[new_square.x][new_square.y] = new_piece;
