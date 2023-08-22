@@ -57,7 +57,6 @@ bool Board::makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {
 
 void Board::undoMove()
 {
-	// !!! NEED TO ADD SUPPORT FOR CASTLING AND EN PASSENT !!!
 	if (log.size() == 0) return;
 	auto last_log = log.back();
 
@@ -67,10 +66,22 @@ void Board::undoMove()
 	Piece new_piece = std::get<2>(last_log);
 	sf::Vector2i new_square = std::get<3>(last_log);
 
-	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1)
-		std::cout << "undo castle" << std::endl;
+	// Undo castle
+	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1) {
+		// If undoing left castle
+		if (old_square.x > new_square.x) {
+			board[0][old_square.y] = Piece(Type::Rook, old_piece.getColor());
+			board[3][old_square.y] = Piece();
+		}
+		// If undoing right castle
+		else {
+			board[7][old_square.y] = Piece(Type::Rook, old_piece.getColor());
+			board[5][old_square.y] = Piece();
+		}
+	}
 
-	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.y != new_square.y) {
+	// Undo en passent
+	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.x != new_square.x) {
 		// Should place a pawn behind the new square
 		if (old_piece.getColor() == Color::White)
 			board[new_square.x][new_square.y + 1] = Piece(Type::Pawn, Color::Black);
@@ -93,7 +104,7 @@ void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 	// En passant
 	if (moveIsEnPassent(oldSquare, newSquare))
 		board[newSquare.x][oldSquare.y] = Piece();
-	
+
 	// Castling
 	if (moveIsCastle(oldSquare, newSquare))
 		castle(oldSquare, newSquare);
@@ -106,10 +117,10 @@ void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 	board[oldSquare.x][oldSquare.y] = Piece();
 }
 
-void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare) 
+void Board::castle(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 {
 	// The king move will have already been excecuted so just need to move rook
-	
+
 	// If the king is trying to castle left
 	if (oldSquare.x > newSquare.x) {
 		board[3][oldSquare.y] = board[0][oldSquare.y];
@@ -165,7 +176,7 @@ bool Board::fiftyMoveRule() const
 
 bool Board::legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
-	if ( whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::Black) return false;
+	if (whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::Black) return false;
 	if (!whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::White) return false;
 	if (board[oldSquare.x][oldSquare.y].getColor() == board[newSquare.x][newSquare.y].getColor()) return false;
 	if (willMoveCauseCheckForColor(oldSquare, newSquare)) return false;
@@ -315,7 +326,7 @@ bool Board::queen_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSq
 	return false;
 }
 
-bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const 
+bool Board::king_is_attacking_square(sf::Vector2i oldSquare, sf::Vector2i newSquare) const
 {
 	// Prevents the king from moving more than one square
 	if (abs(newSquare.x - oldSquare.x) > 1 || abs(newSquare.y - oldSquare.y) > 1) { return false; }
