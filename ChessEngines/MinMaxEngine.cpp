@@ -2,53 +2,83 @@
 
 std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& b)
 {
-    static_cast<Board&>(*this) = b;
+	int depth = 3;
+	int best_eval = INT_MIN;
+	move best_move;
 
-    Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Board board = b;
 
-    std::vector<move> moves = get_moves();
-    std::vector<evaluated_move> move_eval_pairs;
+	std::vector<move> moves = board.get_moves();
 
-    for (auto& move : moves) {
-        evaluated_move move_eval_pair = { move, evaluateBoard({move}) };
-		move_eval_pairs.push_back(move_eval_pair);
+	for (auto move : moves) {
+		Board child = b;
+		child.makeMove(move.first, move.second);
+		int eval = minimax(child, depth - 1, -INT_MAX, INT_MIN, false);
+
+		if (eval > best_eval) {
+			best_eval = eval;
+			best_move = move;
+		}
 	}
 
-    // Get the best move
-    evaluated_move best_move = move_eval_pairs[0];
-    for (auto& move_eval_pair : move_eval_pairs) {
-        if (ally_color == Color::White && move_eval_pair.second > best_move.second)
-			best_move = move_eval_pair;
-        if (ally_color == Color::Black && move_eval_pair.second < best_move.second)
-            best_move = move_eval_pair;
-    }
+	return best_move;
+}
 
-    return best_move.first;
+// Alpha: the worst score the player can get
+// Beta: the best score the enemy can get
+int MinMaxEngine::minimax(Board& b, int depth, int alpha, int beta,  bool maximizingPlayer)
+{
+	if (depth <= 0 || b.isWhiteVictory() || b.isBlackVictory() || b.isDraw()) {
+		return evaluateBoard(b);
+	}
+
+	if (maximizingPlayer) {
+		int maxEval = INT_MIN;
+		for (auto move : b.get_moves()) {
+			Board child = b;
+			child.makeMove(move.first, move.second);
+			int eval = minimax(child, depth - 1, alpha, beta, false);
+			maxEval = std::max(maxEval, eval);
+			alpha = std::max(alpha, eval);
+
+			if (beta <= alpha) break;
+		}
+		return maxEval;
+	}
+	else {
+		int minEval = INT_MAX;
+		for (auto move : b.get_moves()) {
+			Board child = b;
+			child.makeMove(move.first, move.second);
+			int eval = minimax(child, depth - 1, alpha, beta, true);
+			minEval = std::min(minEval, eval);
+			beta = std::min(beta, eval);
+
+			if (beta <= alpha) break;
+		}
+		return minEval;
+	}
 }
 
 // Board evaluation after preforming moves
-double MinMaxEngine::evaluateBoard(std::vector<move> moves)
+int MinMaxEngine::evaluateBoard(const Board& b) const
 {
-    MinMaxEngine clone = *this;
-    for (auto& move : moves) {
-		if (!clone.makeMove(move.first, move.second)) std::cout << "Error, illegal move" << std::endl;
-	}
-    double material_eval = clone.evaluateBoardMaterial();
-    return material_eval;
+	return -evaluateBoardMaterial(b);
 }
 
 // Positive number better for white, negative better for black
-double MinMaxEngine::evaluateBoardMaterial() const
+int MinMaxEngine::evaluateBoardMaterial(const Board& b) const
 {
-    double white_material = 0.0;
-    double black_material = 0.0;
+	int white_material = 0;
+	int black_material = 0;
 
-    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-        if (board[x][y].getColor() == Color::White) 
-            white_material += board[x][y].getValue();
-        else if (board[x][y].getColor() == Color::Black) 
-            black_material += board[x][y].getValue();
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		sf::Vector2i square(x, y);
+		if (b.getPiece(square).getColor() == Color::White)
+			white_material += b.getPiece(square).getValue();
+		else if (b.getPiece(square).getColor() == Color::Black)
+			black_material += b.getPiece(square).getValue();
 	}
 
-    return white_material - black_material;
+	return white_material - black_material;
 }

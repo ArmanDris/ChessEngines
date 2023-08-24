@@ -93,7 +93,30 @@ void Board::undoMove()
 	board[new_square.x][new_square.y] = new_piece;
 
 	log.pop_back();
+	// Reset game over in case move caused draw or such
+	whiteVictory = false; blackVictory = false; draw = false;
 	changeTurn();
+}
+
+std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
+
+	for (int l = 0; l < 8; l++) {
+		for (int m = 0; m < 8; m++) {
+			sf::Vector2i currentSquare(l, m);
+			if (!board[currentSquare.x][currentSquare.y]) continue;
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 8; j++) {
+					sf::Vector2i newSquare(i, j);
+					if (legal_move(currentSquare, newSquare)) {
+						moves.push_back({ currentSquare, newSquare });
+					}
+				}
+			}
+		}
+	}
+
+	return moves;
 }
 
 // Will not check if move is legal
@@ -457,27 +480,6 @@ bool Board::hasPieceMoved(sf::Vector2i startingSquare) const {
 void Board::changeTurn() {
 	if (whiteTurn) whiteTurn = false;
 	else           whiteTurn = true;
-}
-
-std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
-
-	for (int l = 0; l < 8; l++) {
-		for (int m = 0; m < 8; m++) {
-			sf::Vector2i currentSquare(l, m);
-			if (!board[currentSquare.x][currentSquare.y]) continue;
-			for (int i = 0; i < 8; i++) {
-				for (int j = 0; j < 8; j++) {
-					sf::Vector2i newSquare(i, j);
-					if (legal_move(currentSquare, newSquare)) {
-						moves.push_back({ currentSquare, newSquare });
-					}
-				}
-			}
-		}
-	}
-
-	return moves;
 }
 
 void Board::logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare) {

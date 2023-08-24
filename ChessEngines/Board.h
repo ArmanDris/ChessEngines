@@ -16,6 +16,13 @@ public:
 
 	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void undoMove();
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
+
+	Piece getPiece(sf::Vector2i square) const { return board[square.x][square.y]; }
+	bool isWhiteTurn() const { return whiteTurn; }
+	bool isWhiteVictory() const { return whiteVictory; }
+	bool isBlackVictory() const { return whiteVictory; }
+	bool isDraw() const { return draw; }
 
 	// Overload [] operator to access elements using sf::Vector2i
 	Piece& operator[](sf::Vector2i square)
@@ -62,14 +69,11 @@ protected:
 	bool hasPieceMoved(sf::Vector2i startingSquare) const;
 	bool hasPawnJustMovedUpTwo(sf::Vector2i sq) const;
 
+	bool checkGameOver();
 	bool square_is_attacked_by(sf::Vector2i sq, Color color) const;
 	bool isKingInCheck(Color color) const;
 	bool willMoveCauseCheckForColor(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
-	bool checkGameOver();
 	bool fiftyMoveRule() const;
-
-
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
 
 	void logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
 	void saveLog(std::string fileName = "log.txt");
