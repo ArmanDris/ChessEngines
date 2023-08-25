@@ -39,7 +39,20 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 	// Draw squares first
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if ((i + j) % 2 == 0) {
+			if (log.size() > 0) {
+				auto last_move = log.back();
+				// If the square is the last move, highlight it
+				if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
+					square.setFillColor(sf::Color(255, 255, 0));
+				}
+				else if ((i + j) % 2 == 0) {
+					square.setFillColor(sf::Color(240, 218, 181));
+				}
+				else {
+					square.setFillColor(sf::Color(181, 135, 99));
+				}
+			}
+			else if ((i + j) % 2 == 0) {
 				square.setFillColor(sf::Color(240, 218, 181));
 			}
 			else {

@@ -19,8 +19,8 @@ int main() {
     BotFeasterEngine botF;
     MinMaxEngine minMax;
     GameBoard b;
-    b.setPlayer(&minMax, Color::White);
-    b.setPlayer(&botF, Color::Black);
+    b.setPlayer(nullptr, Color::White);
+    b.setPlayer(nullptr, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
