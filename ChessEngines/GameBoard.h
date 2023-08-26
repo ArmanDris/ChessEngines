@@ -8,13 +8,13 @@ public:
 	GameBoard();
 	GameBoard(Engine* white, Engine* black);
 	void setPlayer(Engine* player, Color color);
-	void drawBoard(sf::RenderWindow* w) const;
+	void drawBoard(sf::RenderWindow& w) const;
 	void preformCPUMoves(int move_delay_ms = 1000);
 	void triggerMove();
 	void start_tournement(int num_games);
 
-	void hold(sf::RenderWindow* w, sf::Vector2f p);
-	void drop(sf::RenderWindow* w, sf::Vector2f p);
+	void hold(sf::RenderWindow& w, sf::Vector2f p);
+	void drop(sf::RenderWindow& w, sf::Vector2f p);
 	void hover(sf::Vector2f p);
 
 private:
@@ -54,10 +54,10 @@ private:
 
 	void resetBoard();
 
-	void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const;
+	void drawPiece(sf::RenderWindow& w, sf::Vector2f coords, const sf::Texture* t) const;
 
-	void drawPlayerTurn(sf::RenderWindow* w) const;
-	void drawPotenialMoves(sf::RenderWindow* w) const;
-	sf::Vector2i getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const;
-	sf::Vector2f getTopLeftCorner(sf::RenderWindow* w, sf::Vector2i square) const;
+	void drawPlayerTurn(sf::RenderWindow& w) const;
+	void drawPotenialMoves(sf::RenderWindow& w) const;
+	sf::Vector2i getSquareAt(sf::RenderWindow& w, sf::Vector2f p) const;
+	sf::Vector2f getTopLeftCorner(sf::RenderWindow& w, sf::Vector2i square) const;
 };

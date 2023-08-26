@@ -33,7 +33,7 @@ void GameBoard::setPlayer(Engine* player, Color color)
 	if (color == Color::Black) black_player = player;
 }
 
-void GameBoard::drawBoard(sf::RenderWindow* w) const 
+void GameBoard::drawBoard(sf::RenderWindow& w) const 
 {
 	sf::RectangleShape square(sf::Vector2f(square_length, square_length));
 	// Draw squares first
@@ -46,14 +46,14 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const
 				square.setFillColor(sf::Color(181, 135, 99));
 			}
 			square.setPosition(getTopLeftCorner(w, sf::Vector2i(i, j)));
-			w->draw(square);
+			w.draw(square);
 
 			// If the square is the last move, highlight it
 			if (log.size() == 0) continue;
 			auto last_move = log.back();
 			if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
 				square.setFillColor(sf::Color(255, 255, 0, 50));
-				w->draw(square);
+				w.draw(square);
 			}
 		}
 	}
@@ -133,17 +133,17 @@ void GameBoard::resetBoard()
 	*this = GameBoard(white_player, black_player);
 }
 
-void GameBoard::drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const 
+void GameBoard::drawPiece(sf::RenderWindow& w, sf::Vector2f coords, const sf::Texture* t) const 
 {
 	sf::Sprite s;
 	s.setTexture(*t);
 	float scale_factor = static_cast<float>(square_length) / std::max(s.getLocalBounds().width, s.getLocalBounds().height);
 	s.setScale(scale_factor, scale_factor);
 	s.setPosition(coords);
-	w->draw(s);
+	w.draw(s);
 }
 
-void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
+void GameBoard::hold(sf::RenderWindow& w, sf::Vector2f p) {
 	sf::Vector2i clicked_square = getSquareAt(w, p);
 	if (clicked_square.x == -1) { return; }
 
@@ -151,7 +151,7 @@ void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
 	holdingPiece_original_square = clicked_square;
 }
 
-void GameBoard::drop(sf::RenderWindow* w, sf::Vector2f p) {
+void GameBoard::drop(sf::RenderWindow& w, sf::Vector2f p) {
 	if (!holdingPiece) { return; }
 
 	sf::Vector2i newSquare = getSquareAt(w, mouseCoords);
@@ -221,7 +221,7 @@ const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
 	return texture;
 }
 
-void GameBoard::drawPlayerTurn(sf::RenderWindow* w) const {
+void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 	sf::Sprite king;
 	if (whiteTurn) { king.setTexture(white_kingTexture); }
 	else { king.setTexture(black_kingTexture); }
@@ -240,15 +240,15 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow* w) const {
 	float textWidth = text.getLocalBounds().width;
 	float kingWidth = king.getGlobalBounds().width;
 	float overallWidth = textWidth + kingWidth;
-	float centerOfWindow = w->getSize().x / 2;
+	float centerOfWindow = w.getSize().x / 2;
 
 	king.setPosition(sf::Vector2f(centerOfWindow - overallWidth / 2, 20));
-	w->draw(king);
+	w.draw(king);
 	text.setPosition(sf::Vector2f(centerOfWindow - overallWidth / 2 + kingWidth, 20));
-	w->draw(text);
+	w.draw(text);
 }
 
-void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
+void GameBoard::drawPotenialMoves(sf::RenderWindow& w) const
 {
 	if (!holdingPiece) { return; }
 
@@ -260,12 +260,12 @@ void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
 			if (board[i][j]) { s.setTexture(circle_texture); }
 			else { s.setTexture(dot_texture); }
 			s.setPosition(getTopLeftCorner(w, sf::Vector2i(i, j)));
-			w->draw(s);
+			w.draw(s);
 		}
 	}
 }
 
-sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const {
+sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow& w, sf::Vector2f p) const {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			sf::FloatRect square(getTopLeftCorner(w, sf::Vector2i(i, j)), sf::Vector2f(square_length, square_length));
@@ -278,10 +278,10 @@ sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const {
 	return sf::Vector2i(-1, -1);
 }
 
-sf::Vector2f GameBoard::getTopLeftCorner(sf::RenderWindow* w, sf::Vector2i square) const
+sf::Vector2f GameBoard::getTopLeftCorner(sf::RenderWindow& w, sf::Vector2i square) const
 {
-	sf::Vector2f centerOfWindow(w->getSize().x/2, w->getSize().y / 2);
-	sf::Vector2f topRightOfWindow(w->getSize().x, 0);
+	sf::Vector2f centerOfWindow(w.getSize().x/2, w.getSize().y / 2);
+	sf::Vector2f topRightOfWindow(w.getSize().x, 0);
 	int boardLength = square_length * 8;
 	sf::Vector2f topLeftBoardCorner(centerOfWindow.x - boardLength / 2, centerOfWindow.y - boardLength / 2);
 	return sf::Vector2f(topLeftBoardCorner.x + square_length * square.x, topLeftBoardCorner.y + square_length * square.y);

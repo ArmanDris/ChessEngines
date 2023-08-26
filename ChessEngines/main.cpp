@@ -13,7 +13,7 @@ int main() {
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
 
     sf::Image icon;
-    if (!icon.loadFromFile("black_king.png")) { std::cout << "Failed to load king.png"; }
+    icon.loadFromFile("black_king.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     RandomEngine random;
@@ -30,7 +30,7 @@ int main() {
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
-        b.drawBoard(&window);
+        b.drawBoard(window);
         window.display();
 
         sf::Event event;
@@ -41,12 +41,12 @@ int main() {
                 break;
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    b.hold(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                    b.hold(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                 }
                 break;
             case sf::Event::MouseButtonReleased:
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    b.drop(&window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                    b.drop(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                 }
                 break;
             case sf::Event::MouseMoved:
