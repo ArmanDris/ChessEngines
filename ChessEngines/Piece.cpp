@@ -32,14 +32,6 @@ Type Piece::getType() const {
 	return type;
 }
 
-void Piece::drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const {
-	sf::Sprite s;
-	s.setTexture(*t);
-	s.setScale(5, 5);
-	s.setPosition(coords);
-	w->draw(s);
-}
-
 int Piece::getValue() const
 {
 	switch (type) {

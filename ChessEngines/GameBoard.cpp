@@ -3,22 +3,22 @@
 GameBoard::GameBoard() {
 	if (!font.loadFromFile("Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
 
-	if (!black_pawnTexture.loadFromFile("black_pawn.png")) { std::cout << "Error!"; }
-	if (!black_rookTexture.loadFromFile("black_rook.png")) { std::cout << "Error!"; }
-	if (!black_knightTexture.loadFromFile("black_knight.png")) { std::cout << "Error!"; }
-	if (!black_bishopTexture.loadFromFile("black_bishop.png")) { std::cout << "Error!"; }
-	if (!black_queenTexture.loadFromFile("black_queen.png")) { std::cout << "Error!"; }
-	if (!black_kingTexture.loadFromFile("black_king.png")) { std::cout << "Error!"; }
+	black_pawnTexture.loadFromFile("black_pawn.png");
+	black_rookTexture.loadFromFile("black_rook.png");
+	black_knightTexture.loadFromFile("black_knight.png");
+	black_bishopTexture.loadFromFile("black_bishop.png");
+	black_queenTexture.loadFromFile("black_queen.png");
+	black_kingTexture.loadFromFile("black_king.png");
 
-	if (!white_pawnTexture.loadFromFile("white_pawn.png")) { std::cout << "Error!"; }
-	if (!white_rookTexture.loadFromFile("white_rook.png")) { std::cout << "Error!"; }
-	if (!white_knightTexture.loadFromFile("white_knight.png")) { std::cout << "Error!"; }
-	if (!white_bishopTexture.loadFromFile("white_bishop.png")) { std::cout << "Error!"; }
-	if (!white_queenTexture.loadFromFile("white_queen.png")) { std::cout << "Error!"; }
-	if (!white_kingTexture.loadFromFile("white_king.png")) { std::cout << "Error!"; }
+	white_pawnTexture.loadFromFile("white_pawn.png");
+	white_rookTexture.loadFromFile("white_rook.png");
+	white_knightTexture.loadFromFile("white_knight.png");
+	white_bishopTexture.loadFromFile("white_bishop.png");
+	white_queenTexture.loadFromFile("white_queen.png");
+	white_kingTexture.loadFromFile("white_king.png");
 
-	if (!circle_texture.loadFromFile("circle.png")) { std::cout << "Error!"; }
-	if (!dot_texture.loadFromFile("dot.png")) { std::cout << "Error!"; }
+	circle_texture.loadFromFile("circle.png");
+	dot_texture.loadFromFile("dot.png");
 }
 
 GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
@@ -35,7 +35,7 @@ void GameBoard::setPlayer(Engine* player, Color color)
 
 void GameBoard::drawBoard(sf::RenderWindow* w) const 
 {
-	sf::RectangleShape square(sf::Vector2f(squareLength, squareLength));
+	sf::RectangleShape square(sf::Vector2f(square_length, square_length));
 	// Draw squares first
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -66,15 +66,15 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const
 		for (int j = 0; j < 8; j++) {
 			sf::Vector2i sq(i, j);
 			if (board[i][j] && sq != holdingPiece_original_square) {
-				board[i][j].drawPiece(w, getTopLeftCorner(w, sq), getTexture(sf::Vector2i(i, j)));
+				drawPiece(w, getTopLeftCorner(w, sq), getTexture(sf::Vector2i(i, j)));
 			}
 		}
 	}
 
 	// Draw holding piece last so it is on top
 	if (holdingPiece) {
-		sf::Vector2f adjustecdCoords = sf::Vector2f(mouseCoords.x - squareLength / 2, mouseCoords.y - squareLength / 2);
-		holdingPiece.drawPiece(w, adjustecdCoords, getTexture(holdingPiece_original_square));
+		sf::Vector2f adjustecdCoords = sf::Vector2f(mouseCoords.x - square_length / 2, mouseCoords.y - square_length / 2);
+		drawPiece(w, adjustecdCoords, getTexture(holdingPiece_original_square));
 	}
 
 }
@@ -128,8 +128,19 @@ void GameBoard::start_tournement(int num_games)
 	std::cout << "Draws: " << draws << "\n";
 }
 
-void GameBoard::resetBoard() {
+void GameBoard::resetBoard() 
+{
 	*this = GameBoard(white_player, black_player);
+}
+
+void GameBoard::drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const 
+{
+	sf::Sprite s;
+	s.setTexture(*t);
+	float scale_factor = static_cast<float>(square_length) / std::max(s.getLocalBounds().width, s.getLocalBounds().height);
+	s.setScale(scale_factor, scale_factor);
+	s.setPosition(coords);
+	w->draw(s);
 }
 
 void GameBoard::hold(sf::RenderWindow* w, sf::Vector2f p) {
@@ -156,10 +167,6 @@ void GameBoard::drop(sf::RenderWindow* w, sf::Vector2f p) {
 
 void GameBoard::hover(sf::Vector2f p) {
 	mouseCoords = p;
-}
-
-GameBoard::~GameBoard()
-{
 }
 
 void GameBoard::makeWhiteMove()
@@ -261,7 +268,7 @@ void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
 sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			sf::FloatRect square(getTopLeftCorner(w, sf::Vector2i(i, j)), sf::Vector2f(squareLength, squareLength));
+			sf::FloatRect square(getTopLeftCorner(w, sf::Vector2i(i, j)), sf::Vector2f(square_length, square_length));
 			if (square.contains(p)) {
 				return sf::Vector2i(i, j);
 			}
@@ -275,7 +282,7 @@ sf::Vector2f GameBoard::getTopLeftCorner(sf::RenderWindow* w, sf::Vector2i squar
 {
 	sf::Vector2f centerOfWindow(w->getSize().x/2, w->getSize().y / 2);
 	sf::Vector2f topRightOfWindow(w->getSize().x, 0);
-	int boardLength = squareLength * 8;
+	int boardLength = square_length * 8;
 	sf::Vector2f topLeftBoardCorner(centerOfWindow.x - boardLength / 2, centerOfWindow.y - boardLength / 2);
-	return sf::Vector2f(topLeftBoardCorner.x + squareLength * square.x, topLeftBoardCorner.y + squareLength * square.y);
+	return sf::Vector2f(topLeftBoardCorner.x + square_length * square.x, topLeftBoardCorner.y + square_length * square.y);
 }

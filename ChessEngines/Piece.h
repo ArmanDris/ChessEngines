@@ -8,7 +8,6 @@ std::string typeToString(Type type);
 
 std::string colorToString(Color color);
 
-
 class Piece
 {
 public:
@@ -18,7 +17,6 @@ public:
 
 	Type getType() const;
 	Color getColor() const;
-	void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const;
 
 	explicit operator bool() const {
 		return type != Type::None;

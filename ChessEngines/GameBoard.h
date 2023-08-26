@@ -17,8 +17,6 @@ public:
 	void drop(sf::RenderWindow* w, sf::Vector2f p);
 	void hover(sf::Vector2f p);
 
-	~GameBoard();
-
 private:
 	Engine* white_player = nullptr;
 	Engine* black_player = nullptr;
@@ -29,7 +27,7 @@ private:
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);
 	sf::Vector2i holdingPiece_original_square = sf::Vector2i(-1, -1);
 
-	int squareLength = 75;
+	int square_length = 75;
 
 	sf::Texture black_pawnTexture;
 	sf::Texture black_rookTexture;
@@ -55,6 +53,8 @@ private:
 	void makeBlackMove();
 
 	void resetBoard();
+
+	void drawPiece(sf::RenderWindow* w, sf::Vector2f coords, const sf::Texture* t) const;
 
 	void drawPlayerTurn(sf::RenderWindow* w) const;
 	void drawPotenialMoves(sf::RenderWindow* w) const;

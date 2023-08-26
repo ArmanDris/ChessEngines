@@ -8,7 +8,9 @@
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1200, 800), "Chess", sf::Style::Default);
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+
+    sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
 
     sf::Image icon;
     if (!icon.loadFromFile("black_king.png")) { std::cout << "Failed to load king.png"; }
