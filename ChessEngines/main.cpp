@@ -20,7 +20,7 @@ int main() {
     MinMaxEngine minMax;
     GameBoard b;
 
-    b.setPlayer(nullptr, Color::White);
+    b.setPlayer(&minMax, Color::White);
     b.setPlayer(&minMax, Color::Black);
 
     while (window.isOpen()) {
@@ -59,7 +59,7 @@ int main() {
             }
         }
 
-        b.preformCPUMoves(3000);
+        //b.preformCPUMoves(3000);
     }
 
     return 0;

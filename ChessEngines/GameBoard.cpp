@@ -83,6 +83,8 @@ void GameBoard::preformCPUMoves(int move_delay_ms)
 {
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
+	// Uncomment if you want the game to restart 10 seconds after game is finished
+	//if (checkGameOver() && elapsed_time_ms > move_delay_ms + 10000) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
 	if (checkGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;
