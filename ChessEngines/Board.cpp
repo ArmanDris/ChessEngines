@@ -213,12 +213,11 @@ bool Board::checkGameOver() {
 
 // If no pawn has moved or no piece has been taken in the last 50 moves then return true
 bool Board::fiftyMoveRule() const
-
 {
-	if (log.size() < 50) return false;
+	if (log.size() < 100) return false;
 
 	// Loop through last 50 log entries
-	for (int i = log.size() - 50; i < log.size(); i++) {
+	for (int i = log.size() - 100; i < log.size(); i++) {
 		// If a pawn has moved return false
 		if (std::get<0>(log[i]).getType() == Type::Pawn) return false;
 		// If a piece has been taken return false
