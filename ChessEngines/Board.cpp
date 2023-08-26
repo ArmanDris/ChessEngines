@@ -119,6 +119,36 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 	return moves;
 }
 
+void Board::importFEN(std::string FEN)
+{
+	size_t pos = FEN.find(' ');
+	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
+	std::string piece_placement = FEN.substr(0, pos);
+	FEN = FEN.substr(pos + 1);
+
+	pos = FEN.find(' ');
+	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
+	std::string active_color = FEN.substr(0, pos);
+	FEN = FEN.substr(pos + 1);
+
+	pos = FEN.find(' ');
+	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
+	std::string castling_rights = FEN.substr(0, pos);
+	FEN = FEN.substr(pos + 1);
+
+	pos = FEN.find(' ');
+	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
+	std::string en_passent_target_square = FEN.substr(0, pos);
+	FEN = FEN.substr(pos + 1);
+
+	pos = FEN.find(' ');
+	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
+	std::string half_move_clock = FEN.substr(0, pos);
+	FEN = FEN.substr(pos + 1);
+
+	std::string full_move_number = FEN;
+}
+
 // Will not check if move is legal
 void Board::movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare)
 {

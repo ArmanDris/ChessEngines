@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Piece.h"
 #include "Ui.h"
+#include <string>
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -24,11 +25,7 @@ public:
 	bool isBlackVictory() const { return whiteVictory; }
 	bool isDraw() const { return draw; }
 
-	// Overload [] operator to access elements using sf::Vector2i
-	Piece& operator[](sf::Vector2i square)
-	{
-		return board[square.x][square.y];
-	}
+	void importFEN(std::string FEN);
 
 protected:
 	Piece board[8][8] = {
