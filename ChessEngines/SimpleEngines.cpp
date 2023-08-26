@@ -31,16 +31,18 @@ bool EngineHelpers::supportsUndefended(sf::Vector2i oldSquare, sf::Vector2i newS
 			// If there is an ally piece at x,y
 			if (board[x][y].getColor() != ally_color) continue;
 
+			sf::Vector2i ally_piece_sq(x, y);
+
 			// If not under attack, continue
-			if (!square_is_attacked_by(sf::Vector2i(x, y), enemy_color)) continue;
+			if (!square_is_attacked_by(ally_piece_sq, enemy_color)) continue;
 
 			// If ally piece is already defended continue
-			if (square_is_attacked_by(sf::Vector2i(x, y), ally_color)) continue;
+			if (square_is_attacked_by(ally_piece_sq, ally_color)) continue;
 
 			// If after move ally piece is defended, return true
 			EngineHelpers clone = *this;
 			clone.movePiece(oldSquare, newSquare);
-			if (clone.square_is_attacked_by(sf::Vector2i(x, y), ally_color)) return true;
+			if (clone.square_is_attacked_by(ally_piece_sq, ally_color)) return true;
 		}
 	}
 	return false;
@@ -126,7 +128,8 @@ int EngineHelpers::get_lowest_attacker(sf::Vector2i sq, Color c) const
 			if (!board[i][j]) continue;
 			if (board[i][j].getColor() != c) continue;
 
-			if (piece_is_attacking_square(sf::Vector2i(i, j), sq) && board[i][j].getValue() > value) {
+			sf::Vector2i oldSquare(i, j);
+			if (piece_is_attacking_square(oldSquare, sq) && board[i][j].getValue() > value) {
 				highest_value_attacker = sf::Vector2i(i, j);
 				value = board[i][j].getValue();
 			}

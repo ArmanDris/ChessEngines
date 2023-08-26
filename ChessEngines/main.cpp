@@ -20,7 +20,7 @@ int main() {
     BotFeasterEngine botF;
     MinMaxEngine minMax;
 
-    //minMax.returnMove(b);
+    minMax.returnMove(b);
 
     b.importFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
 
@@ -63,7 +63,7 @@ int main() {
             }
         }
 
-        b.preformCPUMoves();
+        b.preformCPUMoves(10);
     }
 
     return 0;
