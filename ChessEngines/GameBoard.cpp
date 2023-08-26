@@ -39,20 +39,7 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 	// Draw squares first
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (log.size() > 0) {
-				auto last_move = log.back();
-				// If the square is the last move, highlight it
-				if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
-					square.setFillColor(sf::Color(255, 255, 0));
-				}
-				else if ((i + j) % 2 == 0) {
-					square.setFillColor(sf::Color(240, 218, 181));
-				}
-				else {
-					square.setFillColor(sf::Color(181, 135, 99));
-				}
-			}
-			else if ((i + j) % 2 == 0) {
+			if ((i + j) % 2 == 0) {
 				square.setFillColor(sf::Color(240, 218, 181));
 			}
 			else {
@@ -60,6 +47,14 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 			}
 			square.setPosition(Ui::getTopLeftCorner(w, sf::Vector2i(i, j)));
 			w->draw(square);
+
+			// If the square is the last move, highlight it
+			if (log.size() == 0) continue;
+			auto last_move = log.back();
+			if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
+				square.setFillColor(sf::Color(255, 255, 0, 50));
+				w->draw(square);
+			}
 		}
 	}
 
@@ -86,14 +81,13 @@ void GameBoard::drawBoard(sf::RenderWindow* w) const {
 
 void GameBoard::preformCPUMoves(int move_delay_ms)
 {
-
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
 	if (checkGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;
 
-	if      (white_player &&  whiteTurn) makeWhiteMove();
+	if (white_player && whiteTurn) makeWhiteMove();
 	else if (black_player && !whiteTurn) makeBlackMove();
 
 	c.restart();
@@ -103,7 +97,7 @@ void GameBoard::triggerMove()
 {
 	if (checkGameOver()) return;
 
-	if      (white_player &&  whiteTurn)  { makeWhiteMove(); }
+	if (white_player && whiteTurn) { makeWhiteMove(); }
 	else if (black_player && !whiteTurn) { makeBlackMove(); }
 }
 
@@ -218,7 +212,7 @@ const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
 	return texture;
 }
 
-void GameBoard::drawPlayerTurn(sf::RenderWindow* w) const  {
+void GameBoard::drawPlayerTurn(sf::RenderWindow* w) const {
 	sf::Sprite king;
 	if (whiteTurn) { king.setTexture(white_kingTexture); }
 	else { king.setTexture(black_kingTexture); }
@@ -262,7 +256,7 @@ void GameBoard::drawPotenialMoves(sf::RenderWindow* w) const
 	}
 }
 
-sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const  {
+sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			sf::FloatRect square(Ui::getTopLeftCorner(w, sf::Vector2i(i, j)), sf::Vector2f(Ui::squareLength, Ui::squareLength));

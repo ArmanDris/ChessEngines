@@ -19,8 +19,9 @@ int main() {
     BotFeasterEngine botF;
     MinMaxEngine minMax;
     GameBoard b;
+
     b.setPlayer(nullptr, Color::White);
-    b.setPlayer(nullptr, Color::Black);
+    b.setPlayer(&minMax, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -58,7 +59,7 @@ int main() {
             }
         }
 
-        b.preformCPUMoves(1000);
+        b.preformCPUMoves(3000);
     }
 
     return 0;
