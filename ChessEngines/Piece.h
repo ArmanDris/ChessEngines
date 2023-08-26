@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Ui.h"
 
 enum class Type { None, Pawn, Rook, Knight, Bishop, Queen, King };
 enum class Color { None, White, Black };

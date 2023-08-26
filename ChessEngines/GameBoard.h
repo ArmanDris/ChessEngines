@@ -25,16 +25,12 @@ private:
 
 	sf::Clock c;
 
-	void makeWhiteMove();
-	void makeBlackMove();
-
-	void resetBoard();
-
 	Piece holdingPiece = Piece();
 	sf::Vector2f mouseCoords = sf::Vector2f(-1, -1);
 	sf::Vector2i holdingPiece_original_square = sf::Vector2i(-1, -1);
 
-	const sf::Texture* getTexture(sf::Vector2i sq) const;
+	int squareLength = 75;
+
 	sf::Texture black_pawnTexture;
 	sf::Texture black_rookTexture;
 	sf::Texture black_knightTexture;
@@ -51,11 +47,17 @@ private:
 
 	sf::Texture dot_texture;
 	sf::Texture circle_texture;
+	const sf::Texture* getTexture(sf::Vector2i sq) const;
 
 	sf::Font font;
+
+	void makeWhiteMove();
+	void makeBlackMove();
+
+	void resetBoard();
 
 	void drawPlayerTurn(sf::RenderWindow* w) const;
 	void drawPotenialMoves(sf::RenderWindow* w) const;
 	sf::Vector2i getSquareAt(sf::RenderWindow* w, sf::Vector2f p) const;
+	sf::Vector2f getTopLeftCorner(sf::RenderWindow* w, sf::Vector2i square) const;
 };
-

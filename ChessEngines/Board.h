@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Piece.h"
-#include "Ui.h"
 #include <string>
 #include <iostream>
 #include <vector>

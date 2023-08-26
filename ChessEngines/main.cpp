@@ -23,8 +23,8 @@ int main() {
 
     b.importFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
 
-    b.setPlayer(&minMax, Color::White);
-    b.setPlayer(&minMax, Color::Black);
+    b.setPlayer(&botF, Color::White);
+    b.setPlayer(&botF, Color::Black);
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -62,7 +62,7 @@ int main() {
             }
         }
 
-        //b.preformCPUMoves(3000);
+        b.preformCPUMoves();
     }
 
     return 0;

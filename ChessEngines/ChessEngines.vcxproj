@@ -139,7 +139,6 @@
     <ClCompile Include="MinMaxEngine.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="SimpleEngines.cpp" />
-    <ClCompile Include="Ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
@@ -148,7 +147,6 @@
     <ClInclude Include="MinMaxEngine.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="SimpleEngines.h" />
-    <ClInclude Include="Ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
