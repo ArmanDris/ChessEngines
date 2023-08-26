@@ -1,11 +1,9 @@
 #include <SFML/Graphics.hpp>
-#include <string>
 #include "Board.h"
 #include "GameBoard.h"
 #include "Engine.h"
 #include "SimpleEngines.h"
 #include "MinMaxEngine.h"
-
 
 int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -16,12 +14,13 @@ int main() {
     icon.loadFromFile("black_king.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+    GameBoard b;
+
     RandomEngine random;
-    DrunkEngine drunk;
-    HippieEngine hippie;
     BotFeasterEngine botF;
     MinMaxEngine minMax;
-    GameBoard b;
+
+    //minMax.returnMove(b);
 
     b.importFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
 

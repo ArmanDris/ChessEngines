@@ -165,7 +165,8 @@ void GameBoard::drop(sf::RenderWindow& w, sf::Vector2f p) {
 	holdingPiece_original_square = sf::Vector2i(-1, -1);
 }
 
-void GameBoard::hover(sf::Vector2f p) {
+void GameBoard::hover(sf::Vector2f p) 
+{
 	mouseCoords = p;
 }
 

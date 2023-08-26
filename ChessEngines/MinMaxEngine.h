@@ -5,6 +5,7 @@
 
 class MinMaxEngine : public Engine
 {
+public:
 	virtual std::pair<sf::Vector2i, sf::Vector2i> returnMove(const Board& b);
 private:
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
