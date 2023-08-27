@@ -14,7 +14,7 @@ class Board
 public:
 	Board();
 
-	bool makeMove(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	bool makeMove(const sf::Vector2i oldSquare, const sf::Vector2i newSquare);
 	void undoMove();
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
 
@@ -47,30 +47,30 @@ protected:
 	bool draw = false;
 
 	void placeStartingPieces();
-	void movePiece(sf::Vector2i oldSquare, sf::Vector2i newSquare);
-	void castle(sf::Vector2i oldSquare, sf::Vector2i newSquare);
+	void movePiece(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare);
+	void castle(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare);
 	void changeTurn();
 
-	bool legal_move(sf::Vector2i oldSquare, sf::Vector2i newSquare) const;
-	bool piece_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool pawn_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool rook_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool knight_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool bishop_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool queen_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool king_is_attacking_square(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
+	bool legal_move(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool piece_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool pawn_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool rook_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool knight_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool bishop_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool queen_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool king_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
 
-	bool moveIsCastle(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool moveIsEnPassent(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
-	bool hasPieceMoved(sf::Vector2i& startingSquare) const;
-	bool hasPawnJustMovedUpTwo(sf::Vector2i& sq) const;
+	bool moveIsCastle(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool moveIsEnPassent(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool hasPieceMoved(const sf::Vector2i& startingSquare) const;
+	bool hasPawnJustMovedUpTwo(const sf::Vector2i& sq) const;
 
 	bool checkGameOver();
-	bool square_is_attacked_by(sf::Vector2i& sq, Color& color) const;
-	bool isKingInCheck(Color& color) const;
-	bool willMoveCauseCheckForColor(sf::Vector2i& oldSquare, sf::Vector2i& newSquare) const;
+	bool square_is_attacked_by(const sf::Vector2i& sq, const Color& color) const;
+	bool isKingInCheck(const Color& color) const;
+	bool willMoveCauseCheckForColor(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
 	bool fiftyMoveRule() const;
 
-	void logMove(sf::Vector2i oldSquare, sf::Vector2i newSquare); // Passing by reference slows this down for some reason
+	void logMove(const sf::Vector2i oldSquare, const sf::Vector2i newSquare); // Passing by reference slows this down for some reason
 	void saveLog(std::string fileName = "log.txt");
 };

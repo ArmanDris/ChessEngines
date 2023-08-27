@@ -22,7 +22,7 @@ public:
 		return type != Type::None;
 	}
 
-	int getValue() const;=
+	int getValue() const;
 
 protected:
 	Type type = Type::None;
