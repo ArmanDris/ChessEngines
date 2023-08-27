@@ -16,7 +16,8 @@ public:
 
 	bool makeMove(const sf::Vector2i oldSquare, const sf::Vector2i newSquare);
 	void undoMove();
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> get_moves();
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> getMoves();
+	//std::vector<std::pair<sf::Vector2i, sf::Vector2i>> getPieceMoves(const sf::Vector2i& old_square);
 
 	Piece getPiece(sf::Vector2i square) const { return board[square.x][square.y]; }
 	bool isWhiteTurn() const { return whiteTurn; }
@@ -51,7 +52,7 @@ protected:
 	void castle(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare);
 	void changeTurn();
 
-	bool legal_move(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool legal_move(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare);
 	bool piece_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
 	bool pawn_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
 	bool rook_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
@@ -68,7 +69,7 @@ protected:
 	bool checkGameOver();
 	bool square_is_attacked_by(const sf::Vector2i& sq, const Color& color) const;
 	bool isKingInCheck(const Color& color) const;
-	bool willMoveCauseCheckForColor(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const;
+	bool willMoveCauseCheckForColor(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare);
 	bool fiftyMoveRule() const;
 
 	void logMove(const sf::Vector2i oldSquare, const sf::Vector2i newSquare); // Passing by reference slows this down for some reason

@@ -33,7 +33,7 @@ void GameBoard::setPlayer(Engine* player, Color color)
 	if (color == Color::Black) black_player = player;
 }
 
-void GameBoard::drawBoard(sf::RenderWindow& w) const 
+void GameBoard::drawBoard(sf::RenderWindow& w) 
 {
 	sf::RectangleShape square(sf::Vector2f(square_length, square_length));
 	// Draw squares first
@@ -249,7 +249,7 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 	w.draw(text);
 }
 
-void GameBoard::drawPotenialMoves(sf::RenderWindow& w) const
+void GameBoard::drawPotenialMoves(sf::RenderWindow& w)
 {
 	if (!holdingPiece) { return; }
 

@@ -46,7 +46,6 @@ bool Board::makeMove(const sf::Vector2i oldSquare, const sf::Vector2i newSquare)
 	if (whiteVictory || blackVictory || draw) return false;
 	if (!legal_move(oldSquare, newSquare)) return false;
 
-	logMove(oldSquare, newSquare);
 	movePiece(oldSquare, newSquare);
 
 	changeTurn();
@@ -97,7 +96,7 @@ void Board::undoMove()
 	changeTurn();
 }
 
-std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
+std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves() {
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;
 
 	for (int l = 0; l < 8; l++) {
@@ -107,6 +106,7 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					sf::Vector2i newSquare(i, j);
+					// Call piece is attacking square first to discount obviously bad moves quicly
 					if (legal_move(currentSquare, newSquare)) {
 						moves.push_back({ currentSquare, newSquare });
 					}
@@ -117,6 +117,11 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::get_moves() {
 
 	return moves;
 }
+
+// std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getPieceMoves(const sf::Vector2i old_square)
+// {
+
+// }
 
 void Board::importFEN(std::string FEN)
 {
@@ -151,6 +156,8 @@ void Board::importFEN(std::string FEN)
 // Will not check if move is legal
 void Board::movePiece(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare)
 {
+	logMove(oldSquare, newSquare);
+	
 	if (newSquare == oldSquare) return;
 
 	// En passant
@@ -188,7 +195,7 @@ void Board::castle(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare)
 
 // Sets whiteVictory or blackVictory to true if the player has no valid moves
 bool Board::checkGameOver() {
-	int numMoves = get_moves().size();
+	int numMoves = getMoves().size();
 
 	Color w = Color::White;
 	Color b = Color::Black;
@@ -218,7 +225,7 @@ bool Board::fiftyMoveRule() const
 {
 	if (log.size() < 100) return false;
 
-	// Loop through last 50 log entries
+	// Loop through last 100 log entries
 	for (int i = log.size() - 100; i < log.size(); i++) {
 		// If a pawn has moved return false
 		if (std::get<0>(log[i]).getType() == Type::Pawn) return false;
@@ -228,16 +235,14 @@ bool Board::fiftyMoveRule() const
 	return true;
 }
 
-bool Board::legal_move(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const
+bool Board::legal_move(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare)
 {
 	if (whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::Black) return false;
 	if (!whiteTurn && board[oldSquare.x][oldSquare.y].getColor() == Color::White) return false;
 	if (!board[oldSquare.x][oldSquare.y]) return false;
 	if (board[oldSquare.x][oldSquare.y].getColor() == board[newSquare.x][newSquare.y].getColor()) return false;
-	if (willMoveCauseCheckForColor(oldSquare, newSquare)) return false;
-	if (moveIsCastle(oldSquare, newSquare)) return true;
 
-	return piece_is_attacking_square(oldSquare, newSquare);
+	return piece_is_attacking_square(oldSquare, newSquare) && !willMoveCauseCheckForColor(oldSquare, newSquare);
 }
 
 // True if a piece is attacking newSquare
@@ -285,8 +290,8 @@ bool Board::pawn_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Ve
 
 	// If pawn is trying to move diagonally
 	if (abs(newSquare.x - oldSquare.x) == 1 && abs(oldSquare.y - newSquare.y) == 1) {
-		// If there is a pawn that just moved up two squares behind newSquare (en passant)
-		sf::Vector2i square_behind_new_square(newSquare.x, newSquare.y);
+		// If there is a pawn that just moved up two squares behind newSquare (en passent)
+		sf::Vector2i square_behind_new_square(newSquare.x, oldSquare.y);
 		if (hasPawnJustMovedUpTwo(square_behind_new_square)) return true;
 		// If there is no piece in front of it return false
 		if (!board[newSquare.x][newSquare.y]) return false;
@@ -334,6 +339,8 @@ bool Board::rook_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Ve
 
 bool Board::knight_is_attacking_square(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const
 {
+	if (moveIsCastle(oldSquare, newSquare)) return true;
+
 	if (abs(newSquare.x - oldSquare.x) == 1 && abs(newSquare.y - oldSquare.y) == 2) { return true; }
 	if (abs(newSquare.x - oldSquare.x) == 2 && abs(newSquare.y - oldSquare.y) == 1) { return true; }
 	return false;
@@ -424,7 +431,7 @@ bool Board::hasPawnJustMovedUpTwo(const sf::Vector2i& sq) const
 	if (std::get<0>(last_move).getType() == Type::Pawn &&  // If last entry is a pawn
 		abs(std::get<1>(last_move).y - std::get<3>(last_move).y) == 2 && // If it moved up two
 		std::get<3>(last_move) == sq) { // If it moved into sq
-		return true; // Then return true
+		return true;
 	}
 
 	return false;
@@ -500,12 +507,18 @@ bool Board::moveIsEnPassent(const sf::Vector2i& oldSquare, const sf::Vector2i& n
 }
 
 // True if after moving oldSquare to newSquare, the king of the same color as oldSquare will be in check
-bool Board::willMoveCauseCheckForColor(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare) const
+bool Board::willMoveCauseCheckForColor(const sf::Vector2i& oldSquare, const sf::Vector2i& newSquare)
 {
+	// Color color = board[oldSquare.x][oldSquare.y].getColor();
+	// Board clone = *this;
+	// clone.movePiece(oldSquare, newSquare);
+	// return clone.isKingInCheck(color);
 	Color color = board[oldSquare.x][oldSquare.y].getColor();
-	Board clone = *this;
-	clone.movePiece(oldSquare, newSquare);
-	return clone.isKingInCheck(color);
+	movePiece(oldSquare, newSquare);
+	bool ret = isKingInCheck(color);
+	undoMove();
+	changeTurn(); // Because undo move changes turn. I know super bad way to do it.
+	return ret;
 }
 
 // If square has moved return true

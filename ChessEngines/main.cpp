@@ -63,7 +63,7 @@ int main() {
             }
         }
 
-        b.preformCPUMoves(10);
+        //b.preformCPUMoves(10);
     }
 
     return 0;

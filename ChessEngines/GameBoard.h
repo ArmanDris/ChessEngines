@@ -8,7 +8,7 @@ public:
 	GameBoard();
 	GameBoard(Engine* white, Engine* black);
 	void setPlayer(Engine* player, Color color);
-	void drawBoard(sf::RenderWindow& w) const;
+	void drawBoard(sf::RenderWindow& w);
 	void preformCPUMoves(int move_delay_ms = 1000);
 	void triggerMove();
 	void start_tournement(int num_games);
@@ -57,7 +57,7 @@ private:
 	void drawPiece(sf::RenderWindow& w, sf::Vector2f coords, const sf::Texture* t) const;
 
 	void drawPlayerTurn(sf::RenderWindow& w) const;
-	void drawPotenialMoves(sf::RenderWindow& w) const;
+	void drawPotenialMoves(sf::RenderWindow& w);
 	sf::Vector2i getSquareAt(sf::RenderWindow& w, sf::Vector2f p) const;
 	sf::Vector2f getTopLeftCorner(sf::RenderWindow& w, sf::Vector2i square) const;
 };

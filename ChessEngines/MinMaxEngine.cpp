@@ -34,6 +34,21 @@ int MinMaxEngine::materialEval(const Board& b) {
 }
 
 void MinMaxEngine::perftBenchmark() {
+    std::pair<int, int> move = {-3, 7};
+    sf::Vector2i sf_move(-3, 7);
+    Piece empty = Piece();
+    Piece queen = Piece(Type::Queen, Color::White);
+    Type ty_queen = Type::Queen;
+    Color white = Color::White;
+    Board br;
+    std::cout << "Size of int pair " << sizeof(move) << std::endl;
+    std::cout << "Size of sf vectr " << sizeof(sf_move) << std::endl;
+    std::cout << "Size of mty piec " << sizeof(empty) << std::endl;
+    std::cout << "Size of qen piec " << sizeof(queen) << std::endl;
+    std::cout << "Size of type qun " << sizeof(ty_queen) << std::endl;
+    std::cout << "Size of color w  " << sizeof(white) << std::endl;
+    std::cout << "Size of bord obj " << sizeof(br) << std::endl << std::endl;
+
     std::cout << "Benchmarking first 5 ply's on starting board: \n";
 
     Board b;
@@ -43,9 +58,7 @@ void MinMaxEngine::perftBenchmark() {
         std::cout << prefSearch(b, i) << " in ";
         sf::Time t = c.restart();
         std::cout << t.asSeconds() << " seconds \n";
-
     }
-        
 }
 
 int MinMaxEngine::prefSearch(Board& b, int depth) {
@@ -54,7 +67,7 @@ int MinMaxEngine::prefSearch(Board& b, int depth) {
 
     int num_positions = 0;
 
-    std::vector<move> legal_moves = b.get_moves();
+    std::vector<move> legal_moves = b.getMoves();
 
     for (auto move : legal_moves) {
         b.makeMove(move.first, move.second);

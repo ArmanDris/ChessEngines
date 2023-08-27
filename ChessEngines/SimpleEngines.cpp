@@ -153,7 +153,7 @@ bool EngineHelpers::does_move_hang_pice(sf::Vector2i oldSquare, sf::Vector2i new
 std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(const Board& b) {
 	static_cast<Board&>(*this) = b;
 
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = get_moves();
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves = getMoves();
 	if (moves.size() == 0) throw std::invalid_argument("No possible moves");
 	// Random number generation setup
 	std::random_device rd;
@@ -177,7 +177,7 @@ std::pair<sf::Vector2i, sf::Vector2i> DrunkEngine::returnMove(const Board& b)
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> support_undefended;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> castle;
 
-	moves = get_moves();
+	moves = getMoves();
 	if (moves.size() == 0) throw std::exception("No moves available");
 
 	std::random_device rd;
@@ -231,7 +231,7 @@ std::pair<sf::Vector2i, sf::Vector2i> HippieEngine::returnMove(const Board& b)
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> castle;
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> king_check;
 
-	moves = get_moves();
+	moves = getMoves();
 	if (moves.size() == 0) throw std::exception("No moves available");
 
 	std::random_device rd;
@@ -293,7 +293,7 @@ std::pair<sf::Vector2i, sf::Vector2i> BotFeasterEngine::returnMove(const Board& 
 	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> moves;						// 9. Random Move
 
 
-	moves = get_moves();
+	moves = getMoves();
 	if (moves.size() == 0) throw std::exception("No moves available");
 
 	std::random_device rd;
