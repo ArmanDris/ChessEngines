@@ -49,6 +49,11 @@ White wins: 50, Black wins: 0, Draws: 0
 ### BotFeaster(White) vs, HippieEngine(Black)
 White wins: 47, Black wins: 0, Draws: 3
 
+### 8 - 26
+I have found out that my program runs way too slowly for minimax. I have done some simple optimisation like passing by reference in board. Ideas to further optimise are:
+1. Remove the piece class and use just an enum
+2. Create a critical_log, that only logs critical moves. This way I only need to look through the that log for move logic.
+3. Go from sf::Vector2i to std::pair to reduce memory usage.
 
 ### 8 - 16
 I finished BotFeaster! I also added the 50 move rule because that is the only bot good enough to not draw eventually. Now I am done with these simple engines and I can either move onto some very good engines or I can implement an elo rating system for the four engines I have made already.
