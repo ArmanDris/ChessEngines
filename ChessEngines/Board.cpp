@@ -106,7 +106,6 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves() {
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					sf::Vector2i newSquare(i, j);
-					// Call piece is attacking square first to discount obviously bad moves quicly
 					if (legal_move(currentSquare, newSquare)) {
 						moves.push_back({ currentSquare, newSquare });
 					}
