@@ -16,7 +16,7 @@ PieceColor Piece::getColor() const
 }
 
 int Piece::getValue() const {
-	PiceType type = this.getType();
+	PieceType type = this->getType();
 	switch(type) {
 		case None: return 0;
 		case Pawn: return 1;

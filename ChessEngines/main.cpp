@@ -13,10 +13,6 @@ int main() {
 
     GameBoard b;
 
-    const Piece black_rook = b.getPiece(sf::Vector2i(0, 0));
-    std::cout << black_rook.typeToString() << std::endl;
-    std::cout << black_rook.colorToString() << std::endl;
-
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
         b.drawBoard(window);
