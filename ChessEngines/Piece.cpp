@@ -1,51 +1,59 @@
 #include "Piece.h"
 
-std::string typeToString(Type type)
-{
-	switch (type) {
-	case Type::None:   return "None";
-	case Type::Pawn:   return "Pawn";
-	case Type::Rook:   return "Rook";
-	case Type::Knight: return "Knight";
-	case Type::Bishop: return "Bishop";
-	case Type::Queen:  return "Queen";
-	case Type::King:   return "King";
-	default:           return "Unknown";
-	}
-}
-
-std::string colorToString(Color color)
-{
-	switch (color) {
-	case Color::White:   return "W";
-	case Color::Black:   return "B";
-	case Color::None:    return "None";
-	default:             return "Unknown";
-	}
-}
-
 Piece::Piece() {}
 
-Piece::Piece(Type pieceId, Color color):type(pieceId), color(color) {}
+Piece::Piece(PieceType t, PieceColor c)
+	: data_(static_cast<unsigned int>(t) | static_cast<unsigned int>(c)) {}
 
-Type Piece::getType() const {
-	return type;
-}
-
-int Piece::getValue() const
+PieceType Piece::getType() const
 {
-	switch (type) {
-	case Type::None: return 0;
-	case Type::Pawn: return 1;
-	case Type::Knight: return 3;
-	case Type::Bishop: return 3;
-	case Type::Rook: return 5;
-	case Type::Queen: return 9;
-	case Type::King: return 100;
-	}
-	return 0;
+	return static_cast<PieceType>(data_ & type_mask);
 }
 
-Color Piece::getColor() const {
-	return color;
+PieceColor Piece::getColor() const
+{
+	return static_cast<PieceColor>(data_ & color_mask);
+}
+
+int Piece::getValue() const {
+	PiceType type = this.getType();
+	switch(type) {
+		case None: return 0;
+		case Pawn: return 1;
+		case Rook: return 5;
+		case Knight: return 3;
+		case Bishop: return 3;
+		case King: return 100;
+		case Queen: return 9;
+	}
+}
+
+std::string Piece::typeToString() const
+{
+	unsigned int type_bits = data_ & type_mask;
+
+	switch(type_bits) {
+		case None: return "None";
+		case Pawn: return "Pawn";
+		case Rook: return "Rook";
+		case Knight: return "Knight";
+		case Bishop: return "Bishop";
+		case King: return "King";
+		case Queen: return "Queen";
+	}
+}
+
+std::string Piece::colorToString() const
+{
+	unsigned int color_bits = data_ & color_mask;
+
+	switch(color_bits) {
+		case White: return "White";
+		case Black: return "Black";
+	}
+}
+
+Piece::operator bool() const
+{
+	return getType() != PieceType::None;
 }

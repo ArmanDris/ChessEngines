@@ -27,10 +27,10 @@ GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
 	black_player = black;
 }
 
-void GameBoard::setPlayer(Engine* player, Color color)
+void GameBoard::setPlayer(Engine* player, PieceColor color)
 {
-	if (color == Color::White) white_player = player;
-	if (color == Color::Black) black_player = player;
+	if (color == PieceColor::White) white_player = player;
+	if (color == PieceColor::Black) black_player = player;
 }
 
 void GameBoard::drawBoard(sf::RenderWindow& w) 
@@ -81,51 +81,51 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 
 void GameBoard::preformCPUMoves(int move_delay_ms)
 {
-	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
+	//double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
-	// Uncomment if you want the game to restart 10 seconds after game is finished
-	//if (checkGameOver() && elapsed_time_ms > move_delay_ms + 10000) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
-	if (checkGameOver()) return;
+	//// Uncomment if you want the game to restart 10 seconds after game is finished
+	////if (checkGameOver() && elapsed_time_ms > move_delay_ms + 10000) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
+	//if (checkGameOver()) return;
 
-	if (elapsed_time_ms < move_delay_ms) return;
+	//if (elapsed_time_ms < move_delay_ms) return;
 
-	if (white_player && whiteTurn) makeWhiteMove();
-	else if (black_player && !whiteTurn) makeBlackMove();
+	//if (white_player && whiteTurn) makeWhiteMove();
+	//else if (black_player && !whiteTurn) makeBlackMove();
 
-	c.restart();
+	//c.restart();
 }
 
 void GameBoard::triggerMove()
 {
-	if (checkGameOver()) return;
+	//if (checkGameOver()) return;
 
-	if (white_player && whiteTurn) { makeWhiteMove(); }
-	else if (black_player && !whiteTurn) { makeBlackMove(); }
+	//if (white_player && whiteTurn) { makeWhiteMove(); }
+	//else if (black_player && !whiteTurn) { makeBlackMove(); }
 }
 
 void GameBoard::start_tournement(int num_games)
 {
-	int white_wins = 0;
-	int black_wins = 0;
-	int draws = 0;
+	//int white_wins = 0;
+	//int black_wins = 0;
+	//int draws = 0;
 
-	GameBoard tnmnt_board(white_player, black_player);
+	//GameBoard tnmnt_board(white_player, black_player);
 
-	for (int i = 0; i < num_games; i++) {
-		tnmnt_board.resetBoard();
-		while (!tnmnt_board.checkGameOver()) {
-			if (tnmnt_board.whiteTurn) tnmnt_board.makeWhiteMove();
-			else		               tnmnt_board.makeBlackMove();
-		}
-		std::cout << "Game " << i + 1 << " complete!\n";
-		if (tnmnt_board.whiteVictory) white_wins++;
-		if (tnmnt_board.blackVictory) black_wins++;
-		if (tnmnt_board.draw) draws++;
-	}
+	//for (int i = 0; i < num_games; i++) {
+	//	tnmnt_board.resetBoard();
+	//	while (!tnmnt_board.checkGameOver()) {
+	//		if (tnmnt_board.whiteTurn) tnmnt_board.makeWhiteMove();
+	//		else		               tnmnt_board.makeBlackMove();
+	//	}
+	//	std::cout << "Game " << i + 1 << " complete!\n";
+	//	if (tnmnt_board.whiteVictory) white_wins++;
+	//	if (tnmnt_board.blackVictory) black_wins++;
+	//	if (tnmnt_board.draw) draws++;
+	//}
 
-	std::cout << "White wins: " << white_wins << "\n";
-	std::cout << "Black wins: " << black_wins << "\n";
-	std::cout << "Draws: " << draws << "\n";
+	//std::cout << "White wins: " << white_wins << "\n";
+	//std::cout << "Black wins: " << black_wins << "\n";
+	//std::cout << "Draws: " << draws << "\n";
 }
 
 void GameBoard::resetBoard() 
@@ -183,38 +183,38 @@ void GameBoard::makeBlackMove()
 }
 
 const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
-	const Type piece = board[sq.x][sq.y].getType();
-	const Color color = board[sq.x][sq.y].getColor();
+	const PieceType piece = board[sq.x][sq.y].getType();
+	const PieceColor color = board[sq.x][sq.y].getColor();
 
 	const sf::Texture* texture = nullptr;
 
 	switch (piece) {
-	case Type::Pawn:
-		if (color == Color::White) texture = &white_pawnTexture;
-		if (color == Color::Black) texture = &black_pawnTexture;
+	case PieceType::Pawn:
+		if (color == PieceColor::White) texture = &white_pawnTexture;
+		if (color == PieceColor::Black) texture = &black_pawnTexture;
 		break;
-	case Type::Rook:
-		if (color == Color::White) texture = &white_rookTexture;
-		if (color == Color::Black) texture = &black_rookTexture;
+	case PieceType::Rook:
+		if (color == PieceColor::White) texture = &white_rookTexture;
+		if (color == PieceColor::Black) texture = &black_rookTexture;
 		break;
-	case Type::Knight:
-		if (color == Color::White) texture = &white_knightTexture;
-		if (color == Color::Black) texture = &black_knightTexture;
+	case PieceType::Knight:
+		if (color == PieceColor::White) texture = &white_knightTexture;
+		if (color == PieceColor::Black) texture = &black_knightTexture;
 		break;
-	case Type::Bishop:
-		if (color == Color::White) texture = &white_bishopTexture;
-		if (color == Color::Black) texture = &black_bishopTexture;
+	case PieceType::Bishop:
+		if (color == PieceColor::White) texture = &white_bishopTexture;
+		if (color == PieceColor::Black) texture = &black_bishopTexture;
 		break;
-	case Type::Queen:
-		if (color == Color::White) texture = &white_queenTexture;
-		if (color == Color::Black) texture = &black_queenTexture;
+	case PieceType::Queen:
+		if (color == PieceColor::White) texture = &white_queenTexture;
+		if (color == PieceColor::Black) texture = &black_queenTexture;
 		break;
-	case Type::King:
-		if (color == Color::White) texture = &white_kingTexture;
-		if (color == Color::Black) texture = &black_kingTexture;
+	case PieceType::King:
+		if (color == PieceColor::White) texture = &white_kingTexture;
+		if (color == PieceColor::Black) texture = &black_kingTexture;
 		break;
 	default:
-		std::cout << "Error! Invalid piece id: " << typeToString(piece) << std::endl;
+		std::cout << "Error! Invalid piece id, returning null" << std::endl;
 		texture = nullptr;
 		break;
 	}
@@ -251,19 +251,6 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 
 void GameBoard::drawPotenialMoves(sf::RenderWindow& w)
 {
-	if (!holdingPiece) { return; }
-
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (!legal_move(holdingPiece_original_square, sf::Vector2i(i, j))) { continue; }
-
-			sf::Sprite s;
-			if (board[i][j]) { s.setTexture(circle_texture); }
-			else { s.setTexture(dot_texture); }
-			s.setPosition(getTopLeftCorner(w, sf::Vector2i(i, j)));
-			w.draw(s);
-		}
-	}
 }
 
 sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow& w, sf::Vector2f p) const {

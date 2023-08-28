@@ -1,9 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 #include "GameBoard.h"
-#include "Engine.h"
-#include "SimpleEngines.h"
-#include "MinMaxEngine.h"
 
 int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -16,16 +13,9 @@ int main() {
 
     GameBoard b;
 
-    RandomEngine random;
-    BotFeasterEngine botF;
-    MinMaxEngine minMax;
-
-    minMax.returnMove(b);
-
-    b.importFEN("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
-
-    b.setPlayer(&botF, Color::White);
-    b.setPlayer(&botF, Color::Black);
+    const Piece black_rook = b.getPiece(sf::Vector2i(0, 0));
+    std::cout << black_rook.typeToString() << std::endl;
+    std::cout << black_rook.colorToString() << std::endl;
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));

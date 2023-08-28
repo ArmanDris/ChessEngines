@@ -7,7 +7,7 @@ class GameBoard : public Board
 public:
 	GameBoard();
 	GameBoard(Engine* white, Engine* black);
-	void setPlayer(Engine* player, Color color);
+	void setPlayer(Engine* player, PieceColor color);
 	void drawBoard(sf::RenderWindow& w);
 	void preformCPUMoves(int move_delay_ms = 1000);
 	void triggerMove();
