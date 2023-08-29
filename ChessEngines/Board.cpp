@@ -2,51 +2,18 @@
 
 
 Board::Board() {
-	placeStartingPieces();
-}
-
-void Board::placeStartingPieces() {
-	board[0][0] = Piece(PieceType::Rook, PieceColor::Black);
-	board[1][0] = Piece(PieceType::Knight, PieceColor::Black);
-	board[2][0] = Piece(PieceType::Bishop, PieceColor::Black);
-	board[3][0] = Piece(PieceType::Queen, PieceColor::Black);
-	board[4][0] = Piece(PieceType::King, PieceColor::Black);
-	board[5][0] = Piece(PieceType::Bishop, PieceColor::Black);
-	board[6][0] = Piece(PieceType::Knight, PieceColor::Black);
-	board[7][0] = Piece(PieceType::Rook, PieceColor::Black);
-	board[0][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[1][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[2][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[3][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[4][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[5][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[6][1] = Piece(PieceType::Pawn, PieceColor::Black);
-	board[7][1] = Piece(PieceType::Pawn, PieceColor::Black);
-
-	board[0][7] = Piece(PieceType::Rook, PieceColor::White);
-	board[1][7] = Piece(PieceType::Knight, PieceColor::White);
-	board[2][7] = Piece(PieceType::Bishop, PieceColor::White);
-	board[3][7] = Piece(PieceType::Queen, PieceColor::White);
-	board[4][7] = Piece(PieceType::King, PieceColor::White);
-	board[5][7] = Piece(PieceType::Bishop, PieceColor::White);
-	board[6][7] = Piece(PieceType::Knight, PieceColor::White);
-	board[7][7] = Piece(PieceType::Rook, PieceColor::White);
-	board[0][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[1][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[2][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[3][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[4][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[5][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[6][6] = Piece(PieceType::Pawn, PieceColor::White);
-	board[7][6] = Piece(PieceType::Pawn, PieceColor::White);
+	generatePsudoLegalMoves();
 }
 
 // Returns true if a move is excecuted
-bool Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square
-) {
+void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square) {
+	move m = {old_square, new_square};
+	auto it = std::find(psudoLegalMoves.begin(), psudoLegalMoves.end(), m);
+	if (it == psudoLegalMoves.end()) return;
+
 	movePiece(old_square, new_square);
 	changeTurn();
-	return true;
+	generatePsudoLegalMoves();
 }
 
 void Board::undoMove()
@@ -172,22 +139,6 @@ void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_squar
 	}
 }
 
-
-// If no pawn has moved or no piece has been taken in the last 50 moves then return true
-bool Board::fiftyMoveRule() const
-{
-	if (log.size() < 100) return false;
-
-	// Loop through last 100 log entries
-	for (int i = log.size() - 100; i < log.size(); i++) {
-		// If a pawn has moved return false
-		if (std::get<0>(log[i]).getType() == PieceType::Pawn) return false;
-		// If a piece has been taken return false
-		if (std::get<2>(log[i]).getType() != PieceType::None) return false;
-	}
-	return true;
-}
-
 void Board::changeTurn() {
 	if (whiteTurn) whiteTurn = false;
 	else           whiteTurn = true;
@@ -235,55 +186,103 @@ void Board::saveLog(std::string saveLog) {
 
 
 // Expensive function because it loops through the whole board
-std::vector<Board::move> Board::generatePsudoLegalMoves()
+void Board::generatePsudoLegalMoves()
 {
 	std::vector<Board::move> moves;
-	for (int x = 0; x < 7; x++) for (int y = 0; y < 7; y++) {
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (!board[x][y]) continue;
 		if (board[x][y].getColor() == PieceColor::White && !whiteTurn) continue; 
 		if (board[x][y].getColor() == PieceColor::Black &&  whiteTurn) continue;
 		sf::Vector2i square(x, y);
 		PieceType type = board[x][y].getType();
+		PieceColor color = board[x][y].getColor();
 
 		switch(type) {
-			case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, moves); break;
-			case PieceType::Rook:   appendPsudoLegalRookMoves(square, moves); break;
-			case PieceType::Knight: appendPsudoLegalKnightMoves(square, moves); break;
-			case PieceType::Bishop: appendPsudoLegalBishopMoves(square, moves); break;
-			case PieceType::King:   appendPsudoLegalKingMoves(square, moves); break;
-			case PieceType::Queen:  appendPsudoLegalQueenMoves(square, moves); break;
-			default: std::cout << "Invalid piece type \n"; return std::vector<move>(); break;
+			case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, color, moves); break;
+			case PieceType::Rook:   appendPsudoLegalRookMoves(square, color, moves); break;
+			case PieceType::Knight: appendPsudoLegalKnightMoves(square, color, moves); break;
+			case PieceType::Bishop: appendPsudoLegalBishopMoves(square, color, moves); break;
+			case PieceType::King:   appendPsudoLegalKingMoves(square, color, moves); break;
+			case PieceType::Queen:  appendPsudoLegalQueenMoves(square, color, moves); break;
+		}
+	}
+
+	psudoLegalMoves = moves;
+}
+
+void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+{
+	if (c == PieceColor::White) {
+		if (sq.y == 6) {
+			if (!board[sq.x][4]) {
+				moves.push_back({sq, sf::Vector2i(sq.x, 4)});
+			}
+		}
+		if (!board[sq.x][sq.y-1]) {
+			moves.push_back({sq, sf::Vector2i(sq.x, sq.y - 1)});
+		}
+	}
+	else {
+		if (sq.y == 1) {
+			if (!board[sq.x][3]) {
+				moves.push_back({sq, sf::Vector2i(sq.x, 3)});
+			}
+		}
+		if (!board[sq.x][sq.y+1]) {
+			moves.push_back({sq, sf::Vector2i(sq.x, sq.y + 1)});
 		}
 	}
 }
 
-std::vector<Board::move> Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	return std::vector<move>();
+	// Look for moves upward
+	for (int y = sq.y - 1; y >= 0; y--) {
+		if (!board[sq.x][y]) {
+			moves.push_back({sq, sf::Vector2i(sq.x, y)});
+		}
+		else {
+			if (board[sq.x][y].getColor() == c)
+				break;
+			if (board[sq.x][y].getColor() != c) {
+				moves.push_back({sq, sf::Vector2i(sq.x, y)});
+				break;
+			}
+		}
+	}
+
+	// Look for moves downward
+	for (int y = sq.y + 1; y <= 7; y++) {
+		if (!board[sq.x][y]) {
+			moves.push_back({sq, sf::Vector2i(sq.x, y)});
+		}
+		else {
+			if (board[sq.x][y].getColor() == c)
+				break;
+			if (board[sq.x][y].getColor() != c) {
+				moves.push_back({sq, sf::Vector2i(sq.x, y)});
+				break;
+			}
+		}
+	}
 }
 
-std::vector<Board::move> Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
 	
-	return std::vector<move>();
 }
 
-std::vector<Board::move> Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	return std::vector<move>();
+	
 }
 
-std::vector<Board::move> Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	return std::vector<move>();
+	
 }
 
-std::vector<Board::move> Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	return std::vector<move>();
-}
-
-std::vector<Board::move> Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq)
-{
-	return std::vector<move>();
+	
 }
