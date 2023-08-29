@@ -38,7 +38,6 @@ protected:
 	};
 
 	std::vector<std::tuple<Piece, sf::Vector2i, Piece,  sf::Vector2i>> log;
-	std::vector<std::tuple<Piece, sf::Vector2i, Piece,  sf::Vector2i>> critical_log; // Only logs king and rook moves for castling
 
 	bool whiteTurn = true;
 
@@ -51,7 +50,7 @@ protected:
 	bool moveIsEnPassent(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void changeTurn();
-	void logMove(const sf::Vector2i old_square, const sf::Vector2i new_square); // Passing by reference slows this down for some reason
+	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
 	void saveLog(std::string fileName = "log.txt");
 
 	bool fiftyMoveRule() const;
@@ -59,4 +58,10 @@ protected:
 	// New Logic
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
 	std::vector<move> generatePsudoLegalMoves();
+	std::vector<move> appendPsudoLegalPawnMoves(const sf::Vector2i& sq, std::vector<move>& moves);
+	std::vector<move> appendPsudoLegalRookMoves(const sf::Vector2i& sq, std::vector<move>& moves);
+	std::vector<move> appendPsudoLegalKnightMoves(const sf::Vector2i& sq, std::vector<move>& moves);
+	std::vector<move> appendPsudoLegalBishopMoves(const sf::Vector2i& sq, std::vector<move>& moves);
+	std::vector<move> appendPsudoLegalKingMoves(const sf::Vector2i& sq, std::vector<move>& moves);
+	std::vector<move> appendPsudoLegalQueenMoves(const sf::Vector2i& sq, std::vector<move>& moves);
 };

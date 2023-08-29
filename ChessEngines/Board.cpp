@@ -193,7 +193,7 @@ void Board::changeTurn() {
 	else           whiteTurn = true;
 }
 
-void Board::logMove(const sf::Vector2i old_square, const sf::Vector2i new_square) {
+void Board::logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square) {
 	log.push_back({ board[old_square.x][old_square.y], old_square,
 					board[new_square.x][new_square.y], new_square });
 }
@@ -231,4 +231,59 @@ void Board::saveLog(std::string saveLog) {
 			<< std::get<3>(move).x << "," << std::get<3>(move).y << std::endl;
 	}
 	file.close();
+}
+
+
+// Expensive function because it loops through the whole board
+std::vector<Board::move> Board::generatePsudoLegalMoves()
+{
+	std::vector<Board::move> moves;
+	for (int x = 0; x < 7; x++) for (int y = 0; y < 7; y++) {
+		if (!board[x][y]) continue;
+		if (board[x][y].getColor() == PieceColor::White && !whiteTurn) continue; 
+		if (board[x][y].getColor() == PieceColor::Black &&  whiteTurn) continue;
+		sf::Vector2i square(x, y);
+		PieceType type = board[x][y].getType();
+
+		switch(type) {
+			case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, moves); break;
+			case PieceType::Rook:   appendPsudoLegalRookMoves(square, moves); break;
+			case PieceType::Knight: appendPsudoLegalKnightMoves(square, moves); break;
+			case PieceType::Bishop: appendPsudoLegalBishopMoves(square, moves); break;
+			case PieceType::King:   appendPsudoLegalKingMoves(square, moves); break;
+			case PieceType::Queen:  appendPsudoLegalQueenMoves(square, moves); break;
+			default: std::cout << "Invalid piece type \n"; return std::vector<move>(); break;
+		}
+	}
+}
+
+std::vector<Board::move> Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+{
+	return std::vector<move>();
+}
+
+std::vector<Board::move> Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+{
+	
+	return std::vector<move>();
+}
+
+std::vector<Board::move> Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+{
+	return std::vector<move>();
+}
+
+std::vector<Board::move> Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+{
+	return std::vector<move>();
+}
+
+std::vector<Board::move> Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, std::vector<move>& moves)
+{
+	return std::vector<move>();
+}
+
+std::vector<Board::move> Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq)
+{
+	return std::vector<move>();
 }
