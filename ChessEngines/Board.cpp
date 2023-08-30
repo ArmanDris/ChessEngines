@@ -250,7 +250,7 @@ void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& 
 			}
 		}
 	}
-
+	 
 	// Look for moves downward
 	for (int y = sq.y + 1; y <= 7; y++) {
 		if (!board[sq.x][y]) {
