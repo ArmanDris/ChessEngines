@@ -61,32 +61,58 @@ void Board::undoMove()
 
 void Board::importFEN(std::string FEN)
 {
+	if (FEN.back() != ' ') FEN += ' ';
+
+	std::string FEN_parts[6];
 	size_t pos = FEN.find(' ');
-	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
-	std::string piece_placement = FEN.substr(0, pos);
-	FEN = FEN.substr(pos + 1);
+	int i = 0;
+	while (pos != std::string::npos) {
+		FEN_parts[i] = FEN.substr(0, pos);
 
-	pos = FEN.find(' ');
-	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
-	std::string active_color = FEN.substr(0, pos);
-	FEN = FEN.substr(pos + 1);
+		FEN = FEN.substr(pos + 1);
+		i++;
+		pos = FEN.find(' ');
+	}
 
-	pos = FEN.find(' ');
-	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
-	std::string castling_rights = FEN.substr(0, pos);
-	FEN = FEN.substr(pos + 1);
+	FEN_parts[0] += '/';
+	std::string pieces[8];
+	pos = FEN_parts[0].find('/');
+	i = 0;
+	while (pos != std::string::npos) {
+		pieces[i] = FEN_parts[0].substr(0, pos);
 
-	pos = FEN.find(' ');
-	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
-	std::string en_passent_target_square = FEN.substr(0, pos);
-	FEN = FEN.substr(pos + 1);
+		FEN_parts[0] = FEN_parts[0].substr(pos + 1);
+		i++;
+		pos = FEN_parts[0].find('/');
+	}
 
-	pos = FEN.find(' ');
-	if (pos == std::string::npos) { std::cout << "Invalid FEN \n"; return; }
-	std::string half_move_clock = FEN.substr(0, pos);
-	FEN = FEN.substr(pos + 1);
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		// Check if the character is a digit (0-9)
+		//if (ch >= '0' && ch <= '9') {
+		//	std::cout << "The character is a digit." << std::endl;
+		//}
+		//else {
+		//	std::cout << "The character is not a digit." << std::endl;
+		//}
+	}
 
-	std::string full_move_number = FEN;
+	for (int a = 0; a < 8; a++) {
+		board[a][0] = pieces[0][a];
+	}
+
+
+	// Printing loops
+	for (std::string s : FEN_parts) {
+		std::cout << s << ",";
+	}
+
+	std::cout << std::endl;
+
+	for (std::string s : pieces) {
+		std::cout << s << ",";
+	}
+
+	std::cout << std::endl;
 }
 
 // Will not check if move is legal
