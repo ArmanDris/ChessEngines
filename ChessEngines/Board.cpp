@@ -7,7 +7,7 @@ Board::Board() {
 
 // Returns true if a move is excecuted
 void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square) {
-	move m = {old_square, new_square};
+	move m = { old_square, new_square };
 	auto it = std::find(psudoLegalMoves.begin(), psudoLegalMoves.end(), m);
 	if (it == psudoLegalMoves.end()) return;
 
@@ -93,7 +93,7 @@ void Board::importFEN(std::string FEN)
 void Board::movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
 {
 	logMove(old_square, new_square);
-	
+
 	if (new_square == old_square) return;
 
 	// En passant
@@ -191,19 +191,19 @@ void Board::generatePsudoLegalMoves()
 	std::vector<Board::move> moves;
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (!board[x][y]) continue;
-		if (board[x][y].getColor() == PieceColor::White && !whiteTurn) continue; 
-		if (board[x][y].getColor() == PieceColor::Black &&  whiteTurn) continue;
+		if (board[x][y].getColor() == PieceColor::White && !whiteTurn) continue;
+		if (board[x][y].getColor() == PieceColor::Black && whiteTurn) continue;
 		sf::Vector2i square(x, y);
 		PieceType type = board[x][y].getType();
 		PieceColor color = board[x][y].getColor();
 
-		switch(type) {
-			case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, color, moves); break;
-			case PieceType::Rook:   appendPsudoLegalRookMoves(square, color, moves); break;
-			case PieceType::Knight: appendPsudoLegalKnightMoves(square, color, moves); break;
-			case PieceType::Bishop: appendPsudoLegalBishopMoves(square, color, moves); break;
-			case PieceType::King:   appendPsudoLegalKingMoves(square, color, moves); break;
-			case PieceType::Queen:  appendPsudoLegalQueenMoves(square, color, moves); break;
+		switch (type) {
+		case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, color, moves); break;
+		case PieceType::Rook:   appendPsudoLegalRookMoves(square, color, moves); break;
+		case PieceType::Knight: appendPsudoLegalKnightMoves(square, color, moves); break;
+		case PieceType::Bishop: appendPsudoLegalBishopMoves(square, color, moves); break;
+		case PieceType::King:   appendPsudoLegalKingMoves(square, color, moves); break;
+		case PieceType::Queen:  appendPsudoLegalQueenMoves(square, color, moves); break;
 		}
 	}
 
@@ -215,21 +215,21 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 	if (c == PieceColor::White) {
 		if (sq.y == 6) {
 			if (!board[sq.x][4]) {
-				moves.push_back({sq, sf::Vector2i(sq.x, 4)});
+				moves.push_back({ sq, sf::Vector2i(sq.x, 4) });
 			}
 		}
-		if (!board[sq.x][sq.y-1]) {
-			moves.push_back({sq, sf::Vector2i(sq.x, sq.y - 1)});
+		if (!board[sq.x][sq.y - 1]) {
+			moves.push_back({ sq, sf::Vector2i(sq.x, sq.y - 1) });
 		}
 	}
 	else {
 		if (sq.y == 1) {
 			if (!board[sq.x][3]) {
-				moves.push_back({sq, sf::Vector2i(sq.x, 3)});
+				moves.push_back({ sq, sf::Vector2i(sq.x, 3) });
 			}
 		}
-		if (!board[sq.x][sq.y+1]) {
-			moves.push_back({sq, sf::Vector2i(sq.x, sq.y + 1)});
+		if (!board[sq.x][sq.y + 1]) {
+			moves.push_back({ sq, sf::Vector2i(sq.x, sq.y + 1) });
 		}
 	}
 }
@@ -239,28 +239,56 @@ void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& 
 	// Look for moves upward
 	for (int y = sq.y - 1; y >= 0; y--) {
 		if (!board[sq.x][y]) {
-			moves.push_back({sq, sf::Vector2i(sq.x, y)});
+			moves.push_back({ sq, sf::Vector2i(sq.x, y) });
 		}
 		else {
 			if (board[sq.x][y].getColor() == c)
 				break;
 			if (board[sq.x][y].getColor() != c) {
-				moves.push_back({sq, sf::Vector2i(sq.x, y)});
+				moves.push_back({ sq, sf::Vector2i(sq.x, y) });
 				break;
 			}
 		}
 	}
-	 
+
 	// Look for moves downward
 	for (int y = sq.y + 1; y <= 7; y++) {
 		if (!board[sq.x][y]) {
-			moves.push_back({sq, sf::Vector2i(sq.x, y)});
+			moves.push_back({ sq, sf::Vector2i(sq.x, y) });
 		}
 		else {
 			if (board[sq.x][y].getColor() == c)
 				break;
 			if (board[sq.x][y].getColor() != c) {
-				moves.push_back({sq, sf::Vector2i(sq.x, y)});
+				moves.push_back({ sq, sf::Vector2i(sq.x, y) });
+				break;
+			}
+		}
+	}
+
+	// Look for moves left
+	for (int x = sq.x - 1; x >= 0; x--) {
+		if (!board[x][sq.y])
+			moves.push_back({ sq, sf::Vector2i(x, sq.y) });
+		else {
+			if (board[x][sq.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, sf::Vector2i(x, sq.y) });
+				break;
+			}
+		}
+	}
+
+	// Look for moves right
+	for (int x = sq.x + 1; x <= 7; x++) {
+		if (!board[x][sq.y])
+			moves.push_back({ sq, sf::Vector2i(x, sq.y) });
+		else {
+			if (board[x][sq.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, sf::Vector2i(x, sq.y) });
 				break;
 			}
 		}
@@ -269,20 +297,167 @@ void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& 
 
 void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	
+	if (sq.x >= 2 && sq.y >= 1) {
+		if (!board[sq.x-1][sq.y-2] || board[sq.x-1][sq.y-2].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y - 2)}); // up left
+	}
+
+	if (sq.x <= 6 && sq.y >= 2) {
+		if (!board[sq.x+1][sq.y-2] || board[sq.x+1][sq.y-2].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 1, sq.y - 2)}); // up right
+	}
+
+	if (sq.x <= 5 && sq.y > 0) {
+		if (!board[sq.x+2][sq.y-1] || board[sq.x+2][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 2, sq.y - 1)}); // right up
+	}
+
+	if (sq.x <= 5 && sq.y <= 6) {
+		if (!board[sq.x+2][sq.y+1] || board[sq.x+2][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 2, sq.y + 1)}); // right down
+	}
+
+	if (sq.x <= 6 && sq.y <= 5) {
+		if (!board[sq.x+1][sq.y+2] || board[sq.x+1][sq.y+2].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 1, sq.y + 2)}); // down right
+	}
+
+	if (sq.x >= 1 && sq.y <= 5) {
+		if (!board[sq.x-1][sq.y+2] || board[sq.x-1][sq.y+2].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y + 2)}); // down left
+	}
+
+	if (sq.x >= 2 && sq.y <= 6) {
+		if (!board[sq.x-2][sq.y+1] || board[sq.x-2][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 2, sq.y + 1)}); // left down
+	}
+
+	if (sq.x >= 2 && sq.y >= 1) {
+		if (!board[sq.x-2][sq.y-1] || board[sq.x-2][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 2, sq.y - 1)}); // left up
+	}
 }
 
 void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	
+	// Generating up left
+	int i = 0;
+	sf::Vector2i tgt(sq.x - 1, sq.y - 1);
+	while (tgt.x >= 0 && tgt.y >= 0) {
+		if (!board[tgt.x][tgt.y])
+			moves.push_back({ sq, tgt });
+		else {
+			if (board[tgt.x][tgt.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, tgt });
+				break;
+			}
+		}
+		tgt.x -= 1;
+		tgt.y -= 1;
+	}
+
+	// Generate up right
+	i = 0;
+	tgt = sf::Vector2i(sq.x + 1, sq.y - 1);
+	while (tgt.x <= 7 && tgt.y >= 0) {
+		if (!board[tgt.x][tgt.y])
+			moves.push_back({ sq, tgt });
+		else {
+			if (board[tgt.x][tgt.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, tgt });
+				break;
+			}
+		}
+		tgt.x += 1;
+		tgt.y -= 1;
+	}
+
+	// Generate down left
+	i = 0;
+	tgt = sf::Vector2i(sq.x - 1, sq.y + 1);
+	while (tgt.x >= 0 && tgt.y <= 7) {
+		if (!board[tgt.x][tgt.y])
+			moves.push_back({ sq, tgt });
+		else {
+			if (board[tgt.x][tgt.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, tgt });
+				break;
+			}
+		}
+		tgt.x -= 1;
+		tgt.y += 1;
+	}
+
+	// Generate down right
+	i = 0;
+	tgt = sf::Vector2i(sq.x + 1, sq.y + 1);
+	while (tgt.x <= 7 && tgt.y <= 7) {
+		if (!board[tgt.x][tgt.y])
+			moves.push_back({ sq, tgt });
+		else {
+			if (board[tgt.x][tgt.y].getColor() == c)
+				break;
+			else {
+				moves.push_back({ sq, tgt });
+				break;
+			}
+		}
+		tgt.x += 1;
+		tgt.y += 1;
+	}
 }
 
 void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	
+	if (sq.x != 0 && sq.y != 0) {
+		if (!board[sq.x-1][sq.y-1] || board[sq.x-1][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y - 1)}); // top left
+	}
+
+	if (sq.y != 0) {
+		if (!board[sq.x][sq.y-1] || board[sq.x][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x    , sq.y - 1)}); // top
+	}
+
+	if (sq.x != 7 && sq.y != 0) {
+		if (!board[sq.x+1][sq.y-1] || board[sq.x+1][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 1, sq.y - 1)}); // top right
+	}
+
+	if (sq.x != 7) {
+		if (!board[sq.x+1][sq.y] || board[sq.x+1][sq.y].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 1, sq.y    )}); // right
+	}
+
+	if (sq.x != 7 && sq.y != 7) {
+		if (!board[sq.x+1][sq.y+1] || board[sq.x+1][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x + 1, sq.y + 1)}); // bottom right
+	}
+
+	if (sq.y != 7) {
+		if (!board[sq.x][sq.y+1] || board[sq.x][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x    , sq.y + 1)}); // bottom
+	}
+
+	if (sq.x != 0 && sq.y != 7) {
+		if (!board[sq.x-1][sq.y+1] || board[sq.x-1][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y + 1)}); // bottom left
+	}
+
+	if (sq.x != 0) {
+		if (!board[sq.x-1][sq.y] || board[sq.x-1][sq.y].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y)});     // left
+	}
 }
 
 void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
-	
+	appendPsudoLegalRookMoves(sq, c, moves);
+	appendPsudoLegalBishopMoves(sq, c, moves);
 }

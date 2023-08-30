@@ -37,7 +37,7 @@ protected:
 		{Piece(PieceType::Rook,   PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Rook,   PieceColor::White)}
 	};
 
-	std::vector<std::tuple<Piece, sf::Vector2i, Piece,  sf::Vector2i>> log;
+	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
 
 	bool whiteTurn = true;
 
