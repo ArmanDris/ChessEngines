@@ -24,17 +24,18 @@ public:
 	bool isDraw() const { return draw; }
 
 	void importFEN(std::string FEN);
+	Piece charToPiece(char c);
 
 protected:
 	Piece board[8][8] = {
-		{Piece(PieceType::Rook,   PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Rook,   PieceColor::White)},
-		{Piece(PieceType::Knight, PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Knight, PieceColor::White)},
-		{Piece(PieceType::Bishop, PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Bishop, PieceColor::White)},
-		{Piece(PieceType::Queen,  PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Queen,  PieceColor::White)},
-		{Piece(PieceType::King,   PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::King,   PieceColor::White)},
-		{Piece(PieceType::Bishop, PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Bishop, PieceColor::White)},
-		{Piece(PieceType::Knight, PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Knight, PieceColor::White)},
-		{Piece(PieceType::Rook,   PieceColor::Black), Piece(PieceType::Pawn, PieceColor::Black), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Pawn, PieceColor::White), Piece(PieceType::Rook,   PieceColor::White)}
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
 	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;

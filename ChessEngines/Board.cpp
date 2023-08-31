@@ -2,7 +2,7 @@
 
 
 Board::Board() {
-	generatePsudoLegalMoves();
+	importFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 // Returns true if a move is excecuted
@@ -74,6 +74,7 @@ void Board::importFEN(std::string FEN)
 		pos = FEN.find(' ');
 	}
 
+	// Place Pieces
 	FEN_parts[0] += '/';
 	std::string pieces[8];
 	pos = FEN_parts[0].find('/');
@@ -85,34 +86,59 @@ void Board::importFEN(std::string FEN)
 		i++;
 		pos = FEN_parts[0].find('/');
 	}
-
-	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		// Check if the character is a digit (0-9)
-		//if (ch >= '0' && ch <= '9') {
-		//	std::cout << "The character is a digit." << std::endl;
-		//}
-		//else {
-		//	std::cout << "The character is not a digit." << std::endl;
-		//}
-	}
-
-	for (int a = 0; a < 8; a++) {
-		board[a][0] = pieces[0][a];
-	}
-
-
-	// Printing loops
-	for (std::string s : FEN_parts) {
-		std::cout << s << ",";
-	}
-
-	std::cout << std::endl;
-
+	
+	int x = 0, y = 0;
 	for (std::string s : pieces) {
-		std::cout << s << ",";
+		for (char c : s) {
+			if (c >= '0' && c <= '9')
+        		x += c - '0';
+			else {
+				board[x][y] = charToPiece(c);
+				x++;
+			}
+		}
+		x = 0;
+		y++;
 	}
 
-	std::cout << std::endl;
+	// Set turn
+	if (FEN_parts[1] == "w" && !whiteTurn) changeTurn();
+	if (FEN_parts[1] == "b" &&  whiteTurn) changeTurn();
+
+	// Castling Rights
+	// FEN_parts[2]; Not implemented
+
+	// En Passent target square
+	// FEN_parts[3]; Not implemented
+
+	// Half move clock
+	// FEN_parts[4]; Not implemented
+
+	// Full move number
+	// FEN_parts[5]; Not implemented
+
+	generatePsudoLegalMoves();
+}
+
+Piece Board::charToPiece(char c)
+{
+	switch(c) {
+		case 'P': return Piece(PieceType::Pawn,   PieceColor::White);
+		case 'R': return Piece(PieceType::Rook,   PieceColor::White);
+		case 'N': return Piece(PieceType::Knight, PieceColor::White);
+		case 'B': return Piece(PieceType::Bishop, PieceColor::White);
+		case 'Q': return Piece(PieceType::Queen,  PieceColor::White);
+		case 'K': return Piece(PieceType::King,   PieceColor::White);
+
+		case 'p': return Piece(PieceType::Pawn,   PieceColor::Black);
+		case 'r': return Piece(PieceType::Rook,   PieceColor::Black);
+		case 'n': return Piece(PieceType::Knight, PieceColor::Black);
+		case 'b': return Piece(PieceType::Bishop, PieceColor::Black);
+		case 'q': return Piece(PieceType::Queen,  PieceColor::Black);
+		case 'k': return Piece(PieceType::King,  PieceColor::Black);
+		default: std::cout << "Invalid char"; return Piece();
+	}
+	return Piece();
 }
 
 // Will not check if move is legal
@@ -239,24 +265,32 @@ void Board::generatePsudoLegalMoves()
 void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
 {
 	if (c == PieceColor::White) {
-		if (sq.y == 6) {
-			if (!board[sq.x][4]) {
-				moves.push_back({ sq, sf::Vector2i(sq.x, 4) });
-			}
-		}
 		if (!board[sq.x][sq.y - 1]) {
 			moves.push_back({ sq, sf::Vector2i(sq.x, sq.y - 1) });
+			if (sq.y == 6 && !board[sq.x][4])
+				moves.push_back({sq, sf::Vector2i(sq.x, 4)});
+		}
+		if (board[sq.x+1][sq.y-1] && board[sq.x+1][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x+1, sq.y-1)});
+		if (board[sq.x-1][sq.y-1] && board[sq.x-1][sq.y-1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x-1, sq.y-1)});
+		if (log.size() > 0 && std::get<0>(log.back()).getType() == PieceType::Pawn) {
+			auto last_move = log.back();
+			if (std::get<1>(last_move).y - std::get<3>(last_move).y >= 2) {
+				std::cout << "last move there was a double pawn push";
+			}
 		}
 	}
 	else {
-		if (sq.y == 1) {
-			if (!board[sq.x][3]) {
-				moves.push_back({ sq, sf::Vector2i(sq.x, 3) });
-			}
-		}
 		if (!board[sq.x][sq.y + 1]) {
 			moves.push_back({ sq, sf::Vector2i(sq.x, sq.y + 1) });
+			if (sq.y == 1 && !board[sq.x][3])
+				moves.push_back({ sq, sf::Vector2i(sq.x, 3) });
 		}
+		if (board[sq.x+1][sq.y+1] && board[sq.x+1][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x+1, sq.y+1)});
+		if (board[sq.x-1][sq.y+1] && board[sq.x-1][sq.y+1].getColor() != c)
+			moves.push_back({sq, sf::Vector2i(sq.x-1, sq.y+1)});
 	}
 }
 
