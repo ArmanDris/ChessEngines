@@ -13,7 +13,6 @@ void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_squar
 
 	movePiece(old_square, new_square);
 	changeTurn();
-	generatePsudoLegalMoves();
 }
 
 void Board::undoMove()
@@ -169,9 +168,12 @@ bool Board::moveIsCastle(const sf::Vector2i& old_square, const sf::Vector2i& new
 	return false;
 }
 
+// Must be a legal move!
 bool Board::moveIsEnPassent(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
 {
-	return false;
+	return board[old_square.x][old_square.y].getType() == PieceType::Pawn
+		&& !board[new_square.x][new_square.y]
+		&& new_square.x != old_square.x;
 }
 
 void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
@@ -194,6 +196,8 @@ void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_squar
 void Board::changeTurn() {
 	if (whiteTurn) whiteTurn = false;
 	else           whiteTurn = true;
+
+	generatePsudoLegalMoves();
 }
 
 void Board::logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square) {
@@ -274,7 +278,6 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 			moves.push_back({sq, sf::Vector2i(sq.x+1, sq.y-1)});
 		if (board[sq.x-1][sq.y-1] && board[sq.x-1][sq.y-1].getColor() != c)
 			moves.push_back({sq, sf::Vector2i(sq.x-1, sq.y-1)});
-		// I am starting to think it will be best to just store a local variable that is the last double pawn push
 	}
 	else {
 		if (!board[sq.x][sq.y + 1]) {
@@ -286,6 +289,27 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 			moves.push_back({sq, sf::Vector2i(sq.x+1, sq.y+1)});
 		if (board[sq.x-1][sq.y+1] && board[sq.x-1][sq.y+1].getColor() != c)
 			moves.push_back({sq, sf::Vector2i(sq.x-1, sq.y+1)});
+	}
+
+	// En Passent logic:
+	if (log.size() > 0 && std::get<0>(log.back()).getType() == PieceType::Pawn) {
+		auto last_move = log.back();
+
+		sf::Vector2i last_old_square = std::get<1>(last_move);
+		sf::Vector2i last_new_square = std::get<3>(last_move);
+
+		// If last move was an enemy double pawn push next to an ally pawn
+		// AND on the same rank as sq AND next to sq
+		if (abs(last_old_square.y - last_new_square.y) >= 2
+			&& std::get<0>(last_move).getColor() != c
+			&& sq.y == last_new_square.y
+			&& (sq.x == last_new_square.x - 1 || sq.x == last_new_square.x + 1)
+			) {
+			if (c == PieceColor::White) 
+				moves.push_back({ sq, sf::Vector2i(last_new_square.x, last_new_square.y - 1)});
+			else
+				moves.push_back({ sq, sf::Vector2i(last_new_square.x, last_new_square.y + 1) });
+		}
 	}
 }
 
