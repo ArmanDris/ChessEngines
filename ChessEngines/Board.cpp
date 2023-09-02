@@ -275,13 +275,6 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 		if (board[sq.x-1][sq.y-1] && board[sq.x-1][sq.y-1].getColor() != c)
 			moves.push_back({sq, sf::Vector2i(sq.x-1, sq.y-1)});
 		// I am starting to think it will be best to just store a local variable that is the last double pawn push
-		// Hello
-		if (log.size() > 0 && std::get<0>(log.back()).getType() == PieceType::Pawn) {
-			auto last_move = log.back();
-			if (std::get<1>(last_move).y - std::get<3>(last_move).y >= 2) {
-				std::cout << "last move there was a double pawn push";
-			}
-		}
 	}
 	else {
 		if (!board[sq.x][sq.y + 1]) {
