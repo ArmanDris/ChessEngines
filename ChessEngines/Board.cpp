@@ -11,8 +11,14 @@ void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_squar
 	auto it = std::find(legal_moves.begin(), legal_moves.end(), m);
 	if (it == legal_moves.end()) return;
 
+	makeSafeMove(old_square, new_square);
+}
+
+void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square)
+{
 	movePiece(old_square, new_square);
 	changeTurn();
+	checkGameOver();
 }
 
 void Board::undoMove()
@@ -20,6 +26,67 @@ void Board::undoMove()
 	if (log.size() == 0) return;
 	softUndoMove();
 	changeTurn();
+}
+
+// Will not regererate moves or change turn
+void Board::softUndoMove()
+{
+	if (log.size() == 0) return;
+	auto last_log = log.back();
+
+	Piece old_piece = std::get<0>(last_log);
+	sf::Vector2i old_square = std::get<1>(last_log);
+
+	Piece new_piece = std::get<2>(last_log);
+	sf::Vector2i new_square = std::get<3>(last_log);
+
+	// Undo castle
+	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1) {
+		// If undoing left castle
+		if (old_square.x > new_square.x) {
+			board[0][old_square.y] = Piece(Type::Rook, old_piece.getColor());
+			board[3][old_square.y] = Piece();
+		}
+		// If undoing right castle
+		else {
+			board[7][old_square.y] = Piece(Type::Rook, old_piece.getColor());
+			board[5][old_square.y] = Piece();
+		}
+	}
+
+	// Undo en passent
+	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.x != new_square.x) {
+		// Should place a pawn behind the new square
+		if (old_piece.getColor() == Color::White)
+			board[new_square.x][new_square.y + 1] = Piece(Type::Pawn, Color::Black);
+		else
+			board[new_square.x][new_square.y - 1] = Piece(Type::Pawn, Color::White);
+	}
+
+	board[old_square.x][old_square.y] = old_piece;
+	board[new_square.x][new_square.y] = new_piece;
+
+	log.pop_back();
+	// Reset game over in case move caused draw or such
+	whiteVictory = false; blackVictory = false; draw = false;
+}
+
+// !!! Expensive call
+std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves() const
+{
+	return legal_moves;
+}
+
+
+const std::pair<sf::Vector2i, sf::Vector2i> Board::getLastMove() const
+{
+	if (log.size() == 0) return { sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
+	return { std::get<1>(log.back()), std::get<3>(log.back()) };
+}
+
+bool Board::isGameOver() const
+{
+	return draw || whiteVictory || blackVictory;
 }
 
 void Board::importFEN(std::string FEN)
@@ -211,6 +278,7 @@ void Board::generateLegalMoves()
 	auto it = psudo_legal_moves.begin();
 
 	while (it != psudo_legal_moves.end()) {
+
 		move m = *it;
 		movePiece(m.first, m.second);
 
@@ -570,49 +638,6 @@ void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, s
 	appendPsudoLegalBishopMoves(sq, c, moves);
 }
 
-// Will not change turn or generate moves after undo
-void Board::softUndoMove()
-{
-	if (log.size() == 0) return;
-	auto last_log = log.back();
-
-	Piece old_piece = std::get<0>(last_log);
-	sf::Vector2i old_square = std::get<1>(last_log);
-
-	Piece new_piece = std::get<2>(last_log);
-	sf::Vector2i new_square = std::get<3>(last_log);
-
-	// Undo castle
-	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1) {
-		// If undoing left castle
-		if (old_square.x > new_square.x) {
-			board[0][old_square.y] = Piece(Type::Rook, old_piece.getColor());
-			board[3][old_square.y] = Piece();
-		}
-		// If undoing right castle
-		else {
-			board[7][old_square.y] = Piece(Type::Rook, old_piece.getColor());
-			board[5][old_square.y] = Piece();
-		}
-	}
-
-	// Undo en passent
-	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.x != new_square.x) {
-		// Should place a pawn behind the new square
-		if (old_piece.getColor() == Color::White)
-			board[new_square.x][new_square.y + 1] = Piece(Type::Pawn, Color::Black);
-		else
-			board[new_square.x][new_square.y - 1] = Piece(Type::Pawn, Color::White);
-	}
-
-	board[old_square.x][old_square.y] = old_piece;
-	board[new_square.x][new_square.y] = new_piece;
-
-	log.pop_back();
-	// Reset game over in case move caused draw or such
-	whiteVictory = false; blackVictory = false; draw = false;
-}
-
 // !!! Potentially expensive; will look through log
 bool Board::hasPieceMoved(const sf::Vector2i& sq)
 {
@@ -621,4 +646,45 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 			return true;
 	}
 	return false;
+}
+
+void Board::checkGameOver()
+{
+	if (insufficientMaterial()) {
+		draw = true;
+		return;
+	}
+
+	if (legal_moves.size() != 0) return;
+
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
+
+	std::vector<move> enemy_psudo_legal_moves;
+	generatePsudoLegalMoves(enemy_color, enemy_psudo_legal_moves);
+
+	// If reason for no moves is checkmate then change those variables and return
+	for (move enemy_move : enemy_psudo_legal_moves) {
+		if (board[enemy_move.second.x][enemy_move.second.y].getType() == Type::King) {
+			if  (ally_color == Color::White) blackVictory = true;
+			else whiteVictory = true;
+			return;
+		}
+	}
+
+	// Otherwise must be draw
+	draw = true;
+}
+
+bool Board::insufficientMaterial() const
+{
+	bool non_king_piece = false;
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (board[x][y] && board[x][y].getType() != Type::King) {
+			non_king_piece = true;
+			break;
+			break;
+		}
+	}
+	return !non_king_piece;
 }

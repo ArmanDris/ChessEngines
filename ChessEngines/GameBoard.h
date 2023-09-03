@@ -2,7 +2,7 @@
 #include "Board.h"
 #include "Engine.h"
 
-class GameBoard : public Board
+class GameBoard
 {
 public:
 	GameBoard();
@@ -17,7 +17,10 @@ public:
 	void drop(sf::RenderWindow& w, sf::Vector2f p);
 	void hover(sf::Vector2f p);
 
+	void undoMove();
+
 private:
+	Board b = Board();
 	Engine* white_player = nullptr;
 	Engine* black_player = nullptr;
 

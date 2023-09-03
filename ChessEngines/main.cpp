@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Board.h"
 #include "GameBoard.h"
+#include "SimpleEngines.h"
+#include  "MinMaxEngine.h"
 
 int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -12,6 +14,16 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
+    RandomEngine r;
+    MinMaxEngine m;
+
+    Board br;
+
+    m.returnMove(br);
+
+    b.setPlayer(&r, Color::White);
+    b.setPlayer(&r, Color::Black);
+
 
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
@@ -25,14 +37,12 @@ int main() {
                 window.close(); 
                 break;
             case sf::Event::MouseButtonPressed:
-                if (event.mouseButton.button == sf::Mouse::Left) {
+                if (event.mouseButton.button == sf::Mouse::Left)
                     b.hold(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                }
                 break;
             case sf::Event::MouseButtonReleased:
-                if (event.mouseButton.button == sf::Mouse::Left) {
+                if (event.mouseButton.button == sf::Mouse::Left)
                     b.drop(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                }
                 break;
             case sf::Event::MouseMoved:
                 b.hover(sf::Vector2f(event.mouseMove.x, event.mouseMove.y));
@@ -49,7 +59,7 @@ int main() {
             }
         }
 
-        //b.preformCPUMoves(10);
+        //b.preformCPUMoves(500);
     }
 
     return 0;

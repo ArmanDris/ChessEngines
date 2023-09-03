@@ -49,9 +49,9 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 			w.draw(square);
 
 			// If the square is the last move, highlight it
-			if (log.size() == 0) continue;
-			auto last_move = log.back();
-			if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
+			auto last_move = b.getLastMove();
+			if (last_move.first.x == -1) continue;
+			if (last_move.first == sf::Vector2i(i, j) || last_move.second == sf::Vector2i(i, j)) {
 				square.setFillColor(sf::Color(255, 255, 0, 50));
 				w.draw(square);
 			}
@@ -65,7 +65,7 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			sf::Vector2i sq(i, j);
-			if (board[i][j] && sq != holdingPiece_original_square) {
+			if (b.getPiece(sf::Vector2i(i, j)) && sq != holdingPiece_original_square) {
 				drawPiece(w, getTopLeftCorner(w, sq), getTexture(sf::Vector2i(i, j)));
 			}
 		}
@@ -81,51 +81,51 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 
 void GameBoard::preformCPUMoves(int move_delay_ms)
 {
-	//double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
+	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
-	//// Uncomment if you want the game to restart 10 seconds after game is finished
-	////if (checkGameOver() && elapsed_time_ms > move_delay_ms + 10000) { if (whiteVictory) std::cout << "White wins \n";  if (blackVictory) std::cout << "Black wins \n";  resetBoard(); }
-	//if (checkGameOver()) return;
+	// Uncomment if you want the game to restart 10 seconds after game is finished
+	//if (b.isGameOver() && elapsed_time_ms > move_delay_ms + 5000) { resetBoard(); }
+	if (b.isGameOver()) return;
 
-	//if (elapsed_time_ms < move_delay_ms) return;
+	if (elapsed_time_ms < move_delay_ms) return;
 
-	//if (white_player && whiteTurn) makeWhiteMove();
-	//else if (black_player && !whiteTurn) makeBlackMove();
+	if      (white_player &&  b.isWhiteTurn()) makeWhiteMove();
+	else if (black_player && !b.isWhiteTurn()) makeBlackMove();
 
-	//c.restart();
+	c.restart();
 }
 
 void GameBoard::triggerMove()
 {
 	//if (checkGameOver()) return;
 
-	//if (white_player && whiteTurn) { makeWhiteMove(); }
-	//else if (black_player && !whiteTurn) { makeBlackMove(); }
+	if		(white_player &&  b.isWhiteTurn()) { makeWhiteMove(); }
+	else if (black_player && !b.isWhiteTurn()) { makeBlackMove(); }
 }
 
 void GameBoard::start_tournement(int num_games)
 {
-	//int white_wins = 0;
-	//int black_wins = 0;
-	//int draws = 0;
+	int white_wins = 0;
+	int black_wins = 0;
+	int draws = 0;
 
-	//GameBoard tnmnt_board(white_player, black_player);
+	GameBoard tnmnt_board(white_player, black_player);
 
-	//for (int i = 0; i < num_games; i++) {
-	//	tnmnt_board.resetBoard();
-	//	while (!tnmnt_board.checkGameOver()) {
-	//		if (tnmnt_board.whiteTurn) tnmnt_board.makeWhiteMove();
-	//		else		               tnmnt_board.makeBlackMove();
-	//	}
-	//	std::cout << "Game " << i + 1 << " complete!\n";
-	//	if (tnmnt_board.whiteVictory) white_wins++;
-	//	if (tnmnt_board.blackVictory) black_wins++;
-	//	if (tnmnt_board.draw) draws++;
-	//}
+	for (int i = 0; i < num_games; i++) {
+		tnmnt_board.resetBoard();
+		while (!tnmnt_board.b.isGameOver()) {
+			if (tnmnt_board.b.isWhiteTurn()) tnmnt_board.makeWhiteMove();
+			else		                     tnmnt_board.makeBlackMove();
+		}
+		std::cout << "Game " << i + 1 << " complete!\n";
+		if (tnmnt_board.b.isWhiteVictory()) white_wins++;
+		if (tnmnt_board.b.isBlackVictory()) black_wins++;
+		if (tnmnt_board.b.isDraw()) draws++;
+	}
 
-	//std::cout << "White wins: " << white_wins << "\n";
-	//std::cout << "Black wins: " << black_wins << "\n";
-	//std::cout << "Draws: " << draws << "\n";
+	std::cout << "White wins: " << white_wins << "\n";
+	std::cout << "Black wins: " << black_wins << "\n";
+	std::cout << "Draws: " << draws << "\n";
 }
 
 void GameBoard::resetBoard() 
@@ -147,7 +147,7 @@ void GameBoard::hold(sf::RenderWindow& w, sf::Vector2f p) {
 	sf::Vector2i clicked_square = getSquareAt(w, p);
 	if (clicked_square.x == -1) { return; }
 
-	holdingPiece = Piece(board[clicked_square.x][clicked_square.y]);
+	holdingPiece = Piece(b.getPiece(sf::Vector2i(clicked_square.x, clicked_square.y)));
 	holdingPiece_original_square = clicked_square;
 }
 
@@ -158,7 +158,7 @@ void GameBoard::drop(sf::RenderWindow& w, sf::Vector2f p) {
 	sf::Vector2i oldSquare = holdingPiece_original_square;
 
 	// If placed on valid square, make move
-	if (newSquare.x != -1) makeMove(oldSquare, newSquare);
+	if (newSquare.x != -1) b.makeMove(oldSquare, newSquare);
 
 	// Reset holding piece
 	holdingPiece = Piece();
@@ -170,21 +170,26 @@ void GameBoard::hover(sf::Vector2f p)
 	mouseCoords = p;
 }
 
+void GameBoard::undoMove()
+{
+	b.undoMove();
+}
+
 void GameBoard::makeWhiteMove()
 {
-	auto move = white_player->returnMove(*this);
-	makeMove(move.first, move.second);
+	auto move = white_player->returnMove(b);
+	b.makeMove(move.first, move.second);
 }
 
 void GameBoard::makeBlackMove()
 {
-	auto move = black_player->returnMove(*this);
-	makeMove(move.first, move.second);
+	auto move = black_player->returnMove(b);
+	b.makeMove(move.first, move.second);
 }
 
 const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
-	const Type piece = board[sq.x][sq.y].getType();
-	const Color color = board[sq.x][sq.y].getColor();
+	const Type  piece = b.getPiece(sf::Vector2i(sq.x, sq.y)).getType();
+	const Color color = b.getPiece(sf::Vector2i(sq.x, sq.y)).getColor();
 
 	const sf::Texture* texture = nullptr;
 
@@ -224,17 +229,17 @@ const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
 
 void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 	sf::Sprite king;
-	if (whiteTurn) { king.setTexture(white_kingTexture); }
+	if (b.isWhiteTurn()) { king.setTexture(white_kingTexture); }
 	else { king.setTexture(black_kingTexture); }
 	king.setScale(4, 4);
 
 	sf::Text text;
 	text.setFont(font);
-	if (whiteTurn) { text.setString(" White's Turn"); }
+	if (b.isWhiteTurn()) { text.setString(" White's Turn"); }
 	else { text.setString(" Black's Turn"); }
-	if (whiteVictory) { text.setString(" White Wins!!!"); }
-	if (blackVictory) { text.setString(" Black Wins!!!"); }
-	if (draw) { text.setString(" Draw"); }
+	if (b.isWhiteVictory()) { text.setString(" White Wins!!!"); }
+	if (b.isBlackVictory()) { text.setString(" Black Wins!!!"); }
+	if (b.isDraw()) { text.setString(" Draw"); }
 	text.setCharacterSize(48);
 	text.setStyle(sf::Text::Bold);
 	text.setFillColor(sf::Color::White);
@@ -251,6 +256,18 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 
 void GameBoard::drawPotenialMoves(sf::RenderWindow& w)
 {
+	if (!holdingPiece) return;
+	std::vector <std::pair<sf::Vector2i, sf::Vector2i>> moves = b.getMoves();
+
+	for (auto move : moves) {
+		if (holdingPiece_original_square == move.first) {
+			sf::Sprite s;
+			if (b.getPiece(move.second)) { s.setTexture(circle_texture); }
+			else { s.setTexture(dot_texture); }
+			s.setPosition(getTopLeftCorner(w, move.second));
+			w.draw(s);
+		}
+	}
 }
 
 sf::Vector2i GameBoard::getSquareAt(sf::RenderWindow& w, sf::Vector2f p) const {

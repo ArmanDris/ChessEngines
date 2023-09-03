@@ -15,19 +15,25 @@ public:
 	Board();
 
 	void makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
+	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
 	void undoMove();
+	void softUndoMove();
 
-	const Piece& getPiece(sf::Vector2i square) const { return board[square.x][square.y]; }
+	const Piece& getPiece(sf::Vector2i square) const { return getPiece(square.x, square.y); }
+	const Piece& getPiece(int x, int y) const { return board[x][y]; }
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> getMoves() const;
+	const std::pair<sf::Vector2i, sf::Vector2i> getLastMove() const;
 	bool isWhiteTurn() const { return whiteTurn; }
 	bool isWhiteVictory() const { return whiteVictory; }
-	bool isBlackVictory() const { return whiteVictory; }
+	bool isBlackVictory() const { return blackVictory; }
 	bool isDraw() const { return draw; }
+	bool isGameOver() const;
 
 	void importFEN(std::string FEN);
 	Piece charToPiece(char c);
 
 protected:
-	Piece board[8][8] = {
+	Piece board[8][8] = { 
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
@@ -45,13 +51,14 @@ protected:
 	bool whiteVictory = false;
 	bool blackVictory = false;
 	bool draw = false;
+
 	void movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void changeTurn();
 	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
 	void saveLog(std::string fileName = "log.txt");
 
-	// New Logic
+	// Logic from after optimisation refactor:
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
 	std::vector<move> legal_moves;
 	void generateLegalMoves();
@@ -63,6 +70,7 @@ protected:
 	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 
-	void softUndoMove();
 	bool hasPieceMoved(const sf::Vector2i& sq);
+	void checkGameOver();
+	bool insufficientMaterial() const;
 };
