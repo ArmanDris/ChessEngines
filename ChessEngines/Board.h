@@ -38,7 +38,7 @@ protected:
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
-	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
+	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> move_log;
 
 	bool whiteTurn = true;
 
@@ -55,12 +55,15 @@ protected:
 
 	// New Logic
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
-	std::vector<move> psudoLegalMoves;
-	void generatePsudoLegalMoves();
+	std::vector<move> legal_moves;
+	void generateLegalMoves();
+	void generatePsudoLegalMoves(PieceColor& c, std::vector<move>& vec_to_append_moves_to);
 	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
 	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
 	void appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
 	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
 	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
+
+	void softUndoMove();
 };

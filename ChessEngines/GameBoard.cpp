@@ -49,8 +49,8 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 			w.draw(square);
 
 			// If the square is the last move, highlight it
-			if (log.size() == 0) continue;
-			auto last_move = log.back();
+			if (move_log.size() == 0) continue;
+			auto last_move = move_log.back();
 			if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
 				square.setFillColor(sf::Color(255, 255, 0, 50));
 				w.draw(square);
