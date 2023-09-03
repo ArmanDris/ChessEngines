@@ -38,7 +38,7 @@ protected:
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
-	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> move_log;
+	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
 
 	bool whiteTurn = true;
 
@@ -46,8 +46,6 @@ protected:
 	bool blackVictory = false;
 	bool draw = false;
 	void movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
-	bool moveIsCastle(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
-	bool moveIsEnPassent(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void changeTurn();
 	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
@@ -57,13 +55,14 @@ protected:
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
 	std::vector<move> legal_moves;
 	void generateLegalMoves();
-	void generatePsudoLegalMoves(PieceColor& c, std::vector<move>& vec_to_append_moves_to);
-	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
-	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
-	void appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
-	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
-	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
-	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves);
+	void generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to);
+	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	void appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 
 	void softUndoMove();
+	bool hasPieceMoved(const sf::Vector2i& sq);
 };

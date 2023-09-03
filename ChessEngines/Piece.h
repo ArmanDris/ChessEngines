@@ -6,7 +6,7 @@
 const unsigned int type_mask = 0b111;  // First 3 bits for type
 const unsigned int color_mask = 0b1000; // Last bit for color
 
-enum PieceType {
+enum Type {
 	None   = 0b000,
 	Pawn   = 0b001,
 	Rook   = 0b010,
@@ -16,7 +16,7 @@ enum PieceType {
 	Queen  = 0b110,
 };
 
-enum PieceColor {
+enum Color {
 	White = 0b1000,
 	Black = 0b0000,
 };
@@ -24,10 +24,10 @@ enum PieceColor {
 class Piece {
 public:
 	Piece();
-	Piece(PieceType t, PieceColor c);
+	Piece(Type t, Color c);
 
-	PieceType getType() const;
-	PieceColor getColor() const;
+	Type getType() const;
+	Color getColor() const;
 	int getValue() const;
 	std::string typeToString() const;
 	std::string colorToString() const;

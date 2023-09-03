@@ -27,10 +27,10 @@ GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
 	black_player = black;
 }
 
-void GameBoard::setPlayer(Engine* player, PieceColor color)
+void GameBoard::setPlayer(Engine* player, Color color)
 {
-	if (color == PieceColor::White) white_player = player;
-	if (color == PieceColor::Black) black_player = player;
+	if (color == Color::White) white_player = player;
+	if (color == Color::Black) black_player = player;
 }
 
 void GameBoard::drawBoard(sf::RenderWindow& w) 
@@ -49,8 +49,8 @@ void GameBoard::drawBoard(sf::RenderWindow& w)
 			w.draw(square);
 
 			// If the square is the last move, highlight it
-			if (move_log.size() == 0) continue;
-			auto last_move = move_log.back();
+			if (log.size() == 0) continue;
+			auto last_move = log.back();
 			if (std::get<1>(last_move) == sf::Vector2i(i, j) || std::get<3>(last_move) == sf::Vector2i(i, j)) {
 				square.setFillColor(sf::Color(255, 255, 0, 50));
 				w.draw(square);
@@ -183,35 +183,35 @@ void GameBoard::makeBlackMove()
 }
 
 const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
-	const PieceType piece = board[sq.x][sq.y].getType();
-	const PieceColor color = board[sq.x][sq.y].getColor();
+	const Type piece = board[sq.x][sq.y].getType();
+	const Color color = board[sq.x][sq.y].getColor();
 
 	const sf::Texture* texture = nullptr;
 
 	switch (piece) {
-	case PieceType::Pawn:
-		if (color == PieceColor::White) texture = &white_pawnTexture;
-		if (color == PieceColor::Black) texture = &black_pawnTexture;
+	case Type::Pawn:
+		if (color == Color::White) texture = &white_pawnTexture;
+		if (color == Color::Black) texture = &black_pawnTexture;
 		break;
-	case PieceType::Rook:
-		if (color == PieceColor::White) texture = &white_rookTexture;
-		if (color == PieceColor::Black) texture = &black_rookTexture;
+	case Type::Rook:
+		if (color == Color::White) texture = &white_rookTexture;
+		if (color == Color::Black) texture = &black_rookTexture;
 		break;
-	case PieceType::Knight:
-		if (color == PieceColor::White) texture = &white_knightTexture;
-		if (color == PieceColor::Black) texture = &black_knightTexture;
+	case Type::Knight:
+		if (color == Color::White) texture = &white_knightTexture;
+		if (color == Color::Black) texture = &black_knightTexture;
 		break;
-	case PieceType::Bishop:
-		if (color == PieceColor::White) texture = &white_bishopTexture;
-		if (color == PieceColor::Black) texture = &black_bishopTexture;
+	case Type::Bishop:
+		if (color == Color::White) texture = &white_bishopTexture;
+		if (color == Color::Black) texture = &black_bishopTexture;
 		break;
-	case PieceType::Queen:
-		if (color == PieceColor::White) texture = &white_queenTexture;
-		if (color == PieceColor::Black) texture = &black_queenTexture;
+	case Type::Queen:
+		if (color == Color::White) texture = &white_queenTexture;
+		if (color == Color::Black) texture = &black_queenTexture;
 		break;
-	case PieceType::King:
-		if (color == PieceColor::White) texture = &white_kingTexture;
-		if (color == PieceColor::Black) texture = &black_kingTexture;
+	case Type::King:
+		if (color == Color::White) texture = &white_kingTexture;
+		if (color == Color::Black) texture = &black_kingTexture;
 		break;
 	default:
 		std::cout << "Error! Invalid piece id, returning null" << std::endl;

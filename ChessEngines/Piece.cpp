@@ -2,21 +2,21 @@
 
 Piece::Piece() {}
 
-Piece::Piece(PieceType t, PieceColor c)
+Piece::Piece(Type t, Color c)
 	: data_(static_cast<unsigned int>(t) | static_cast<unsigned int>(c)) {}
 
-PieceType Piece::getType() const
+Type Piece::getType() const
 {
-	return static_cast<PieceType>(data_ & type_mask);
+	return static_cast<Type>(data_ & type_mask);
 }
 
-PieceColor Piece::getColor() const
+Color Piece::getColor() const
 {
-	return static_cast<PieceColor>(data_ & color_mask);
+	return static_cast<Color>(data_ & color_mask);
 }
 
 int Piece::getValue() const {
-	PieceType type = this->getType();
+	Type type = this->getType();
 	switch(type) {
 		case None: return 0;
 		case Pawn: return 1;
@@ -55,5 +55,5 @@ std::string Piece::colorToString() const
 
 Piece::operator bool() const
 {
-	return getType() != PieceType::None;
+	return getType() != Type::None;
 }

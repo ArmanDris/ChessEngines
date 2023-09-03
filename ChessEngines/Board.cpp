@@ -13,19 +13,18 @@ void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_squar
 
 	movePiece(old_square, new_square);
 	changeTurn();
-	generateLegalMoves();
 }
 
 void Board::undoMove()
 {
+	if (log.size() == 0) return;
 	softUndoMove();
 	changeTurn();
-	generateLegalMoves();
 }
 
 void Board::importFEN(std::string FEN)
 {
-	move_log.clear();
+	log.clear();
 	whiteVictory = false; blackVictory = false; draw = false;
 	legal_moves.clear();
 
@@ -93,24 +92,25 @@ void Board::importFEN(std::string FEN)
 Piece Board::charToPiece(char c)
 {
 	switch(c) {
-		case 'P': return Piece(PieceType::Pawn,   PieceColor::White);
-		case 'R': return Piece(PieceType::Rook,   PieceColor::White);
-		case 'N': return Piece(PieceType::Knight, PieceColor::White);
-		case 'B': return Piece(PieceType::Bishop, PieceColor::White);
-		case 'Q': return Piece(PieceType::Queen,  PieceColor::White);
-		case 'K': return Piece(PieceType::King,   PieceColor::White);
+		case 'P': return Piece(Type::Pawn,   Color::White);
+		case 'R': return Piece(Type::Rook,   Color::White);
+		case 'N': return Piece(Type::Knight, Color::White);
+		case 'B': return Piece(Type::Bishop, Color::White);
+		case 'Q': return Piece(Type::Queen,  Color::White);
+		case 'K': return Piece(Type::King,   Color::White);
 
-		case 'p': return Piece(PieceType::Pawn,   PieceColor::Black);
-		case 'r': return Piece(PieceType::Rook,   PieceColor::Black);
-		case 'n': return Piece(PieceType::Knight, PieceColor::Black);
-		case 'b': return Piece(PieceType::Bishop, PieceColor::Black);
-		case 'q': return Piece(PieceType::Queen,  PieceColor::Black);
-		case 'k': return Piece(PieceType::King,  PieceColor::Black);
+		case 'p': return Piece(Type::Pawn,   Color::Black);
+		case 'r': return Piece(Type::Rook,   Color::Black);
+		case 'n': return Piece(Type::Knight, Color::Black);
+		case 'b': return Piece(Type::Bishop, Color::Black);
+		case 'q': return Piece(Type::Queen,  Color::Black);
+		case 'k': return Piece(Type::King,  Color::Black);
 		default: std::cout << "Invalid char"; return Piece();
 	}
 	return Piece();
 }
 
+// Possible optimization: Dont use moveIsCastle and moveIsEnPassent helpers
 // Will not check if move is legal
 void Board::movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
 {
@@ -119,32 +119,19 @@ void Board::movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_sq
 	if (new_square == old_square) return;
 
 	// En passant
-	if (moveIsEnPassent(old_square, new_square))
+	if (board[old_square.x][old_square.y].getType() == Type::Pawn && !board[new_square.x][new_square.y] && new_square.x != old_square.x)
 		board[new_square.x][old_square.y] = Piece();
 
 	// Castling
-	if (moveIsCastle(old_square, new_square))
+	if (board[old_square.x][old_square.y].getType() == Type::King && abs(old_square.x - new_square.x) > 1)
 		castle(old_square, new_square);
 
 	// Pawn promotion
-	if (board[old_square.x][old_square.y].getType() == PieceType::Pawn && (new_square.y == 0 || new_square.y == 7))
-		board[old_square.x][old_square.y] = Piece(PieceType::Queen, board[old_square.x][old_square.y].getColor());
+	if (board[old_square.x][old_square.y].getType() == Type::Pawn && (new_square.y == 0 || new_square.y == 7))
+		board[old_square.x][old_square.y] = Piece(Type::Queen, board[old_square.x][old_square.y].getColor());
 
 	board[new_square.x][new_square.y] = board[old_square.x][old_square.y];
 	board[old_square.x][old_square.y] = Piece();
-}
-
-bool Board::moveIsCastle(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
-{
-	return false;
-}
-
-// Must be a legal move!
-bool Board::moveIsEnPassent(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
-{
-	return board[old_square.x][old_square.y].getType() == PieceType::Pawn
-		&& !board[new_square.x][new_square.y]
-		&& new_square.x != old_square.x;
 }
 
 void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
@@ -167,10 +154,12 @@ void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_squar
 void Board::changeTurn() {
 	if (whiteTurn) whiteTurn = false;
 	else           whiteTurn = true;
+
+	generateLegalMoves();
 }
 
 void Board::logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square) {
-	move_log.push_back({ board[old_square.x][old_square.y], old_square,
+	log.push_back({ board[old_square.x][old_square.y], old_square,
 					board[new_square.x][new_square.y], new_square });
 }
 
@@ -197,7 +186,7 @@ void Board::saveLog(std::string saveLog) {
 
 
 	file << "Piece being moved : Location piece is moving to" << std::endl << std::endl;
-	for (auto move : move_log) {
+	for (auto move : log) {
 		file << std::get<0>(move).colorToString() << " "
 			<< std::get<0>(move).typeToString() << " "
 			<< std::get<1>(move).x << "," << std::get<1>(move).y << " : "
@@ -209,11 +198,11 @@ void Board::saveLog(std::string saveLog) {
 	file.close();
 }
 
-// Expensive function because it loops through all the ally and enemy moves
+// !!! Expensive function because it loops through all the ally and enemy moves
 void Board::generateLegalMoves()
 {
-	PieceColor ally_color = whiteTurn ? PieceColor::White : PieceColor::Black;
-	PieceColor enemy_color = whiteTurn ? PieceColor::Black : PieceColor::White;
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
 	std::vector<move> psudo_legal_moves;
 	generatePsudoLegalMoves(ally_color, psudo_legal_moves);
@@ -231,9 +220,21 @@ void Board::generateLegalMoves()
 		bool move_exposes_king = false;
 
 		for (move enemy_moves : enemy_psudo_legal_moves) {
-			if (board[enemy_moves.second.x][enemy_moves.second.y].getType() == PieceType::King) {
+			if (board[enemy_moves.second.x][enemy_moves.second.y].getType() == Type::King) {
 				move_exposes_king = true;
 				break; // No need to check the rest of the enemy moves
+			}
+
+			// Prevent moving over check
+			if (board[m.second.x][m.second.y].getType() == Type::King && abs(m.first.x - m.second.x) > 1) {
+				if (m.second.x == 2 && enemy_moves.second.x == 3 && enemy_moves.second.y == m.first.y) {
+					move_exposes_king = true;
+					break;
+				}
+				else if (m.second.x == 6 && enemy_moves.second.x == 5 && enemy_moves.second.y == m.first.y) {
+					move_exposes_king = true;
+					break;
+				}
 			}
 		}
 
@@ -251,29 +252,30 @@ void Board::generateLegalMoves()
 }
 
 // Possible optimization: Generate the moves for white and black so you only have to call this function once
-void Board::generatePsudoLegalMoves(PieceColor& c, std::vector<move>& vec_to_append_moves_to)
+// !!! Expensive function because it loops through the whole board
+void Board::generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to)
 {
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (!board[x][y]) continue;
 		if (board[x][y].getColor() != c) continue;
 		sf::Vector2i square(x, y);
-		PieceType type = board[x][y].getType();
-		PieceColor color = board[x][y].getColor();
+		Type type = board[x][y].getType();
+		Color color = board[x][y].getColor();
 
 		switch (type) {
-		case PieceType::Pawn:   appendPsudoLegalPawnMoves(square, color, vec_to_append_moves_to); break;
-		case PieceType::Rook:   appendPsudoLegalRookMoves(square, color, vec_to_append_moves_to); break;
-		//case PieceType::Knight: appendPsudoLegalKnightMoves(square, color, vec_to_append_moves_to); break;
-		case PieceType::Bishop: appendPsudoLegalBishopMoves(square, color, vec_to_append_moves_to); break;
-		case PieceType::King:   appendPsudoLegalKingMoves(square, color, vec_to_append_moves_to); break;
-		case PieceType::Queen:  appendPsudoLegalQueenMoves(square, color, vec_to_append_moves_to); break;
+		case Type::Pawn:   appendPsudoLegalPawnMoves(square, color, vec_to_append_moves_to); break;
+		case Type::Rook:   appendPsudoLegalRookMoves(square, color, vec_to_append_moves_to); break;
+		case Type::Knight: appendPsudoLegalKnightMoves(square, color, vec_to_append_moves_to); break;
+		case Type::Bishop: appendPsudoLegalBishopMoves(square, color, vec_to_append_moves_to); break;
+		case Type::King:   appendPsudoLegalKingMoves(square, color, vec_to_append_moves_to); break;
+		case Type::Queen:  appendPsudoLegalQueenMoves(square, color, vec_to_append_moves_to); break;
 		}
 	}
 }
 
-void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
-	if (c == PieceColor::White) {
+	if (c == Color::White) {
 		if (!board[sq.x][sq.y - 1]) {
 			moves.push_back({ sq, sf::Vector2i(sq.x, sq.y - 1) });
 			if (sq.y == 6 && !board[sq.x][4])
@@ -301,8 +303,8 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 	}
 
 	// En Passent logic:
-	if (move_log.size() > 0 && std::get<0>(move_log.back()).getType() == PieceType::Pawn) {
-		auto last_move = move_log.back();
+	if (log.size() > 0 && std::get<0>(log.back()).getType() == Type::Pawn) {
+		auto last_move = log.back();
 
 		sf::Vector2i last_old_square = std::get<1>(last_move);
 		sf::Vector2i last_new_square = std::get<3>(last_move);
@@ -314,7 +316,7 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 			&& sq.y == last_new_square.y
 			&& (sq.x == last_new_square.x - 1 || sq.x == last_new_square.x + 1)
 			) {
-			if (c == PieceColor::White) 
+			if (c == Color::White) 
 				moves.push_back({ sq, sf::Vector2i(last_new_square.x, last_new_square.y - 1)});
 			else
 				moves.push_back({ sq, sf::Vector2i(last_new_square.x, last_new_square.y + 1) });
@@ -322,7 +324,7 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const PieceColor& 
 	}
 }
 
-void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
 	// Look for moves upward
 	for (int y = sq.y - 1; y >= 0; y--) {
@@ -383,9 +385,9 @@ void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const PieceColor& 
 	}
 }
 
-void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
-	if (sq.x >= 2 && sq.y >= 1) {
+	if (sq.x >= 1 && sq.y >= 2) {
 		if (!board[sq.x-1][sq.y-2] || board[sq.x-1][sq.y-2].getColor() != c)
 			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y - 2)}); // up left
 	}
@@ -426,7 +428,7 @@ void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const PieceColor
 	}
 }
 
-void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
 	// Generating up left
 	int i = 0;
@@ -501,7 +503,7 @@ void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const PieceColor
 	}
 }
 
-void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
 	if (sq.x != 0 && sq.y != 0) {
 		if (!board[sq.x-1][sq.y-1] || board[sq.x-1][sq.y-1].getColor() != c)
@@ -542,9 +544,27 @@ void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const PieceColor& 
 		if (!board[sq.x-1][sq.y] || board[sq.x-1][sq.y].getColor() != c)
 			moves.push_back({sq, sf::Vector2i(sq.x - 1, sq.y)});     // left
 	}
+
+	// Castling logic
+	if (c == Color::White) {
+		// White king side castle
+		if (!hasPieceMoved(sf::Vector2i(4, 7)) && !hasPieceMoved(sf::Vector2i(7, 7)) && !board[5][7] && !board[6][7])
+			moves.push_back({sq, sf::Vector2i(6, 7)});
+		// White queen side castle
+		if (!hasPieceMoved(sf::Vector2i(4, 7)) && !hasPieceMoved(sf::Vector2i(0, 7)) && !board[1][7] && !board[2][7] && !board[3][7])
+			moves.push_back({sq, sf::Vector2i(2, 7)});
+	}
+	else {
+		// Black king side castle
+		if (!hasPieceMoved(sf::Vector2i(4, 0)) && !hasPieceMoved(sf::Vector2i(7, 0)) && !board[5][0] && !board[6][0])
+			moves.push_back({sq, sf::Vector2i(6, 0)});
+		// Black queen side castle
+		if (!hasPieceMoved(sf::Vector2i(4, 0)) && !hasPieceMoved(sf::Vector2i(0, 0)) && !board[1][0] && !board[2][0] && !board[3][0])
+			moves.push_back({sq, sf::Vector2i(2, 0)});
+	}
 }
 
-void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor& c, std::vector<move>& moves)
+void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
 {
 	appendPsudoLegalRookMoves(sq, c, moves);
 	appendPsudoLegalBishopMoves(sq, c, moves);
@@ -553,8 +573,8 @@ void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const PieceColor&
 // Will not change turn or generate moves after undo
 void Board::softUndoMove()
 {
-	if (move_log.size() == 0) return;
-	auto last_log = move_log.back();
+	if (log.size() == 0) return;
+	auto last_log = log.back();
 
 	Piece old_piece = std::get<0>(last_log);
 	sf::Vector2i old_square = std::get<1>(last_log);
@@ -563,32 +583,42 @@ void Board::softUndoMove()
 	sf::Vector2i new_square = std::get<3>(last_log);
 
 	// Undo castle
-	if (old_piece.getType() == PieceType::King && abs(old_square.x - new_square.x) > 1) {
+	if (old_piece.getType() == Type::King && abs(old_square.x - new_square.x) > 1) {
 		// If undoing left castle
 		if (old_square.x > new_square.x) {
-			board[0][old_square.y] = Piece(PieceType::Rook, old_piece.getColor());
+			board[0][old_square.y] = Piece(Type::Rook, old_piece.getColor());
 			board[3][old_square.y] = Piece();
 		}
 		// If undoing right castle
 		else {
-			board[7][old_square.y] = Piece(PieceType::Rook, old_piece.getColor());
+			board[7][old_square.y] = Piece(Type::Rook, old_piece.getColor());
 			board[5][old_square.y] = Piece();
 		}
 	}
 
 	// Undo en passent
-	if (old_piece.getType() == PieceType::Pawn && new_piece.getType() == PieceType::None && old_square.x != new_square.x) {
+	if (old_piece.getType() == Type::Pawn && new_piece.getType() == Type::None && old_square.x != new_square.x) {
 		// Should place a pawn behind the new square
-		if (old_piece.getColor() == PieceColor::White)
-			board[new_square.x][new_square.y + 1] = Piece(PieceType::Pawn, PieceColor::Black);
+		if (old_piece.getColor() == Color::White)
+			board[new_square.x][new_square.y + 1] = Piece(Type::Pawn, Color::Black);
 		else
-			board[new_square.x][new_square.y - 1] = Piece(PieceType::Pawn, PieceColor::White);
+			board[new_square.x][new_square.y - 1] = Piece(Type::Pawn, Color::White);
 	}
 
 	board[old_square.x][old_square.y] = old_piece;
 	board[new_square.x][new_square.y] = new_piece;
 
-	move_log.pop_back();
+	log.pop_back();
 	// Reset game over in case move caused draw or such
 	whiteVictory = false; blackVictory = false; draw = false;
+}
+
+// !!! Potentially expensive; will look through log
+bool Board::hasPieceMoved(const sf::Vector2i& sq)
+{
+	for (auto move : log) {
+		if (std::get<1>(move) == sq || std::get<3>(move) == sq)
+			return true;
+	}
+	return false;
 }
