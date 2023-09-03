@@ -8,6 +8,7 @@ int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
+    window.setPosition(sf::Vector2i(-8, 0));
 
     sf::Image icon;
     icon.loadFromFile("black_king.png");
@@ -15,11 +16,6 @@ int main() {
 
     GameBoard b;
     RandomEngine r;
-    MinMaxEngine m;
-
-    Board br;
-
-    m.returnMove(br);
 
     b.setPlayer(&r, Color::White);
     b.setPlayer(&r, Color::Black);
