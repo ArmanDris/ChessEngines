@@ -2,52 +2,9 @@
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
-## The three simple chess Engines:
-1. RandomEngine
-Will just make a random legal move <br> <br>
-2. Drunk engine
-Prioritieses moves in this order: <br>
- i.   Move wins game <br>
- ii.  Check enemy king <br>
- iii. Take undefended enemy piece <br>
- iv.  Castle <br>
- v.   Random Move <br> <br>
-3. Hippie Engine
-Prioritieses moves in this order: <br>
- i.   Move ends game <br>
- ii.  Take undefended enemy piece <br>
- iii. Support undefended piece <br>
- iv.  Move undefended piece out of danger <br>
- v.   Castle <br>
- vi.  Check enemy king <br>
- vii. Random Move <br> <br>
-4. BotFeaster
-Bot feaster has additional logic to not hang pieces.Prioritises moves in this order:
- i.    Move wins game <br>
- ii.   Take hanging enemy piece <br>
- iii.  Make positive trade <br>
- iv.   Check enemy king <br>
- v.    Move pieces being attacked by lower value away <br>
- vi.   Defend pieces being attacked by equal or higher value <br>
- vii.  Castle <br>
- viii. Push pawn <br>
- ix.   Make equal trade <br>
- x.    Make random non-hanging move <br>
- xi.   Random Move <br>
-
-# Tournament Results
-### DrunkEngine(White) vs. BotFeaster(Black) <br>
-White wins: 5, Black wins: 435, Draws: 60
-### DrunkEngine(White) vs. HippieEngine(Black) <br>
-White wins: 27, Black wins: 127, Draws: 346
-### DrunkEngine(White) vs. RandomEngine(Black) <br>
-White wins: 280, Black wins: 0, Draws: 220
-### HippieEngine(White) vs. DrunkEngine(Black) <br>
-White wins: 24, Black wins: 7, Draws: 69
-### BotFeaster(White) vs. RandomEngine(Black)
-White wins: 50, Black wins: 0, Draws: 0
-### BotFeaster(White) vs, HippieEngine(Black)
-White wins: 47, Black wins: 0, Draws: 3
+### 9 - 04
+I have just gutted and remade the whole program. Today I got it running 40% faster than before 🥳. I was expecting more but for a while I thought I made it slower so at least that is not the case. Now I can fianlly work on implementing minimax.
+My board does not allow for underpromotion so it fails some perft tests but realistically I do not care about underpromotion. I also broke my other engines while remaking the board class ☹, so perhaps I will fix them.
 
 ### 8 - 26
 I have found out that my program runs way too slowly for minimax. I have done some simple optimisation like passing by reference in board. Ideas to further optimise are:
