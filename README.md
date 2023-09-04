@@ -9,7 +9,7 @@ My board does not allow for underpromotion so it fails some perft tests but real
 Perft after refactor:
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/728a7a63-05df-45a5-a0fe-901673f50e50)
 Perft before refactor:
-
+![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/23f47fa1-c2d1-42d9-baa9-7087cb478d6c)
 Perft before any optimisations:
 
 
