@@ -8,8 +8,10 @@ My board does not allow for underpromotion so it fails some perft tests but real
 
 Perft after refactor: <br/>
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/728a7a63-05df-45a5-a0fe-901673f50e50) <br/>
+
 Perft before refactor:<br/>
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/23f47fa1-c2d1-42d9-baa9-7087cb478d6c) <br/>
+
 Perft before any optimisations: <br/>
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/5a17caa9-380d-4a5a-b801-0516100d4fb0) <br/>
 
