@@ -13,7 +13,7 @@ Perft before refactor:<br/>
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/23f47fa1-c2d1-42d9-baa9-7087cb478d6c) <br/>
 
 Perft before any optimisations: <br/>
-![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/5a17caa9-380d-4a5a-b801-0516100d4fb0) <br/>
+![25 august benchmark](https://github.com/ArmanDris/ChessEngines/assets/59405643/b6b884ed-3ae7-4b1e-957c-742317fd933f)
 
 
 ### 8 - 26
