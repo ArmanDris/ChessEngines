@@ -7,11 +7,11 @@ I have just gutted and remade the whole program. Today I got it running 40% fast
 My board does not allow for underpromotion so it fails some perft tests but realistically I do not care about underpromotion. I also broke my other engines while remaking the board class ☹, so perhaps I will fix them.
 
 Perft after refactor: <br/>
-![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/728a7a63-05df-45a5-a0fe-901673f50e50)
+![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/728a7a63-05df-45a5-a0fe-901673f50e50) <br/>
 Perft before refactor:<br/>
-![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/23f47fa1-c2d1-42d9-baa9-7087cb478d6c)
+![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/23f47fa1-c2d1-42d9-baa9-7087cb478d6c) <br/>
 Perft before any optimisations: <br/>
-![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/5a17caa9-380d-4a5a-b801-0516100d4fb0)
+![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/5a17caa9-380d-4a5a-b801-0516100d4fb0) <br/>
 
 
 ### 8 - 26
