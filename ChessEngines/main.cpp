@@ -20,8 +20,8 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     GameBoard b;
-    RandomEngine r;
 
+    RandomEngine r;
     b.setPlayer(&r, Color::White);
     b.setPlayer(&r, Color::Black);
 

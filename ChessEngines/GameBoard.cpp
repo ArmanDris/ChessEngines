@@ -27,6 +27,11 @@ GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
 	black_player = black;
 }
 
+void GameBoard::importFEN(std::string fen)
+{
+	b.importFEN(fen);
+}
+
 void GameBoard::setPlayer(Engine* player, Color color)
 {
 	if (color == Color::White) white_player = player;

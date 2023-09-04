@@ -7,6 +7,7 @@ class GameBoard
 public:
 	GameBoard();
 	GameBoard(Engine* white, Engine* black);
+	void importFEN(std::string fen);
 	void setPlayer(Engine* player, Color color);
 	void drawBoard(sf::RenderWindow& w);
 	void preformCPUMoves(int move_delay_ms = 1000);

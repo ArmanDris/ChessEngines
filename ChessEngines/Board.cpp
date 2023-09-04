@@ -143,16 +143,56 @@ void Board::importFEN(std::string FEN)
 	if (FEN_parts[1] == "b" &&  whiteTurn) changeTurn();
 
 	// Castling Rights
-	// FEN_parts[2]; Not implemented
+	if (FEN_parts[2].find('K') == std::string::npos) // Log a kingside white rook move
+		log.push_back({ Piece(Type::Rook, Color::White), sf::Vector2i(7, 7), Piece(), sf::Vector2i(7, 7) });
+	if (FEN_parts[2].find('Q') == std::string::npos) // Log a queenside white rook move
+		log.push_back({ Piece(Type::Rook, Color::White), sf::Vector2i(0, 7), Piece(), sf::Vector2i(0, 7) });
+	if (FEN_parts[2].find('k') == std::string::npos) // Log a kingside black rook move
+		log.push_back({ Piece(Type::Rook, Color::Black), sf::Vector2i(7, 0), Piece(), sf::Vector2i(7, 0) });
+	if (FEN_parts[2].find('q') == std::string::npos) // Log a queenside black rook move
+		log.push_back({ Piece(Type::Rook, Color::Black), sf::Vector2i(0, 0), Piece(), sf::Vector2i(0, 0) });
 
 	// En Passent target square
-	// FEN_parts[3]; Not implemented
+	if (FEN_parts[3] != "-") {
+		sf::Vector2i target_square = stringToVec(FEN_parts[3]);
+		if (target_square.y == 2) // Log a black double pawn push in front of the target square
+			log.push_back({ Piece(Type::Pawn, Color::Black), sf::Vector2i(target_square.x, 1), Piece(), sf::Vector2i(target_square.x, 3) });
+		else // Log a white double pawn push in front of the target square
+			log.push_back({ Piece(Type::Pawn, Color::White), sf::Vector2i(target_square.x, 6), Piece(), sf::Vector2i(target_square.x, 4) });
+	}
 
 	// Half move clock
 	// FEN_parts[4]; Not implemented
 
 	// Full move number
-	// FEN_parts[5]; Not implemented
+	// FEN_parts[5]; This board does not store move counts
+}
+
+sf::Vector2i Board::stringToVec(std::string s)
+{
+	sf::Vector2i v(-1, -1);
+
+	switch (s[0]) {
+		case 'a': v.x = 0; break;
+		case 'b': v.x = 1; break;
+		case 'c': v.x = 2; break;
+		case 'd': v.x = 3; break;
+		case 'e': v.x = 4; break;
+		case 'f': v.x = 5; break;
+		case 'g': v.x = 6; break;
+		case 'h': v.x = 7; break;
+	}
+	switch (s[1]) { // I am sorry for this
+		case '8': v.y = 0; break;
+		case '7': v.y = 1; break;
+		case '6': v.y = 2; break;
+		case '5': v.y = 3; break;
+		case '4': v.y = 4; break;
+		case '3': v.y = 5; break;
+		case '2': v.y = 6; break;
+		case '1': v.y = 7; break;
+	}
+	return v;
 }
 
 Piece Board::charToPiece(char c)

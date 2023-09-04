@@ -32,6 +32,7 @@ public:
 	bool isGameOver() const;
 
 	void importFEN(std::string FEN);
+	sf::Vector2i stringToVec(std::string s);
 	Piece charToPiece(char c);
 
 protected:

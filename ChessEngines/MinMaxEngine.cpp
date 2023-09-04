@@ -36,9 +36,7 @@
 
  void MinMaxEngine::perftBenchmark() {
      Board br;
-     Piece p = Piece(Type::Pawn, Color::White);
      std::cout << "Size of bord obj " << sizeof(br) << std::endl << std::endl;
-     std::cout << "Size of p obj " << sizeof(p) << std::endl << std::endl;
      std::cout << "Benchmarking first 5 ply's on starting board: \n";
 
      Board b;
