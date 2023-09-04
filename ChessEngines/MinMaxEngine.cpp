@@ -36,7 +36,9 @@
 
  void MinMaxEngine::perftBenchmark() {
      Board br;
+     Piece p = Piece(Type::Pawn, Color::White);
      std::cout << "Size of bord obj " << sizeof(br) << std::endl << std::endl;
+     std::cout << "Size of p obj " << sizeof(p) << std::endl << std::endl;
      std::cout << "Benchmarking first 5 ply's on starting board: \n";
 
      Board b;
@@ -58,7 +60,7 @@
      std::vector<move> legal_moves = b.getMoves();
 
      for (auto move : legal_moves) {
-         b.makeMove(move.first, move.second);
+         b.makeSafeMove(move.first, move.second, legal_moves);
          num_positions += prefSearch(b, depth - 1);
          b.undoMove();
      }

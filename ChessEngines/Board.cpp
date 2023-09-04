@@ -7,18 +7,20 @@ Board::Board() {
 
 // Returns true if a move is excecuted
 void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square) {
+	const std::vector<move>& legal_moves = generateLegalMoves();
+	if (legal_moves.size() == 0) return;
 	move m = { old_square, new_square };
 	auto it = std::find(legal_moves.begin(), legal_moves.end(), m);
 	if (it == legal_moves.end()) return;
 
-	makeSafeMove(old_square, new_square);
+	makeSafeMove(old_square, new_square, legal_moves);
 }
 
-void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square)
+void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square, const std::vector<move>& legal_moves)
 {
 	movePiece(old_square, new_square);
 	changeTurn();
-	checkGameOver();
+	checkGameOver(legal_moves);
 }
 
 void Board::undoMove()
@@ -72,9 +74,9 @@ void Board::softUndoMove()
 }
 
 // !!! Expensive call
-std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves() const
+std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves()
 {
-	return legal_moves;
+	return generateLegalMoves();
 }
 
 
@@ -93,7 +95,6 @@ void Board::importFEN(std::string FEN)
 {
 	log.clear();
 	whiteVictory = false; blackVictory = false; draw = false;
-	legal_moves.clear();
 
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) board[x][y] = Piece();
 
@@ -152,8 +153,6 @@ void Board::importFEN(std::string FEN)
 
 	// Full move number
 	// FEN_parts[5]; Not implemented
-
-	generateLegalMoves();
 }
 
 Piece Board::charToPiece(char c)
@@ -221,8 +220,6 @@ void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_squar
 void Board::changeTurn() {
 	if (whiteTurn) whiteTurn = false;
 	else           whiteTurn = true;
-
-	generateLegalMoves();
 }
 
 void Board::logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square) {
@@ -266,7 +263,7 @@ void Board::saveLog(std::string saveLog) {
 }
 
 // !!! Expensive function because it loops through all the ally and enemy moves
-void Board::generateLegalMoves()
+std::vector<Board::move> Board::generateLegalMoves()
 {
 	Color ally_color = whiteTurn ? Color::White : Color::Black;
 	Color enemy_color = whiteTurn ? Color::Black : Color::White;
@@ -316,7 +313,7 @@ void Board::generateLegalMoves()
 		}
 	}
 
-	legal_moves = psudo_legal_moves;
+	return psudo_legal_moves;
 }
 
 // Possible optimization: Generate the moves for white and black so you only have to call this function once
@@ -648,7 +645,7 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 	return false;
 }
 
-void Board::checkGameOver()
+void Board::checkGameOver(const std::vector<move>& legal_moves)
 {
 	if (insufficientMaterial()) {
 		draw = true;

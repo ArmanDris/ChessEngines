@@ -12,17 +12,19 @@
 class Board
 {
 public:
+	using move = std::pair<sf::Vector2i, sf::Vector2i>;
+
 	Board();
 
 	void makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
-	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
+	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square, const std::vector<move>& legal_moves);
 	void undoMove();
 	void softUndoMove();
 
 	const Piece& getPiece(sf::Vector2i square) const { return getPiece(square.x, square.y); }
 	const Piece& getPiece(int x, int y) const { return board[x][y]; }
-	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> getMoves() const;
-	const std::pair<sf::Vector2i, sf::Vector2i> getLastMove() const;
+	std::vector<move> getMoves();
+	const move getLastMove() const;
 	bool isWhiteTurn() const { return whiteTurn; }
 	bool isWhiteVictory() const { return whiteVictory; }
 	bool isBlackVictory() const { return blackVictory; }
@@ -59,9 +61,7 @@ protected:
 	void saveLog(std::string fileName = "log.txt");
 
 	// Logic from after optimisation refactor:
-	using move = std::pair<sf::Vector2i, sf::Vector2i>;
-	std::vector<move> legal_moves;
-	void generateLegalMoves();
+	std::vector<move> generateLegalMoves();
 	void generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to);
 	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
@@ -71,6 +71,6 @@ protected:
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 
 	bool hasPieceMoved(const sf::Vector2i& sq);
-	void checkGameOver();
+	void checkGameOver(const std::vector<move>& legal_moves);
 	bool insufficientMaterial() const;
 };

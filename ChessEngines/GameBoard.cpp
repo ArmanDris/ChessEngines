@@ -257,6 +257,7 @@ void GameBoard::drawPlayerTurn(sf::RenderWindow& w) const {
 void GameBoard::drawPotenialMoves(sf::RenderWindow& w)
 {
 	if (!holdingPiece) return;
+
 	std::vector <std::pair<sf::Vector2i, sf::Vector2i>> moves = b.getMoves();
 
 	for (auto move : moves) {

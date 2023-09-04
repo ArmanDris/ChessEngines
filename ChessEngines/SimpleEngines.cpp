@@ -154,7 +154,7 @@ std::pair<sf::Vector2i, sf::Vector2i> RandomEngine::returnMove(const Board& b)
 {
 	Board board = b;
 
-	auto moves = b.getMoves();
+	auto moves = board.getMoves();
 
 	if (moves.size() == 0) throw std::invalid_argument("No possible moves");
 	// Random number generation setup
