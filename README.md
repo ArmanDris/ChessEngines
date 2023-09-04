@@ -4,7 +4,7 @@ This project is built on top of the chess game I made 😀. I want to make some 
 
 ### 9 - 04
 I have just gutted and remade the whole program. Today I got it running 40% faster than before 🥳. I was expecting more but for a while I thought I made it slower so at least that is not the case. Now I can fianlly work on implementing minimax.
-My board does not allow for underpromotion so it fails some perft tests but realistically I do not care about underpromotion. I also broke my other engines while remaking the board class ☹, so perhaps I will fix them.
+My board does not allow for underpromotion so it fails some perft tests but realistically I do not care about underpromotion. I also broke my other engines while remaking the board class ☹, so perhaps I will fix them. The win detection for the new board class is also a bit iffy.
 
 Perft after refactor: <br/>
 ![image](https://github.com/ArmanDris/ChessEngines/assets/59405643/728a7a63-05df-45a5-a0fe-901673f50e50) <br/>
