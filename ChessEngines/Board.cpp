@@ -13,14 +13,14 @@ void Board::makeMove(const sf::Vector2i old_square, const sf::Vector2i new_squar
 	auto it = std::find(legal_moves.begin(), legal_moves.end(), m);
 	if (it == legal_moves.end()) return;
 
-	makeSafeMove(old_square, new_square, legal_moves);
+	makeSafeMove(old_square, new_square);
 }
 
-void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square, const std::vector<move>& legal_moves)
+void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square)
 {
 	movePiece(old_square, new_square);
 	changeTurn();
-	checkGameOver(legal_moves);
+	checkGameOver();
 }
 
 void Board::undoMove()
@@ -685,32 +685,29 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 	return false;
 }
 
-void Board::checkGameOver(const std::vector<move>& legal_moves)
+void Board::checkGameOver()
 {
 	if (insufficientMaterial()) {
 		draw = true;
 		return;
 	}
 
-	if (legal_moves.size() != 0) return;
-
-	Color ally_color = whiteTurn ? Color::White : Color::Black;
 	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
 	std::vector<move> enemy_psudo_legal_moves;
 	generatePsudoLegalMoves(enemy_color, enemy_psudo_legal_moves);
 
-	// If reason for no moves is checkmate then change those variables and return
+	std::vector<move> responses; // Only generate if king is in check
+
 	for (move enemy_move : enemy_psudo_legal_moves) {
 		if (board[enemy_move.second.x][enemy_move.second.y].getType() == Type::King) {
-			if  (ally_color == Color::White) blackVictory = true;
-			else whiteVictory = true;
-			return;
+			responses = generateLegalMoves();
+			if (responses.size() == 0) {
+				whiteTurn ? whiteVictory = true : blackVictory = true;
+				return;
+			}
 		}
 	}
-
-	// Otherwise must be draw
-	draw = true;
 }
 
 bool Board::insufficientMaterial() const

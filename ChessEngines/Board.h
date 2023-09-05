@@ -17,7 +17,7 @@ public:
 	Board();
 
 	void makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
-	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square, const std::vector<move>& legal_moves);
+	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
 	void undoMove();
 	void softUndoMove();
 
@@ -47,6 +47,9 @@ protected:
 		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
 	};
 
+	//Piece& pieceAt(int x, int y) { return board[x + 8 * y]; }
+	//Piece& pieceAt(sf::Vector2i square) { return pieceAt(square.x, square.y); }
+
 	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
 
 	bool whiteTurn = true;
@@ -72,6 +75,6 @@ protected:
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 
 	bool hasPieceMoved(const sf::Vector2i& sq);
-	void checkGameOver(const std::vector<move>& legal_moves);
+	void checkGameOver();
 	bool insufficientMaterial() const;
 };

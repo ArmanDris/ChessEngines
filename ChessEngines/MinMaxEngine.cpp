@@ -58,7 +58,7 @@
      std::vector<move> legal_moves = b.getMoves();
 
      for (auto move : legal_moves) {
-         b.makeSafeMove(move.first, move.second, legal_moves);
+         b.makeSafeMove(move.first, move.second);
          num_positions += prefSearch(b, depth - 1);
          b.undoMove();
      }
