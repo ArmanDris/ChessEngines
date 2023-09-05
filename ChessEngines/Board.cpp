@@ -743,6 +743,47 @@ bool Board::isPawnAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 
 bool Board::isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 {
+	// Look for moves upward
+	for (int y = sq.y - 1; y >= 0; y--) {
+		if (!pieceAt(sq.x, y)) {
+			return true;
+		}
+		else {
+			return true;
+			break;
+		}
+	}
+
+	// Look for moves downward
+	for (int y = sq.y + 1; y <= 7; y++) {
+		if (!pieceAt(sq.x, y)) {
+			return true;
+		}
+		else {
+			return true;
+			break;
+		}
+	}
+
+	// Look for moves left
+	for (int x = sq.x - 1; x >= 0; x--) {
+		if (!pieceAt(x, sq.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+	}
+
+	// Look for moves right
+	for (int x = sq.x + 1; x <= 7; x++) {
+		if (!pieceAt(x, sq.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+	}
 	return false;
 }
 
@@ -755,6 +796,61 @@ bool Board::isKnightAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 
 bool Board::isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 {
+	// Generating up left
+	int i = 0;
+	sf::Vector2i tgt(sq.x - 1, sq.y - 1);
+	while (tgt.x >= 0 && tgt.y >= 0) {
+		if (!pieceAt(tgt.x, tgt.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+		tgt.x -= 1;
+		tgt.y -= 1;
+	}
+
+	// Generate up right
+	i = 0;
+	tgt = sf::Vector2i(sq.x + 1, sq.y - 1);
+	while (tgt.x <= 7 && tgt.y >= 0) {
+		if (!pieceAt(tgt.x, tgt.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+		tgt.x += 1;
+		tgt.y -= 1;
+	}
+
+	// Generate down left
+	i = 0;
+	tgt = sf::Vector2i(sq.x - 1, sq.y + 1);
+	while (tgt.x >= 0 && tgt.y <= 7) {
+		if (!pieceAt(tgt.x, tgt.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+		tgt.x -= 1;
+		tgt.y += 1;
+	}
+
+	// Generate down right
+	i = 0;
+	tgt = sf::Vector2i(sq.x + 1, sq.y + 1);
+	while (tgt.x <= 7 && tgt.y <= 7) {
+		if (!pieceAt(tgt.x, tgt.y))
+			return true;
+		else {
+			return true;
+			break;
+		}
+		tgt.x += 1;
+		tgt.y += 1;
+	}
 	return false;
 }
 
