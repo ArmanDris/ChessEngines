@@ -691,12 +691,24 @@ void Board::checkGameOver()
 		draw = true;
 		return;
 	}
+
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
+
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (pieceAt(x, y).getColor() == enemy_color) {
+			isSquareAttacked();
+		}
+	}
 }
 
-bool Board::insufficientMaterial() const
+// first return is 
+std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> Board::insufficientMaterial() const
 {
+	std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> info = {false, sf::Vector(-1, -1), sf::Vector(-1, -1)};
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (pieceAt(x, y) && pieceAt(x, y).getType() != Type::King) {
+			if (pieceAt(x, y).getColor() == white)
 			return false;
 		}
 	}
