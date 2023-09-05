@@ -78,7 +78,7 @@ protected:
 
 	bool hasPieceMoved(const sf::Vector2i& sq);
 	void checkGameOver();
-	bool insufficientMaterial() const;
+	std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> insufficientMaterial() const;
 
 	// Used only for checking logic
 	bool isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt);
