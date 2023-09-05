@@ -687,33 +687,40 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 
 void Board::checkGameOver()
 {
-	if (insufficientMaterial()) {
+	std::tuple<bool, sf::Vector2i, sf::Vector2i> info = insufficientMaterial();
+
+	if (std::get<0>(info)) {
 		draw = true;
 		return;
 	}
-
+	
 	Color ally_color = whiteTurn ? Color::White : Color::Black;
 	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
+	sf::Vector2i ally_king = whiteTurn ? std::get<1>(info) : std::get<2>(info);
+
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x, y).getColor() == enemy_color) {
-			isSquareAttacked();
+		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+			std::cout << "ally king is in check" std::endl;
 		}
 	}
 }
 
-// first return is 
+// returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
 std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> Board::insufficientMaterial() const
 {
-	std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> info = {false, sf::Vector(-1, -1), sf::Vector(-1, -1)};
+	std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> info = {true, sf::Vector(-1, -1), sf::Vector(-1, -1)};
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x, y) && pieceAt(x, y).getType() != Type::King) {
-			if (pieceAt(x, y).getColor() == white)
-			return false;
+		if (pieceAt(x, y) && pieceAt(x, y).getType() == Type::King) {
+			if (pieceAt(x, y).getColor() == white) std::get<1>(info) = sf::Vector2i(x, y);
+			else                                   std::get<2>(info) = sf::Vector2i(x, y);
+		}
+		else {
+			std::get<0>(info) = false;
 		}
 	}
 
-	return true;
+	return info;
 }
 
 bool Board::isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt)
