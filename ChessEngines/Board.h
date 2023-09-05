@@ -21,8 +21,8 @@ public:
 	void undoMove();
 	void softUndoMove();
 
-	const Piece& getPiece(sf::Vector2i square) const { return getPiece(square.x, square.y); }
-	const Piece& getPiece(int x, int y) const { return board[x][y]; }
+	const Piece& getPiece(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
+	const Piece& getPiece(int x, int y) const { return pieceAt(x, y); }
 	std::vector<move> getMoves();
 	const move getLastMove() const;
 	bool isWhiteTurn() const { return whiteTurn; }
@@ -36,19 +36,21 @@ public:
 	Piece charToPiece(char c);
 
 protected:
-	Piece board[8][8] = { 
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()}
+	Piece board[8 * 8] = {
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(),
+		Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()
 	};
 
-	//Piece& pieceAt(int x, int y) { return board[x + 8 * y]; }
-	//Piece& pieceAt(sf::Vector2i square) { return pieceAt(square.x, square.y); }
+	Piece& pieceAt(int x, int y) { return board[x + 8 * y]; }
+	const Piece& pieceAt(int x, int y) const { return board[x + 8 * y]; }
+	Piece& pieceAt(sf::Vector2i square) { return pieceAt(square.x, square.y); }
+	const Piece& pieceAt(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
 
 	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
 
@@ -73,6 +75,9 @@ protected:
 	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+
+	// Pre optimisation bool fn's:
+
 
 	bool hasPieceMoved(const sf::Vector2i& sq);
 	void checkGameOver();

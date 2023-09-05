@@ -193,8 +193,8 @@ void GameBoard::makeBlackMove()
 }
 
 const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
-	const Type  piece = b.getPiece(sf::Vector2i(sq.x, sq.y)).getType();
-	const Color color = b.getPiece(sf::Vector2i(sq.x, sq.y)).getColor();
+	const Type  piece = b.getPiece(sq).getType();
+	const Color color = b.getPiece(sq).getColor();
 
 	const sf::Texture* texture = nullptr;
 

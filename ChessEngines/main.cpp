@@ -6,8 +6,7 @@
 
 int main() {
     Board br;
-    MinMaxEngine minmax;
-
+    MinMaxEngine minmax; 
     minmax.returnMove(br);
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
