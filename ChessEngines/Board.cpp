@@ -695,13 +695,80 @@ void Board::checkGameOver()
 
 bool Board::insufficientMaterial() const
 {
-	bool non_king_piece = false;
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (pieceAt(x, y) && pieceAt(x, y).getType() != Type::King) {
-			non_king_piece = true;
-			break;
-			break;
+			return false;
 		}
 	}
-	return !non_king_piece;
+
+	return true;
+}
+
+bool Board::isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	switch (pieceAt(sq).getType()) {
+	case Type::Pawn:   isPawnAttacking(sq, tgt);   break;
+	case Type::Rook:   isRookAttacking(sq, tgt);   break;
+	case Type::Knight: isKnightAttacking(sq, tgt); break;
+	case Type::Bishop: isBishopAttacking(sq, tgt); break;
+	case Type::King:   isKingAttacking(sq, tgt);   break;
+	case Type::Queen:  isQueenAttacking(sq, tgt);  break;
+	}
+	return false;
+}
+
+bool Board::isPawnAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	Color c = pieceAt(sq).getColor();
+
+	if (c == Color::White) {
+		// Capture up and to the right
+		if (tgt == sf::Vector2i(sq.x + 1, sq.y - 1))
+			return true;
+		// Capture up and to the left
+		if (tgt == sf::Vector2i(sq.x - 1, sq.y - 1))
+			return true;
+	}
+	else {
+		// Capture down and to the right
+		if (tgt == sf::Vector2i(sq.x + 1, sq.y + 1))
+			return true;
+		// Capture down and to the left
+		if (tgt == sf::Vector2i(sq.x - 1, sq.y + 1))
+			return true;
+	}
+
+	return false;
+}
+
+bool Board::isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	return false;
+}
+
+bool Board::isKnightAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	if (abs(tgt.x - sq.x) == 1 && abs(tgt.y - sq.y) == 2) return true;
+	if (abs(tgt.x - sq.x) == 2 && abs(tgt.y - sq.y) == 1) return true;
+	return false;
+}
+
+bool Board::isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	return false;
+}
+
+bool Board::isKingAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	// Prevents the king from moving more than one square
+	if (abs(tgt.x - sq.x) > 1 || abs(tgt.y - sq.y) > 1) return false;
+
+	return true;
+}
+
+bool Board::isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+{
+	isRookAttacking(sq, tgt);
+	isBishopAttacking(sq, tgt);
+	return false;
 }

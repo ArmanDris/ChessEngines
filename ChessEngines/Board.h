@@ -76,10 +76,16 @@ protected:
 	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
 
-	// Pre optimisation bool fn's:
-
-
 	bool hasPieceMoved(const sf::Vector2i& sq);
 	void checkGameOver();
 	bool insufficientMaterial() const;
+
+	// Used only for checking logic
+	bool isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isPawnAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isKnightAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isKingAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+	bool isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 };
