@@ -701,19 +701,21 @@ void Board::checkGameOver()
 
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
-			std::cout << "ally king is in check" std::endl;
+			std::cout << "ally king is in check" << std::endl;
+			break;
+			break;
 		}
 	}
 }
 
 // returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
-std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> Board::insufficientMaterial() const
+std::tuple<bool, sf::Vector2i, sf::Vector2i> Board::insufficientMaterial() const
 {
-	std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> info = {true, sf::Vector(-1, -1), sf::Vector(-1, -1)};
+	std::tuple<bool, sf::Vector2i, sf::Vector2i> info = {true, sf::Vector2i(-1, -1), sf::Vector2i(-1, -1)};
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (pieceAt(x, y) && pieceAt(x, y).getType() == Type::King) {
-			if (pieceAt(x, y).getColor() == white) std::get<1>(info) = sf::Vector2i(x, y);
-			else                                   std::get<2>(info) = sf::Vector2i(x, y);
+			if (pieceAt(x, y).getColor() == Color::White) std::get<1>(info) = sf::Vector2i(x, y);
+			else                                          std::get<2>(info) = sf::Vector2i(x, y);
 		}
 		else {
 			std::get<0>(info) = false;
@@ -726,12 +728,12 @@ std::tuple<bool, sf::Vector2i sq, sf::Vector2i sq> Board::insufficientMaterial()
 bool Board::isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 {
 	switch (pieceAt(sq).getType()) {
-	case Type::Pawn:   isPawnAttacking(sq, tgt);   break;
-	case Type::Rook:   isRookAttacking(sq, tgt);   break;
-	case Type::Knight: isKnightAttacking(sq, tgt); break;
-	case Type::Bishop: isBishopAttacking(sq, tgt); break;
-	case Type::King:   isKingAttacking(sq, tgt);   break;
-	case Type::Queen:  isQueenAttacking(sq, tgt);  break;
+	case Type::Pawn:   return isPawnAttacking(sq, tgt);   break;
+	case Type::Rook:   return isRookAttacking(sq, tgt);   break;
+	case Type::Knight: return isKnightAttacking(sq, tgt); break;
+	case Type::Bishop: return isBishopAttacking(sq, tgt); break;
+	case Type::King:   return isKingAttacking(sq, tgt);   break;
+	case Type::Queen:  return isQueenAttacking(sq, tgt);  break;
 	}
 	return false;
 }
@@ -813,7 +815,7 @@ bool Board::isKnightAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 	return false;
 }
 
-bool Board::isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
+bool Board::isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& new_sq)
 {
 	// Generating up left
 	int i = 0;
