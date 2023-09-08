@@ -5,9 +5,9 @@
 #include  "MinMaxEngine.h"
 
 int main() {
-    //Board br;
-    //MinMaxEngine minmax; 
-    //minmax.returnMove(br);
+    Board br;
+    MinMaxEngine minmax; 
+    minmax.returnMove(br);
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 

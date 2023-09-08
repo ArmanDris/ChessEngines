@@ -19,7 +19,6 @@ public:
 	void makeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
 	void makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_square);
 	void undoMove();
-	void softUndoMove();
 
 	const Piece& getPiece(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
 	const Piece& getPiece(int x, int y) const { return pieceAt(x, y); }
