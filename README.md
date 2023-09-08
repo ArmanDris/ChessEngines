@@ -2,9 +2,6 @@
 
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
-It is probably best to go back to the old way of storing legal moves in the board object and then having a member variable in minimax to store the board through search.
-Definetly try passing by reference in board search
-
 ### 9 - 04
 I have just gutted and remade the whole program. Today I got it running 40% faster than before 🥳. I was expecting more but for a while I thought I made it slower so at least that is not the case. Now I can fianlly work on implementing minimax.
 My board does not allow for underpromotion so it fails some perft tests but realistically I do not care about underpromotion. I also broke my other engines while remaking the board class ☹, so perhaps I will fix them. The win detection for the new board class is also a bit iffy.
