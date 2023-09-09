@@ -681,25 +681,27 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 
 void Board::checkGameOver()
 {
-	//std::tuple<bool, sf::Vector2i, sf::Vector2i> info = insufficientMaterial();
+	std::tuple<bool, sf::Vector2i, sf::Vector2i> info = insufficientMaterial();
 
-	//if (std::get<0>(info)) {
-	//	draw = true;
-	//	return;
-	//}
-	//
-	//Color ally_color = whiteTurn ? Color::White : Color::Black;
-	//Color enemy_color = whiteTurn ? Color::Black : Color::White;
+	if (std::get<0>(info)) {
+		draw = true;
+		return;
+	}
+	
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
-	//sf::Vector2i ally_king = whiteTurn ? std::get<1>(info) : std::get<2>(info);
+	sf::Vector2i ally_king = whiteTurn ? std::get<1>(info) : std::get<2>(info);
 
-	//for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-	//	if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
-	//		std::cout << "ally king is in check" << std::endl;
-	//		break;
-	//		break;
-	//	}
-	//}
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+			std::cout << "ally king is in check" << std::endl;
+			return;
+		}
+	}
+
+	// std::vector<move> legal_moves = generateLegalMoves();
+	// if (legal_moves.size() == 0) draw = true;
 }
 
 // returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
