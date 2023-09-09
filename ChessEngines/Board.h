@@ -65,7 +65,7 @@ protected:
 	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
 	void saveLog(std::string fileName = "log.txt");
 
-	// Logic from after optimisation refactor:
+	// Move generation logic
 	std::vector<move> generateLegalMoves();
 	void generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to);
 	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
@@ -79,7 +79,7 @@ protected:
 	void checkGameOver();
 	std::tuple<bool, sf::Vector2i, sf::Vector2i> insufficientMaterial() const;
 
-	// Used only for checking logic
+	// Is king in check logic:
 	bool isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 	bool isPawnAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 	bool isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
@@ -87,4 +87,7 @@ protected:
 	bool isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 	bool isKingAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 	bool isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
+
+	bool doesColorHaveMoves(Color c);
+	sf::Vector2i getKingSquare(Color c);
 };
