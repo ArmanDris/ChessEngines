@@ -1,17 +1,57 @@
  #include "MinMaxEngine.h"
 
- std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& b)
+ std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& board)
  {
-     perftBenchmark();
+     Board b = board;
+     std::vector<move> moves = b.getMoves();
 
-     return { sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
+     move best_move = moves[0];
+     int best_eval = INT_MIN;
+     for (move m : moves) {
+         b.makeSafeMove(m.first, m.second);
+         int eval = -search(b, 3);
+         b.undoMove();
+
+         if (eval > best_eval) {
+			 best_eval = eval;
+			 best_move = m;
+		 }
+     }
+
+     return best_move;
+ }
+
+ int MinMaxEngine::search(Board & b, int depth) {
+     if (depth == 0)
+         return boardEval(b);
+
+     std::vector<move> legal_moves = b.getMoves();
+     if (legal_moves.size() == 0) {
+         if (b.isPlayerInCheck())
+             return -1000000;
+         else if (b.isDraw())
+             return 0;
+         else
+             return 1000000;
+     }
+
+     int best_eval = INT_MIN;
+     for (auto move : legal_moves) {
+         b.makeSafeMove(move.first, move.second);
+         int evaluation = -search(b, depth - 1);
+         best_eval = std::max(best_eval, evaluation);
+         b.undoMove();
+     }
+
+     return best_eval;
  }
 
  int MinMaxEngine::boardEval(const Board& b) {
      int total_eval = 0;
      total_eval += materialEval(b);
 
-     return total_eval;
+     int perspective = b.isWhiteTurn() ? 1 : -1;
+     return total_eval * perspective;
  }
 
  int MinMaxEngine::materialEval(const Board& b) {

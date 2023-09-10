@@ -84,6 +84,22 @@ bool Board::isGameOver() const
 	return draw || whiteVictory || blackVictory;
 }
 
+bool Board::isPlayerInCheck()
+{
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
+	sf::Vector2i ally_king = getKingSquare(ally_color);
+
+	bool ally_king_in_check = false;
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Board::importFEN(std::string FEN)
 {
 	log.clear();
@@ -692,27 +708,16 @@ void Board::checkGameOver()
 	}
 	
 	Color ally_color = whiteTurn ? Color::White : Color::Black;
-	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
-	// See if ally has moves
 	if (colorHasMoves(ally_color))
 		return;
 
-	sf::Vector2i ally_king = getKingSquare(ally_color);
-
-	bool ally_king_in_check = false;
-	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
-			ally_king_in_check = true;
-			whiteTurn ? blackVictory = true : whiteVictory = true;
-			return;
-		}
-	}
+	if (isPlayerInCheck())
+		whiteTurn ? blackVictory = true : whiteVictory = true;
 
 	draw = true;
 }
 
-// returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
 bool Board::insufficientMaterial() const
 {
 	for (Piece p : board) {

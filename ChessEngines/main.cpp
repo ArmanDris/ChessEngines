@@ -21,8 +21,9 @@ int main() {
     GameBoard b;
 
     RandomEngine r;
+    MinMaxEngine mm;
     b.setPlayer(&r, Color::White);
-    b.setPlayer(&r, Color::Black);
+    b.setPlayer(&mm, Color::Black);
 
 
     while (window.isOpen()) {
@@ -59,7 +60,7 @@ int main() {
             }
         }
 
-        //b.preformCPUMoves();
+        b.preformCPUMoves(100);
     }
 
     return 0;

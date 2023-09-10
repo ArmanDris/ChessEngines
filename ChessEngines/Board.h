@@ -22,13 +22,16 @@ public:
 
 	const Piece& getPiece(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
 	const Piece& getPiece(int x, int y) const { return pieceAt(x, y); }
+
 	std::vector<move> getMoves();
 	const move getLastMove() const;
+
 	bool isWhiteTurn() const { return whiteTurn; }
 	bool isWhiteVictory() const { return whiteVictory; }
 	bool isBlackVictory() const { return blackVictory; }
 	bool isDraw() const { return draw; }
 	bool isGameOver() const;
+	bool isPlayerInCheck();
 
 	void importFEN(std::string FEN);
 	sf::Vector2i stringToVec(std::string s);
