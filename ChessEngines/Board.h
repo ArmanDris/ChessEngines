@@ -67,17 +67,19 @@ protected:
 
 	// Move generation logic
 	std::vector<move> generateLegalMoves();
-	void generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to);
-	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
-	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
-	void appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
-	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
-	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
-	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves);
+	bool moveExposesKing(move m, Color ally_color);
+	void generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to) const;
+	void appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
+	void appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
+	void appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
+	void appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
+	void appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
+	void appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const;
 
-	bool hasPieceMoved(const sf::Vector2i& sq);
+	bool hasPieceMoved(const sf::Vector2i& sq) const;
 	void checkGameOver();
-	std::tuple<bool, sf::Vector2i, sf::Vector2i> insufficientMaterial() const;
+	bool insufficientMaterial() const;
+	bool colorHasMoves(Color c);
 
 	// Is king in check logic:
 	bool isSquareAttacked(const sf::Vector2i& sq, const sf::Vector2i& tgt);
@@ -88,6 +90,5 @@ protected:
 	bool isKingAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 	bool isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt);
 
-	bool doesColorHaveMoves(Color c);
 	sf::Vector2i getKingSquare(Color c);
 };

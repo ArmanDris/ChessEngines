@@ -89,7 +89,7 @@ void GameBoard::preformCPUMoves(int move_delay_ms)
 	double elapsed_time_ms = c.getElapsedTime().asMilliseconds();
 
 	// Uncomment if you want the game to restart 10 seconds after game is finished
-	//if (b.isGameOver() && elapsed_time_ms > move_delay_ms + 5000) { resetBoard(); }
+	if (b.isGameOver() && elapsed_time_ms > move_delay_ms + 5000) { resetBoard(); }
 	if (b.isGameOver()) return;
 
 	if (elapsed_time_ms < move_delay_ms) return;

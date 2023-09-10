@@ -299,8 +299,6 @@ void Board::saveLog(std::string saveLog) {
 std::vector<Board::move> Board::generateLegalMoves()
 {
 	Color ally_color = whiteTurn ? Color::White : Color::Black;
-	Color enemy_color = whiteTurn ? Color::Black : Color::White;
-
 	sf::Vector2i ally_king = getKingSquare(ally_color);
 
 	std::vector<move> psudo_legal_moves;
@@ -309,47 +307,10 @@ std::vector<Board::move> Board::generateLegalMoves()
 
 	// Now we have to make every legal move and see if the enemy can capture the king
 	auto it = psudo_legal_moves.begin();
-
 	while (it != psudo_legal_moves.end()) {
 
-		move m = *it;
-		movePiece(m.first, m.second);
-
-		sf::Vector2i ally_king = getKingSquare(ally_color);
-
-		bool move_exposes_king = false;
-
-		for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-			if (pieceAt(x, y).getColor() == ally_color) continue;
-			if (isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
-				move_exposes_king = true;
-				break;
-			}
-		}
-
-		// If castline make sure the king does not move over check
-		if (pieceAt(m.second).getType() == Type::King && abs(m.first.x - m.second.x) > 1) {
-			for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-				if (pieceAt(x, y).getColor() == ally_color) continue;
-				// Left side castle
-				if (m.second.x == 2 && isSquareAttacked(sf::Vector2i(x, y), sf::Vector2i(3, ally_king.y))) {
-					move_exposes_king = true;
-					break;
-				}
-				// Right side castle
-				if (m.second.x == 6 && isSquareAttacked(sf::Vector2i(x, y), sf::Vector2i(5, ally_king.y))) {
-					move_exposes_king = true;
-					break;
-				}
-			}
-		}
-
-		undoMove();
-		changeTurn();
-
-		if (move_exposes_king) {
+		if (moveExposesKing(*it, ally_color))
 			it = psudo_legal_moves.erase(it);
-		}
 		else {
 			it++;
 		}
@@ -358,9 +319,48 @@ std::vector<Board::move> Board::generateLegalMoves()
 	return psudo_legal_moves;
 }
 
+bool Board::moveExposesKing(move m, Color ally_color)
+{
+	movePiece(m.first, m.second);
+
+	sf::Vector2i ally_king = getKingSquare(ally_color);
+
+	bool move_exposes_king = false;
+
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (pieceAt(x, y).getColor() == ally_color) continue;
+		if (isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+			move_exposes_king = true;
+			break;
+		}
+	}
+
+	// If castling make sure the king does not move over check
+	if (pieceAt(m.second).getType() == Type::King && abs(m.first.x - m.second.x) > 1) {
+		for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+			if (pieceAt(x, y).getColor() == ally_color) continue;
+			// Left side castle
+			if (m.second.x == 2 && isSquareAttacked(sf::Vector2i(x, y), sf::Vector2i(3, ally_king.y))) {
+				move_exposes_king = true;
+				break;
+			}
+			// Right side castle
+			if (m.second.x == 6 && isSquareAttacked(sf::Vector2i(x, y), sf::Vector2i(5, ally_king.y))) {
+				move_exposes_king = true;
+				break;
+			}
+		}
+	}
+
+	undoMove();
+	changeTurn();
+
+	return move_exposes_king;
+}
+
 // Possible optimization: Generate the moves for white and black so you only have to call this function once
 // !!! Expensive function because it loops through the whole board
-void Board::generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to)
+void Board::generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to) const
 {
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
 		if (!pieceAt(x, y)) continue;
@@ -380,7 +380,7 @@ void Board::generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_m
 	}
 }
 
-void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	if (c == Color::White) {
 		if (!pieceAt(sq.x, sq.y - 1)) {
@@ -431,7 +431,7 @@ void Board::appendPsudoLegalPawnMoves(const sf::Vector2i& sq, const Color& c, st
 	}
 }
 
-void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	// Look for moves upward
 	for (int y = sq.y - 1; y >= 0; y--) {
@@ -492,7 +492,7 @@ void Board::appendPsudoLegalRookMoves(const sf::Vector2i& sq, const Color& c, st
 	}
 }
 
-void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	if (sq.x >= 1 && sq.y >= 2) {
 		if (!pieceAt(sq.x - 1, sq.y - 2) || pieceAt(sq.x - 1, sq.y - 2).getColor() != c)
@@ -535,7 +535,7 @@ void Board::appendPsudoLegalKnightMoves(const sf::Vector2i& sq, const Color& c, 
 	}
 }
 
-void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	// Generating up left
 	sf::Vector2i tgt(sq.x - 1, sq.y - 1);
@@ -606,7 +606,7 @@ void Board::appendPsudoLegalBishopMoves(const sf::Vector2i& sq, const Color& c, 
 	}
 }
 
-void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	if (sq.x != 0 && sq.y != 0) {
 		if (!pieceAt(sq.x - 1, sq.y - 1) || pieceAt(sq.x - 1, sq.y - 1).getColor() != c)
@@ -667,14 +667,14 @@ void Board::appendPsudoLegalKingMoves(const sf::Vector2i& sq, const Color& c, st
 	}
 }
 
-void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves)
+void Board::appendPsudoLegalQueenMoves(const sf::Vector2i& sq, const Color& c, std::vector<move>& moves) const
 {
 	appendPsudoLegalRookMoves(sq, c, moves);
 	appendPsudoLegalBishopMoves(sq, c, moves);
 }
 
 // !!! Potentially expensive; will look through log
-bool Board::hasPieceMoved(const sf::Vector2i& sq)
+bool Board::hasPieceMoved(const sf::Vector2i& sq) const 
 {
 	for (auto move : log) {
 		if (std::get<1>(move) == sq || std::get<3>(move) == sq)
@@ -685,44 +685,63 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq)
 
 void Board::checkGameOver()
 {
-	//std::tuple<bool, sf::Vector2i, sf::Vector2i> info = insufficientMaterial();
 
-	//if (std::get<0>(info)) {
-	//	draw = true;
-	//	return;
-	//}
-	//
-	//Color ally_color = whiteTurn ? Color::White : Color::Black;
-	//Color enemy_color = whiteTurn ? Color::Black : Color::White;
+	if (insufficientMaterial()) {
+		draw = true;
+		return;
+	}
+	
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 
-	//sf::Vector2i ally_king = whiteTurn ? std::get<1>(info) : std::get<2>(info);
+	// See if ally has moves
+	if (colorHasMoves(ally_color))
+		return;
 
-	//// See if ally has moves
+	sf::Vector2i ally_king = getKingSquare(ally_color);
 
-
-	//for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-	//	if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
-	//		std::cout << "ally king is in check" << std::endl;
-	//		return;
-	//	}
-	//}
-}
-
-// returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
-std::tuple<bool, sf::Vector2i, sf::Vector2i> Board::insufficientMaterial() const
-{
-	std::tuple<bool, sf::Vector2i, sf::Vector2i> info = { true, sf::Vector2i(-1, -1), sf::Vector2i(-1, -1) };
+	bool ally_king_in_check = false;
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x, y) && pieceAt(x, y).getType() == Type::King) {
-			if (pieceAt(x, y).getColor() == Color::White) std::get<1>(info) = sf::Vector2i(x, y);
-			else                                          std::get<2>(info) = sf::Vector2i(x, y);
-		}
-		else {
-			std::get<0>(info) = false;
+		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+			ally_king_in_check = true;
+			whiteTurn ? blackVictory = true : whiteVictory = true;
+			return;
 		}
 	}
 
-	return info;
+	draw = true;
+}
+
+// returns a tuple contatining: is there isnsufficent material, position of white king, position of black king.
+bool Board::insufficientMaterial() const
+{
+	for (Piece p : board) {
+		if (p && p.getType() != Type::King) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// Almost a duplicate of generateLegalMoves() but it returns true as soon as it sees a legal move
+bool Board::colorHasMoves(Color c)
+{
+	std::vector<move> psudo_legal_moves;
+	generatePsudoLegalMoves(c, psudo_legal_moves);
+
+	// Now we have to make every legal move and see if the enemy can capture the king
+	auto it = psudo_legal_moves.begin();
+	while (it != psudo_legal_moves.end()) {
+
+		if (moveExposesKing(*it, c))
+			it = psudo_legal_moves.erase(it);
+		else {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // True if tgt is attacked by sq
@@ -891,11 +910,6 @@ bool Board::isKingAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 bool Board::isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 {
 	return isRookAttacking(sq, tgt) || isBishopAttacking(sq, tgt);
-}
-
-bool Board::doesColorHaveMoves(Color c)
-{
-	return false;
 }
 
 sf::Vector2i Board::getKingSquare(Color c)
