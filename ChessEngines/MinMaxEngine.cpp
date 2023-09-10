@@ -2,14 +2,18 @@
 
  std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& board)
  {
-     Board b = board;
+     b = board;
      std::vector<move> moves = b.getMoves();
+
+     std::random_device rd;
+     std::default_random_engine rng(rd());
+     std::shuffle(moves.begin(), moves.end(), rng);
 
      move best_move = moves[0];
      int best_eval = INT_MIN;
      for (move m : moves) {
          b.makeSafeMove(m.first, m.second);
-         int eval = -search(b, 3);
+         int eval = -search(3);
          b.undoMove();
 
          if (eval > best_eval) {
@@ -21,9 +25,9 @@
      return best_move;
  }
 
- int MinMaxEngine::search(Board & b, int depth) {
+ int MinMaxEngine::search(int depth, int alpha, int beta) {
      if (depth == 0)
-         return boardEval(b);
+         return boardEval();
 
      std::vector<move> legal_moves = b.getMoves();
      if (legal_moves.size() == 0) {
@@ -36,9 +40,10 @@
      }
 
      int best_eval = INT_MIN;
+
      for (auto move : legal_moves) {
          b.makeSafeMove(move.first, move.second);
-         int evaluation = -search(b, depth - 1);
+         int evaluation = -search(depth - 1);
          best_eval = std::max(best_eval, evaluation);
          b.undoMove();
      }
@@ -46,15 +51,16 @@
      return best_eval;
  }
 
- int MinMaxEngine::boardEval(const Board& b) {
+ int MinMaxEngine::boardEval() const
+ {
      int total_eval = 0;
-     total_eval += materialEval(b);
+     total_eval += materialEval();
 
-     int perspective = b.isWhiteTurn() ? 1 : -1;
-     return total_eval * perspective;
+     return total_eval;
  }
 
- int MinMaxEngine::materialEval(const Board& b) {
+ int MinMaxEngine::materialEval() const
+ {
      int white_material = 0;
      int black_material = 0;
 
@@ -71,25 +77,25 @@
         
      }
 
-     return white_material - black_material;
+     int perspective = b.isWhiteTurn() ? 1 : -1;
+
+     return (white_material - black_material) * perspective;
  }
 
  void MinMaxEngine::perftBenchmark() {
-     Board br;
-     std::cout << "Size of bord obj " << sizeof(br) << std::endl << std::endl;
+     b = Board();
      std::cout << "Benchmarking first 5 ply's on starting board: \n";
 
-     Board b;
      sf::Clock c;
 
      for (int i = 1; i <= 5; i++) {
-         std::cout << prefSearch(b, i) << " in ";
+         std::cout << prefSearch(i) << " in ";
          sf::Time t = c.restart();
          std::cout << t.asSeconds() << " seconds \n";
      }
  }
 
- int MinMaxEngine::prefSearch(Board& b, int depth) {
+ int MinMaxEngine::prefSearch(int depth) {
      if (depth == 0)
          return 1;
 
@@ -99,7 +105,7 @@
 
      for (auto move : legal_moves) {
          b.makeSafeMove(move.first, move.second);
-         num_positions += prefSearch(b, depth - 1);
+         num_positions += prefSearch(depth - 1);
          b.undoMove();
      }
 

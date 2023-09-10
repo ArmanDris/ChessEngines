@@ -18,7 +18,7 @@ int main() {
 
     RandomEngine r;
     MinMaxEngine mm;
-    b.setPlayer(&r, Color::White);
+    b.setPlayer(&mm, Color::White);
     b.setPlayer(&mm, Color::Black);
 
 
@@ -56,7 +56,7 @@ int main() {
             }
         }
 
-        //b.preformCPUMoves(100);
+        b.preformCPUMoves(0);
     }
 
     return 0;

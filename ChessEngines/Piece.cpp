@@ -23,7 +23,7 @@ int Piece::getValue() const {
 		case Rook: return 5;
 		case Knight: return 3;
 		case Bishop: return 3;
-		case King: return 100;
+		case King: return 10;
 		case Queen: return 9;
 	}
 }
