@@ -1,0 +1,21 @@
+09 - 09 With no checkGameOver():
+20 in      0.000186 seconds
+400 in     0.000632 seconds
+8902 in    0.006715 seconds
+197281 in  0.069603 seconds
+4865609 in 3.23012 seconds
+
+09 - 09 With checkGameOver():
+20 in      0.000139 seconds
+400 in     0.001787 seconds
+8902 in    0.021974 seconds
+197281 in  0.47196 seconds
+4865609 in 11.5953 seconds
+
+09 - 09 After colorHasMoves() changes:
+20 in 0.000313 seconds
+400 in 0.001097 seconds
+8902 in 0.010826 seconds
+197281 in 0.237792 seconds
+4865609 in 5.58514 seconds
+

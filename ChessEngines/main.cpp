@@ -5,10 +5,6 @@
 #include  "MinMaxEngine.h"
 
 int main() {
-    //Board br;
-    //MinMaxEngine minmax; 
-    //minmax.returnMove(br);
-
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
@@ -60,7 +56,7 @@ int main() {
             }
         }
 
-        b.preformCPUMoves(100);
+        //b.preformCPUMoves(100);
     }
 
     return 0;

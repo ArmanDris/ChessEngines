@@ -90,9 +90,8 @@ bool Board::isPlayerInCheck()
 	Color enemy_color = whiteTurn ? Color::Black : Color::White;
 	sf::Vector2i ally_king = getKingSquare(ally_color);
 
-	bool ally_king_in_check = false;
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
+		if (pieceAt(x, y) && pieceAt(x, y).getColor() == enemy_color && isSquareAttacked(sf::Vector2i(x, y), ally_king)) {
 			return true;
 		}
 	}
@@ -374,8 +373,6 @@ bool Board::moveExposesKing(move m, Color ally_color)
 	return move_exposes_king;
 }
 
-// Possible optimization: Generate the moves for white and black so you only have to call this function once
-// !!! Expensive function because it loops through the whole board
 void Board::generatePsudoLegalMoves(Color& c, std::vector<move>& vec_to_append_moves_to) const
 {
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
@@ -701,7 +698,6 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq) const
 
 void Board::checkGameOver()
 {
-
 	if (insufficientMaterial()) {
 		draw = true;
 		return;
@@ -729,20 +725,36 @@ bool Board::insufficientMaterial() const
 	return true;
 }
 
-// Almost a duplicate of generateLegalMoves() but it returns true as soon as it sees a legal move
+// Returns true as soon as it sees a legal move for c
 bool Board::colorHasMoves(Color c)
 {
-	std::vector<move> psudo_legal_moves;
-	generatePsudoLegalMoves(c, psudo_legal_moves);
+	// The goal with this function is to generate moves for each piece. We check if the move exposes the king right away and return true if it does not.
+	// This is a modified appendPsudoLegalMoves with check detection from generateLegalMoves(). Very messy but hopefully FAST
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		std::vector<move> psudo_legal_moves;
+		if (!pieceAt(x, y)) continue;
+		if (pieceAt(x, y).getColor() != c) continue;
+		sf::Vector2i square(x, y);
+		Type type = pieceAt(x, y).getType();
+		Color color = pieceAt(x, y).getColor();
 
-	// Now we have to make every legal move and see if the enemy can capture the king
-	auto it = psudo_legal_moves.begin();
-	while (it != psudo_legal_moves.end()) {
+		switch (type) {
+		case Type::Pawn:   appendPsudoLegalPawnMoves(square, color, psudo_legal_moves); break;
+		case Type::Rook:   appendPsudoLegalRookMoves(square, color, psudo_legal_moves); break;
+		case Type::Knight: appendPsudoLegalKnightMoves(square, color, psudo_legal_moves); break;
+		case Type::Bishop: appendPsudoLegalBishopMoves(square, color, psudo_legal_moves); break;
+		case Type::King:   appendPsudoLegalKingMoves(square, color, psudo_legal_moves); break;
+		case Type::Queen:  appendPsudoLegalQueenMoves(square, color, psudo_legal_moves); break;
+		}
 
-		if (moveExposesKing(*it, c))
-			it = psudo_legal_moves.erase(it);
-		else {
-			return true;
+		auto it = psudo_legal_moves.begin();
+		while (it != psudo_legal_moves.end()) {
+
+			if (moveExposesKing(*it, c))
+				it = psudo_legal_moves.erase(it);
+			else {
+				return true;
+			}
 		}
 	}
 
@@ -919,11 +931,9 @@ bool Board::isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 
 sf::Vector2i Board::getKingSquare(Color c)
 {
-	int i = 0;
-	for (const Piece& p : board) {
-		if (p.getType() == Type::King && p.getColor() == c)
-			return sf::Vector2i(i % 8, i / 8);
-		i++;
+	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+		if (pieceAt(x,y).getType() == Type::King && pieceAt(x,y).getColor() == c)
+			return sf::Vector2i(x,y);
 	}
 
 	return sf::Vector2i(-1, -1);

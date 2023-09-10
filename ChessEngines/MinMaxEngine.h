@@ -7,6 +7,7 @@
  {
  public:
  	virtual std::pair<sf::Vector2i, sf::Vector2i> returnMove(const Board& b);
+    void perftBenchmark();
  private:
  	using move = std::pair<sf::Vector2i, sf::Vector2i>;
     int search(Board& b, int depth);
@@ -14,7 +15,6 @@
  	int materialEval(const Board& b);
 
  	// Helper functions
- 	void perftBenchmark();
  	int prefSearch(Board& b, int depth);
  };
 
