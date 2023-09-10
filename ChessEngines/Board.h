@@ -65,6 +65,7 @@ protected:
 	void movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square);
 	void changeTurn();
+	void softUndoMove();
 	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
 	void saveLog(std::string fileName = "log.txt");
 

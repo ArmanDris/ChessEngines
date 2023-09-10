@@ -26,6 +26,16 @@ void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_s
 void Board::undoMove()
 {
 	if (log.size() == 0) return;
+
+	softUndoMove();
+
+	whiteVictory = false; blackVictory = false; draw = false;
+	changeTurn();
+}
+
+// Does not change turn or reset game over
+void Board::softUndoMove()
+{
 	auto last_log = log.back();
 
 	Piece old_piece = std::get<0>(last_log);
@@ -61,9 +71,6 @@ void Board::undoMove()
 	pieceAt(new_square.x, new_square.y) = new_piece;
 
 	log.pop_back();
-	// Reset game over in case move caused draw or such
-	whiteVictory = false; blackVictory = false; draw = false;
-	changeTurn();
 }
 
 // !!! Expensive call
@@ -71,7 +78,6 @@ std::vector<std::pair<sf::Vector2i, sf::Vector2i>> Board::getMoves()
 {
 	return generateLegalMoves();
 }
-
 
 const std::pair<sf::Vector2i, sf::Vector2i> Board::getLastMove() const
 {
@@ -367,8 +373,7 @@ bool Board::moveExposesKing(move m, Color ally_color)
 		}
 	}
 
-	undoMove();
-	changeTurn();
+	softUndoMove();
 
 	return move_exposes_king;
 }
@@ -710,8 +715,8 @@ void Board::checkGameOver()
 
 	if (isPlayerInCheck())
 		whiteTurn ? blackVictory = true : whiteVictory = true;
-
-	draw = true;
+	else
+		draw = true;
 }
 
 bool Board::insufficientMaterial() const
