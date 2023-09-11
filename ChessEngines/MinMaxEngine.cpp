@@ -11,6 +11,7 @@
 
      move best_move = moves[0];
      int best_eval = INT_MIN;
+
      for (move m : moves) {
          b.makeSafeMove(m.first, m.second);
          int eval = -search(3);
@@ -25,7 +26,9 @@
      return best_move;
  }
 
- int MinMaxEngine::search(int depth, int alpha, int beta) {
+ // alpha: The best eval so far
+ // beta: The worst eval so far
+ int MinMaxEngine::search(int depth) {
      if (depth == 0)
          return boardEval();
 
@@ -43,8 +46,8 @@
 
      for (auto move : legal_moves) {
          b.makeSafeMove(move.first, move.second);
-         int evaluation = -search(depth - 1);
-         best_eval = std::max(best_eval, evaluation);
+         int eval = -search(depth - 1);
+         best_eval = std::max(best_eval, eval);
          b.undoMove();
      }
 

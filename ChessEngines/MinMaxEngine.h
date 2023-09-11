@@ -12,7 +12,7 @@ public:
 private:
 	Board b;
 	using move = std::pair<sf::Vector2i, sf::Vector2i>;
-	int search(int depth, int alpha, int beta);
+	int search(int depth);
 	int boardEval() const;
 	int materialEval() const;
 
