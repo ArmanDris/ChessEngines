@@ -3,8 +3,8 @@
 This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
 
 ### 9 - 12
-On the 9th I made some solid changes. Today I decoupled checking for game over from making a move so now the board's caller is responsible to check when appropriate. This has lead to insanly satisfying preformance improvements (esp with the preformance I got from the changes on the 9th). </br> </br>
-Perft after checking for game over is not required after making a move on board </br>
+On the 9th I made some solid changes. Today I decoupled checking for game over from making a move so now the board's caller is responsible to check when appropriate. This has lead to insanly satisfying preformance improvements (esp with the preformance I got from the changes on the 9th). <br /> <br />
+Perft after checking for game over is not required after making a move on board <br />
 <img width="280" alt="Screenshot 2023-09-12 at 11 47 22 AM" src="https://github.com/ArmanDris/ChessEngines/assets/59405643/825aa1ec-669a-4b03-a333-58d17ae65a7c">
 
 
