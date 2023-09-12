@@ -55,6 +55,7 @@ private:
 
 	void makeWhiteMove();
 	void makeBlackMove();
+	void makeMove(Board::move m);
 
 	void resetBoard();
 

@@ -20,7 +20,6 @@ void Board::makeSafeMove(const sf::Vector2i old_square, const sf::Vector2i new_s
 {
 	movePiece(old_square, new_square);
 	changeTurn();
-	checkGameOver();
 }
 
 void Board::undoMove()

@@ -102,8 +102,6 @@ void GameBoard::preformCPUMoves(int move_delay_ms)
 
 void GameBoard::triggerMove()
 {
-	//if (checkGameOver()) return;
-
 	if		(white_player &&  b.isWhiteTurn()) { makeWhiteMove(); }
 	else if (black_player && !b.isWhiteTurn()) { makeBlackMove(); }
 }
@@ -161,9 +159,10 @@ void GameBoard::drop(sf::RenderWindow& w, sf::Vector2f p) {
 
 	sf::Vector2i newSquare = getSquareAt(w, mouseCoords);
 	sf::Vector2i oldSquare = holdingPiece_original_square;
+	Board::move move = {oldSquare, newSquare};
 
 	// If placed on valid square, make move
-	if (newSquare.x != -1) b.makeMove(oldSquare, newSquare);
+	if (newSquare.x != -1) makeMove(move);
 
 	// Reset holding piece
 	holdingPiece = Piece();
@@ -183,13 +182,19 @@ void GameBoard::undoMove()
 void GameBoard::makeWhiteMove()
 {
 	auto move = white_player->returnMove(b);
-	b.makeMove(move.first, move.second);
+	makeMove(move);
 }
 
 void GameBoard::makeBlackMove()
 {
 	auto move = black_player->returnMove(b);
-	b.makeMove(move.first, move.second);
+	makeMove(move);
+}
+
+void GameBoard::makeMove(Board::move m)
+{
+	b.makeMove(m.first, m.second);
+	b.checkGameOver();
 }
 
 const sf::Texture* GameBoard::getTexture(sf::Vector2i sq) const {
