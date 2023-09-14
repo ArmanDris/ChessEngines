@@ -32,6 +32,29 @@ void Board::undoMove()
 	changeTurn();
 }
 
+void Board::checkGameOver()
+{
+	if (insufficientMaterial()) {
+		draw = true;
+		return;
+	}
+
+	if (fiftyMoveRule()) {
+		draw = true;
+		return;
+	}
+
+	Color ally_color = whiteTurn ? Color::White : Color::Black;
+
+	if (colorHasMoves(ally_color))
+		return;
+
+	if (isPlayerInCheck())
+		whiteTurn ? blackVictory = true : whiteVictory = true;
+	else
+		draw = true;
+}
+
 // Does not change turn or reset game over
 void Board::softUndoMove()
 {
@@ -229,7 +252,6 @@ Piece Board::charToPiece(char c)
 	return Piece();
 }
 
-// Possible optimization: Dont use moveIsCastle and moveIsEnPassent helpers
 // Will not check if move is legal
 void Board::movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
 {
@@ -700,24 +722,6 @@ bool Board::hasPieceMoved(const sf::Vector2i& sq) const
 	return false;
 }
 
-void Board::checkGameOver()
-{
-	if (insufficientMaterial()) {
-		draw = true;
-		return;
-	}
-	
-	Color ally_color = whiteTurn ? Color::White : Color::Black;
-
-	if (colorHasMoves(ally_color))
-		return;
-
-	if (isPlayerInCheck())
-		whiteTurn ? blackVictory = true : whiteVictory = true;
-	else
-		draw = true;
-}
-
 bool Board::insufficientMaterial() const
 {
 	for (Piece p : board) {
@@ -726,6 +730,21 @@ bool Board::insufficientMaterial() const
 		}
 	}
 
+	return true;
+}
+
+// If no pawn has moved or no piece has been taken in the last 50 moves then return true
+bool Board::fiftyMoveRule() const
+{
+	if (log.size() < 100) return false;
+
+	// Loop through last 100 log entries
+	for (int i = log.size() - 100; i < log.size(); i++) {
+		// If a pawn has moved return false
+		if (std::get<0>(log[i]).getType() == Type::Pawn) return false;
+		// If a piece has been taken return false
+		if (std::get<2>(log[i]).getType() != Type::None) return false;
+	}
 	return true;
 }
 

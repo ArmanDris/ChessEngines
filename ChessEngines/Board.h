@@ -84,6 +84,7 @@ protected:
 
 	bool hasPieceMoved(const sf::Vector2i& sq) const;
 	bool insufficientMaterial() const;
+	bool fiftyMoveRule() const;
 	bool colorHasMoves(Color c);
 
 	// Is king in check logic:
