@@ -1,6 +1,16 @@
 # ChessEngines
+- badly drawn pieces
+- SFML
+- 4 byte piece representation
+- optimized move generation
+- minimax algorithm
 
-This project is built on top of the chess game I made 😀. I want to make some chess engines to play against eachother so I can rank them and maybe put them against human players.
+
+
+https://github.com/ArmanDris/ChessEngines/assets/59405643/878323b8-a70e-4146-8696-356d23d4bc1b
+
+
+# Log:
 
 ### 9 - 12
 On the 9th I made some solid changes. Today I decoupled checking for game over from making a move so now the board's caller is responsible to check when appropriate. This has lead to insanly satisfying preformance improvements (esp with the preformance I got from the changes on the 9th). <br /> <br />
