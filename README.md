@@ -2,7 +2,7 @@
 - badly drawn pieces
 - SFML
 - 4 byte piece representation
-- optimized move generation
+- blazingly fast move generation (see perft results in log)
 - minimax algorithm
 
 
