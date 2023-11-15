@@ -3,6 +3,7 @@
 #include "GameBoard.h"
 #include "SimpleEngines.h"
 #include  "MinMaxEngine.h"
+#include "MinMaxNoPruning.h"
 
 int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -18,9 +19,6 @@ int main() {
 
     RandomEngine r;
     MinMaxEngine mm;
-
-    mm.perftBenchmark();
-
     //b.setPlayer(&r, Color::White);
     b.setPlayer(&mm, Color::Black);
 
