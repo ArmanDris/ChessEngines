@@ -2,30 +2,28 @@
 #include "Board.h"
 #include "GameBoard.h"
 #include "SimpleEngines.h"
-#include  "MinMaxEngine.h"
+#include "MinMaxEngine.h"
 #include "MinMaxNoPruning.h"
 
 int main() {
-    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
+    // Board initialization
+    GameBoard b;
+
+    MinMaxEngine mm;
+    b.setPlayer(&mm, Color::Black);
+
+    // Window Setup
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
     window.setPosition(sf::Vector2i(-8, 0));
-
     sf::Image icon;
     icon.loadFromFile("black_king.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    GameBoard b;
-
-    RandomEngine r;
-    MinMaxEngine mm;
-    //b.setPlayer(&r, Color::White);
-    b.setPlayer(&mm, Color::Black);
-
+    // Game Loop
     while (window.isOpen()) {
         window.clear(sf::Color(50, 46, 43));
-        b.drawBoard(window);
-        window.display();
 
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -56,7 +54,10 @@ int main() {
             }
         }
 
+        b.drawBoard(window);
         b.preformCPUMoves(500);
+
+        window.display(); // Do not do this first or else will display frame will old info
     }
 
     return 0;

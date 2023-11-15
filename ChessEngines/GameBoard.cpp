@@ -108,6 +108,11 @@ void GameBoard::triggerMove()
 
 void GameBoard::start_tournement(int num_games)
 {
+	if (white_player == nullptr || black_player == nullptr) {
+		std::cout << "Error! Both players must be set before starting tournement\n";
+		return;
+	}
+
 	int white_wins = 0;
 	int black_wins = 0;
 	int draws = 0;
