@@ -100,6 +100,7 @@ int MinMaxEngine::materialEval() const
 
 void MinMaxEngine::perftBenchmark() {
 	b = Board();
+	std::cout << "size of board: " << sizeof(b) << "\n";
 	std::cout << "Benchmarking first 5 ply's on starting board: \n";
 
 	sf::Clock c;

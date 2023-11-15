@@ -131,6 +131,8 @@ void GameBoard::start_tournement(int num_games)
 	std::cout << "Draws: " << draws << "\n";
 }
 
+void GameBoard::saveLog(std::string fileName) { b.saveLog(fileName); }
+
 void GameBoard::resetBoard() 
 {
 	*this = GameBoard(white_player, black_player);

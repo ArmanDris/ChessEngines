@@ -21,7 +21,6 @@ public:
 	void undoMove();
 	void checkGameOver();
 
-
 	const Piece& getPiece(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
 	const Piece& getPiece(int x, int y) const { return pieceAt(x, y); }
 
@@ -36,6 +35,7 @@ public:
 	bool isPlayerInCheck();
 
 	void importFEN(std::string FEN);
+	void saveLog(std::string fileName = "log.txt");
 	sf::Vector2i stringToVec(std::string s);
 	Piece charToPiece(char c);
 
@@ -69,7 +69,6 @@ protected:
 	void changeTurn();
 	void softUndoMove();
 	void logMove(const sf::Vector2i& old_square, const sf::Vector2i& new_square); // Passing by reference slows this down for some reason
-	void saveLog(std::string fileName = "log.txt");
 
 	// Move generation logic
 	std::vector<move> generateLegalMoves();

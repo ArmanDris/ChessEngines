@@ -13,6 +13,7 @@ public:
 	void preformCPUMoves(int move_delay_ms = 1000);
 	void triggerMove();
 	void start_tournement(int num_games);
+	void saveLog(std::string fileName = "log.txt");
 
 	void hold(sf::RenderWindow& w, sf::Vector2f p);
 	void drop(sf::RenderWindow& w, sf::Vector2f p);
