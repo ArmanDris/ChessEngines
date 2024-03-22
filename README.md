@@ -1,6 +1,6 @@
 # ChessEngines
 
-A project I built on top of my Chess game. You can play against a friend or against one of five bots. This project is written in C++ and uses the SFML for its GUI.
+A project I built on top of my Chess game. You can play against a friend or against one of five bots. This project is written in C++ and uses SFML for its GUI.
 
 ![Chess Demo](Interesting%20files/chess_game_vid.gif)
 
@@ -10,7 +10,15 @@ To run this project clone the repo and open it in Visual Studio. The SFML files 
 
 ### Usage example:
 
-By default the GameBoard object will not call any of the bots to make moves. Call GameBoard's setPlayer() function to assign a bot to a particular color. setPlayer expects a pointer to a Engine object and a color. Engine classes are defined in the SimpleEngines.h and the MinMaxEngine.h file. SimpleEngines.h includes RandomEngine,DrunkEngine, and HippieEngine classes. MinMaxEngine.h includes the MinMaxEngine class. Colors can be one of Color::White or Color::Black. The example below would set the black player to theMinMaxEngine engine.
+By default, the GameBoard object will not call any of the bots to make moves. Call GameBoard's `setPlayer()` function to assign a bot to a particular color. `setPlayer` expects a pointer to an `Engine` object and a color. Engine classes can be one of:
+
+- `RandomEngine` (SimpleEngines.h)
+- `DrunkEngine` (SimpleEngines.h)
+- `HippieEngine` (SimpleEngines.h)
+- `MinMaxEngine` (SimpleEngines.h)
+
+Colors can be one of `Color::White` or `Color::Black`. The example below would set the black player to the `MinMaxEngine` engine.
+
 
 ```
 ...
