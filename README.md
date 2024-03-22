@@ -38,7 +38,7 @@ int main() {
 }
 ```
 
-### Key surface level features:
+### Key features:
 
 **GameBoard's importFEN(string FEN):** Updates the board state to exactly match the FEN position.
 
