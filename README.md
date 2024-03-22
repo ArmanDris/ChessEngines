@@ -15,7 +15,7 @@ By default, the GameBoard object will not call any of the bots to make moves. Ca
 - `RandomEngine` (SimpleEngines.h)
 - `DrunkEngine` (SimpleEngines.h)
 - `HippieEngine` (SimpleEngines.h)
-- `MinMaxEngine` (SimpleEngines.h)
+- `MinMaxEngine` (MinMaxEngine.h)
 
 Colors can be one of `Color::White` or `Color::Black`. The example below would set the black player to the `MinMaxEngine` engine.
 
