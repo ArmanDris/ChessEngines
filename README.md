@@ -45,22 +45,3 @@ int main() {
 **GameBoard's start_tournement(int num_games):** Game Board will simulate num_games and print the number of wins/draws for each color. (Meant to be used to compare bot preformance)
 
 **GameBoard's saveLog():** Saves the game log file log.txt. (Accepts a string for custom filename)
-
-### Documentation:
-
-**Game Board:**
-
-
-**Board:**
-
-
-**Piece:**
-
-
-**Engine:**
-
-
-**MinMaxEngine:**
-
-
-**SimpleEngines:**
