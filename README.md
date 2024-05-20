@@ -6,8 +6,6 @@ A project I built on top of my Chess game. You can play against a friend or agai
 
 ### Setup:
 
-To run this project clone the repo and open it in Visual Studio. The SFML files are included locally but you will have to edit the project settings to tell Visual Studio where to find them. You can find the steps to do this here: [https://www.sfml-dev.org/tutorials/2.6/start-vc.php](https://www.sfml-dev.org/tutorials/2.6/start-vc.php).
-
 This project uses CMake.For a singl e-configuration generator (typically the case on Linux and macOS):
 ```
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
