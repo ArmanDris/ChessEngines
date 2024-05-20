@@ -20,17 +20,12 @@ add_executable(ChessEngines
     src/MinMaxNoPruning.cpp
 )
 
-# Copy all images over
-file(GLOB IMAGES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.png")
-foreach(IMAGE ${IMAGES})
-    get_filename_component(IMAGE_NAME ${IMAGE} NAME)
-    configure_file(${IMAGE} ${CMAKE_CURRENT_BINARY_DIR}/${IMAGE_NAME} COPYONLY)
+# Copy all images and fonts over
+file(GLOB ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.png" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.ttf")
+foreach(ASSET ${ASSETS})
+    get_filename_component(ASSET_NAME ${ASSET} NAME)
+    configure_file(${ASSET} ${CMAKE_CURRENT_BINARY_DIR}/assets/${ASSET_NAME} COPYONLY)
 endforeach()
-
-# Copy fonts over
-set(FONT "${CMAKE_CURRENT_SOURCE_DIR}/src/Nunito-VariableFont_wght.ttf")
-get_filename_component(FONT_NAME ${FONT} NAME)
-configure_file(${FONT} ${CMAKE_CURRENT_BINARY_DIR}/${FONT_NAME} COPYONLY)
     
 target_link_libraries(ChessEngines PRIVATE sfml-graphics)
 target_compile_features(ChessEngines PRIVATE cxx_std_17)

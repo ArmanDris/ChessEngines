@@ -18,9 +18,8 @@ int main() {
     // Window Setup
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
-    window.setPosition(sf::Vector2i(-8, 0));
     sf::Image icon;
-    icon.loadFromFile("black_king.png");
+    icon.loadFromFile("build/assets/black_king.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     // Game Loop
@@ -57,7 +56,7 @@ int main() {
         }
 
         b.drawBoard(window);
-        b.preformCPUMoves(500);
+        b.preformCPUMoves();
 
         window.display(); // Do not do this first or else will display frame will old info
     }

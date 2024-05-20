@@ -2,29 +2,24 @@
 
 A project I built on top of my Chess game. You can play against a friend or against one of five bots. This project is written in C++ and uses SFML for its GUI.
 
-![Chess Demo](assets/chess_game_vid.gif)
+![Chess Demo](src/chess_game_vid.gif)
 
 ### Setup:
 
-This project uses CMake.For a singl e-configuration generator (typically the case on Linux and macOS):
+This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (last command).
+#### Linux/Mac
 ```
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
+./build/bin/ChessEngines
 ```
 
-For a multi-configuration generator (typically the case on Windows):
+#### Windows
 ```
 cmake -S . -B build
 cmake --build build --config Release
+build/bin/ChessEngines
 ```
-
-Now we need to cd into build to make and run the program
-```
-cd build
-make
-./bin/ChessEngines
-```
-
 
 ### Usage example:
 

@@ -1,24 +1,25 @@
 #include "GameBoard.h"
 
 GameBoard::GameBoard() {
-	if (!font.loadFromFile("Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
 
-	black_pawnTexture.loadFromFile("black_pawn.png");
-	black_rookTexture.loadFromFile("black_rook.png");
-	black_knightTexture.loadFromFile("black_knight.png");
-	black_bishopTexture.loadFromFile("black_bishop.png");
-	black_queenTexture.loadFromFile("black_queen.png");
-	black_kingTexture.loadFromFile("black_king.png");
+	if (!font.loadFromFile("build/assets/Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
 
-	white_pawnTexture.loadFromFile("white_pawn.png");
-	white_rookTexture.loadFromFile("white_rook.png");
-	white_knightTexture.loadFromFile("white_knight.png");
-	white_bishopTexture.loadFromFile("white_bishop.png");
-	white_queenTexture.loadFromFile("white_queen.png");
-	white_kingTexture.loadFromFile("white_king.png");
+	black_pawnTexture.loadFromFile("build/assets/black_pawn.png");
+	black_rookTexture.loadFromFile("build/assets/black_rook.png");
+	black_knightTexture.loadFromFile("build/assets/black_knight.png");
+	black_bishopTexture.loadFromFile("build/assets/black_bishop.png");
+	black_queenTexture.loadFromFile("build/assets/black_queen.png");
+	black_kingTexture.loadFromFile("build/assets/black_king.png");
 
-	circle_texture.loadFromFile("circle.png");
-	dot_texture.loadFromFile("dot.png");
+	white_pawnTexture.loadFromFile("build/assets/white_pawn.png");
+	white_rookTexture.loadFromFile("build/assets/white_rook.png");
+	white_knightTexture.loadFromFile("build/assets/white_knight.png");
+	white_bishopTexture.loadFromFile("build/assets/white_bishop.png");
+	white_queenTexture.loadFromFile("build/assets/white_queen.png");
+	white_kingTexture.loadFromFile("build/assets/white_king.png");
+
+	circle_texture.loadFromFile("build/assets/circle.png");
+	dot_texture.loadFromFile("build/assets/dot.png");
 }
 
 GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()
