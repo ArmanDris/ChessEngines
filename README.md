@@ -4,7 +4,7 @@ A project I built on top of my Chess game. You can play against a friend or agai
 
 ![Chess Demo](src/chess_game_vid.gif)
 
-### Setup:
+### Building from source:
 
 This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (last command).
 #### Linux/Mac
@@ -15,8 +15,11 @@ cmake --build build
 ```
 
 #### Windows
+
+Make sure you have gcc and g++ installed with mingw installed [www.mingw.org](www.mingw.org)
+
 ```
-cmake -S . -B build
+cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build --config Release
 build/bin/ChessEngines
 ```
