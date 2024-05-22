@@ -1,6 +1,6 @@
 # ChessEngines
 
-An open source C++ chess game built with SFML and CMake. You can play against a friend or against one of five bots. After you have [built the program from source](#building-from-source) then you can move the pieces with your mouse. You can also use the back arrow to undo moves. Eventually you will want to [play against bots or play bots against each other](#usage-example).
+An open source C++ chess game built with SFML and CMake. You can play against a friend or against one of five bots. After you have [built the program from source](#building-from-source) you can move the pieces with your mouse and undo moves with the back arrow. Eventually you will want to [play against bots or play bots against each other](#usage-example).
 
 ![Chess Demo](src/chess_game_vid.gif)
 
