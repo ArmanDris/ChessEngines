@@ -7,12 +7,16 @@ An open source C++ chess game built with SFML and CMake. You can play against a 
 ### Building from source:
 
 This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (third command).
+
 #### Linux/Mac
+
 ```
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/bin/ChessEngines
 ```
+
+(I made a script with these three in `./run.sh`)
 
 #### Windows
 
@@ -23,6 +27,8 @@ cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build --config Release
 build/bin/ChessEngines
 ```
+
+(I made a script with these three in `./run.bat`)
 
 ### Usage example:
 
