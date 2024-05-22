@@ -50,11 +50,10 @@ The example below would set the black player to the `MinMaxEngine` engine.
 int main() {
 
     ...
+    MinMaxEngine mm;
 
     GameBoard b;
-
-    MinMaxEngine mm;
-    b.setPlayer(&mm,   Color::Black);
+    b.setPlayer(&mm, Color::Black);
 
     ...
 
