@@ -6,7 +6,7 @@ A project I built on top of my Chess game. You can play against a friend or agai
 
 ### Building from source:
 
-This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (last command).
+This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (third command).
 #### Linux/Mac
 ```
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -16,7 +16,7 @@ cmake --build build
 
 #### Windows
 
-Make sure you have gcc and g++ installed with mingw installed [www.mingw.org](www.mingw.org)
+Make sure you have gcc and g++ installed with mingw [www.mingw.org](www.mingw.org)
 
 ```
 cmake -S . -B build -G "MinGW Makefiles"
