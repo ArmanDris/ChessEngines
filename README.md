@@ -1,6 +1,6 @@
 # ChessEngines
 
-A project I built on top of my Chess game. You can play against a friend or against one of five bots. This project is written in C++ and uses SFML for its GUI.
+An open source C++ chess game built with SFML and CMake. You can play against a friend or against one of five bots. After you have [built the program from source](#building-from-source) then you can move the pieces with your mouse. You can also use the back arrow to undo moves. Eventually you will want to [play against bots or play bots against eachother](#usage-example).
 
 ![Chess Demo](src/chess_game_vid.gif)
 
@@ -34,6 +34,8 @@ By default, the GameBoard object will not call any of the bots to make moves. Ca
 - `MinMaxEngine` (MinMaxEngine.h)
 
 Colors can be one of `Color::White` or `Color::Black`. The example below would set the black player to the `MinMaxEngine` engine.
+
+Additionally you can call `GameBoard`'s `preformCPUMoves()` to automatically call upon the bots to make moves. By default you press the space bar to trigger a bot to move.
 
 
 ```
