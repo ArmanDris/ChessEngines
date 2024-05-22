@@ -32,17 +32,16 @@ build/bin/ChessEngines
 
 ### Usage example:
 
-By default, the GameBoard object will not call any of the bots to make moves. Call GameBoard's `setPlayer()` function to assign a bot to a particular color. `setPlayer` expects a pointer to an `Engine` object and a color. Engine classes can be one of:
+By default, the GameBoard object will not call any of the bots to make moves. Call `GameBoard`'s `setPlayer()` function to assign a bot to a particular color. `setPlayer()` expects a pointer to an `Engine` object and a color. Engine classes can be one of:
 
 - `RandomEngine` (SimpleEngines.h)
 - `DrunkEngine` (SimpleEngines.h)
 - `HippieEngine` (SimpleEngines.h)
 - `MinMaxEngine` (MinMaxEngine.h)
 
-Colors can be one of `Color::White` or `Color::Black`. The example below would set the black player to the `MinMaxEngine` engine.
+Colors can be one of `Color::White` or `Color::Black`. 
 
-Additionally you can call `GameBoard`'s `preformCPUMoves()` to automatically call upon the bots to make moves. By default you press the space bar to trigger a bot to move.
-
+The example below would set the black player to the `MinMaxEngine` engine.
 
 ```
 ...
@@ -61,6 +60,9 @@ int main() {
 
 }
 ```
+
+Additionally, you can call `GameBoard`'s `preformCPUMoves()` to automatically call upon the bots to make moves. By default you press the space bar to trigger a bot to move.
+
 
 ### Key features:
 
