@@ -11,9 +11,7 @@ int main() {
     GameBoard b;
 
     MinMaxEngine mm1;
-    MinMaxEngine mm2;
     b.setPlayer(&mm1, Color::Black);
-    b.setPlayer(&mm2, Color::White);
 
     // Window Setup
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
