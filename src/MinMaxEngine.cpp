@@ -1,4 +1,5 @@
 #include "MinMaxEngine.h"
+#include <climits>
 
 std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& board)
 {
