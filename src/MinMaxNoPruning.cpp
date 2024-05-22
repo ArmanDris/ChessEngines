@@ -1,4 +1,5 @@
  #include "MinMaxNoPruning.h"
+ #include <climits>
 
  std::pair<sf::Vector2i, sf::Vector2i> MinMaxNoPruning::returnMove(const Board& board)
  {
