@@ -6,7 +6,9 @@ An open source C++ chess game built with SFML and CMake. You can play against a 
 
 ### Building from source:
 
-This project uses CMake. So first you generate the build system (first two commands) then you run the program from the project directory (third command).
+You will need to install cmake and git to build this program. 
+
+First you generate the build system (first two commands) then you run the program from the project directory (third command).
 
 #### Linux/Mac
 
@@ -20,7 +22,7 @@ cmake --build build
 
 #### Windows
 
-Make sure you have gcc and g++ installed with mingw [www.mingw.org](www.mingw.org)
+For windows you will also need to install mingw to get gcc and g++. Make sure you add your C:/mingw/bin folder to your PATH. [www.mingw.org](www.mingw.org).
 
 ```
 cmake -S . -B build -G "MinGW Makefiles"
