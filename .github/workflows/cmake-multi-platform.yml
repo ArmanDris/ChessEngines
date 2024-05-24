@@ -47,7 +47,7 @@ jobs:
 
     - name: Install Dependencies (Linux only)
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev libx11-dev libudev-dev libopenal-dev
+      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev libx11-dev libudev-dev libopenal-dev libvorbis-dev libogg-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
