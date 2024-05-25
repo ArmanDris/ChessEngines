@@ -84,10 +84,11 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Adjust Library Paths (macOS only)
+    - name: Give execute permissions & Adjust Library Paths (macOS only)
       if: matrix.os == 'macos-latest'
       run: |
         install_name_tool -change @rpath/../Frameworks/freetype.framework/Versions/A/freetype @executable_path/../Frameworks/freetype.framework/Versions/A/freetype ${{ steps.strings.outputs.build-output-dir }}/bin/ChessEngines
+        chmod +x ${{ steps.strings.outputs.build-output-dir }}/bin/ChessEngines
 
     - name: Upload Build Artifacts (macOS)
       if: matrix.os == 'macos-latest' && matrix.c_compiler == 'gcc'
