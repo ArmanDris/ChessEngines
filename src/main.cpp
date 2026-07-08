@@ -1,8 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "Board.h"
 #include "GameBoard.h"
-#include "SimpleEngines.h"
-#include "MinMaxEngine.h"
 #include "MinMaxNoPruning.h"
 
 int main() {
@@ -10,8 +7,10 @@ int main() {
     // Board initialization
     GameBoard b;
 
-    MinMaxEngine mm1;
-    b.setPlayer(&mm1, Color::Black);
+    MinMaxNoPruning mm1;
+    MinMaxNoPruning mm2;
+    b.setPlayer(&mm1, Color::White);
+    b.setPlayer(&mm2, Color::Black);
 
     // Window Setup
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
@@ -45,16 +44,17 @@ int main() {
                 switch (event.key.code) {
                 case sf::Keyboard::Space: b.triggerMove(); break;
                 case sf::Keyboard::Left: b.undoMove(); break;
+                default: break;
                 }
                 break;
             case sf::Event::Resized:
                 window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                 break;
+            default: break;
             }
         }
 
         b.drawBoard(window);
-        b.preformCPUMoves();
 
         window.display(); // Do not do this first or else will display frame will old info
     }
