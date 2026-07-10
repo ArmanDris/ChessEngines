@@ -1,25 +1,26 @@
 #include "GameBoard.h"
+#include "GetBinaryPath.h"
 
 GameBoard::GameBoard() {
 
-	if (!font.loadFromFile("build/assets/Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
+	if (!font.loadFromFile(get_binary_path() / "assets" / "Nunito-VariableFont_wght.ttf")) { std::cout << "Error!"; }
 
-	black_pawnTexture.loadFromFile("build/assets/black_pawn.png");
-	black_rookTexture.loadFromFile("build/assets/black_rook.png");
-	black_knightTexture.loadFromFile("build/assets/black_knight.png");
-	black_bishopTexture.loadFromFile("build/assets/black_bishop.png");
-	black_queenTexture.loadFromFile("build/assets/black_queen.png");
-	black_kingTexture.loadFromFile("build/assets/black_king.png");
+	black_pawnTexture.loadFromFile(get_binary_path() / "assets" / "black_pawn.png");
+	black_rookTexture.loadFromFile(get_binary_path() / "assets" / "black_rook.png");
+	black_knightTexture.loadFromFile(get_binary_path() / "assets" / "black_knight.png");
+	black_bishopTexture.loadFromFile(get_binary_path() / "assets" / "black_bishop.png");
+	black_queenTexture.loadFromFile(get_binary_path() / "assets" / "black_queen.png");
+	black_kingTexture.loadFromFile(get_binary_path() / "assets" / "black_king.png");
 
-	white_pawnTexture.loadFromFile("build/assets/white_pawn.png");
-	white_rookTexture.loadFromFile("build/assets/white_rook.png");
-	white_knightTexture.loadFromFile("build/assets/white_knight.png");
-	white_bishopTexture.loadFromFile("build/assets/white_bishop.png");
-	white_queenTexture.loadFromFile("build/assets/white_queen.png");
-	white_kingTexture.loadFromFile("build/assets/white_king.png");
+	white_pawnTexture.loadFromFile(get_binary_path() / "assets" / "white_pawn.png");
+	white_rookTexture.loadFromFile(get_binary_path() / "assets" / "white_rook.png");
+	white_knightTexture.loadFromFile(get_binary_path() / "assets" / "white_knight.png");
+	white_bishopTexture.loadFromFile(get_binary_path() / "assets" / "white_bishop.png");
+	white_queenTexture.loadFromFile(get_binary_path() / "assets" / "white_queen.png");
+	white_kingTexture.loadFromFile(get_binary_path() / "assets" / "white_king.png");
 
-	circle_texture.loadFromFile("build/assets/circle.png");
-	dot_texture.loadFromFile("build/assets/dot.png");
+	circle_texture.loadFromFile(get_binary_path() / "assets" / "circle.png");
+	dot_texture.loadFromFile(get_binary_path() / "assets" / "dot.png");
 }
 
 GameBoard::GameBoard(Engine* white, Engine* black) : GameBoard()

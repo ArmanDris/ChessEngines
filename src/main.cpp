@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameBoard.h"
 #include "MinMaxNoPruning.h"
+#include "GetBinaryPath.h"
 
 int main() {
 
@@ -16,7 +17,7 @@ int main() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktop, "Chess", sf::Style::Default);
     sf::Image icon;
-    icon.loadFromFile("build/assets/black_king.png");
+    icon.loadFromFile(get_binary_path() / "assets" / "black_king.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     // Game Loop

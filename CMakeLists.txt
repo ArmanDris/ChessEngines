@@ -20,13 +20,14 @@ add_executable(ChessEngines
     src/SimpleEngines.cpp
     src/MinMaxEngine.cpp
     src/MinMaxNoPruning.cpp
+    src/GetBinaryPath.cpp
 )
 
 # Copy all images and fonts over
 file(GLOB ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.png" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.ttf")
 foreach(ASSET ${ASSETS})
     get_filename_component(ASSET_NAME ${ASSET} NAME)
-    configure_file(${ASSET} ${CMAKE_CURRENT_BINARY_DIR}/assets/${ASSET_NAME} COPYONLY)
+    configure_file(${ASSET} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/${ASSET_NAME} COPYONLY)
 endforeach()
     
 target_link_libraries(ChessEngines PRIVATE sfml-graphics)
