@@ -15,7 +15,7 @@
 
      for (move m : moves) {
          b.makeSafeMove(m.first, m.second);
-         int eval = -search(3);
+         int eval = -search(4);
          b.undoMove();
 
          if (eval > best_eval) {

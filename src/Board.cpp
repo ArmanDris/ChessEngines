@@ -1,4 +1,8 @@
 #include "Board.h"
+#include "Piece.h"
+#include "SFML/System/Vector2.hpp"
+#include <iostream>
+#include <tuple>
 
 
 Board::Board() {
@@ -91,7 +95,20 @@ void Board::softUndoMove()
 
 	pieceAt(old_square.x, old_square.y) = old_piece;
 	pieceAt(new_square.x, new_square.y) = new_piece;
-
+	
+	if (old_piece.getType() == Type::King) {
+		if (old_piece.getColor() == Color::White)
+			whiteKingPos = sf::Vector2i(old_square);
+		if (old_piece.getColor() == Color::Black)
+			blackKingPos = sf::Vector2i(old_square);
+	}
+	if (new_piece.getType() == Type::King) {
+		if (new_piece.getColor() == Color::White)
+			whiteKingPos = sf::Vector2i(new_square);
+		if (new_piece.getColor() == Color::Black)
+			blackKingPos = sf::Vector2i(new_square);
+	}
+	
 	log.pop_back();
 }
 
@@ -130,7 +147,11 @@ bool Board::isPlayerInCheck()
 void Board::importFEN(std::string FEN)
 {
 	log.clear();
-	whiteVictory = false; blackVictory = false; draw = false;
+	blackKingPos = sf::Vector2i(-1, -1);
+	whiteKingPos = sf::Vector2i(-1, -1);
+	whiteVictory = false;
+	blackVictory = false;
+	draw = false;
 
 	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) pieceAt(x, y) = Piece();
 
@@ -166,6 +187,13 @@ void Board::importFEN(std::string FEN)
 			if (c >= '0' && c <= '9')
 				x += c - '0';
 			else {
+				Piece newPiece = charToPiece(c);
+				if (newPiece.getType() == Type::King) {
+					if (newPiece.getColor() == Color::White)
+						whiteKingPos = sf::Vector2i(x, y);
+					if (newPiece.getColor() == Color::Black)
+						blackKingPos = sf::Vector2i(x, y);
+				}
 				pieceAt(x, y) = charToPiece(c);
 				x++;
 			}
@@ -273,6 +301,13 @@ void Board::movePiece(const sf::Vector2i& old_square, const sf::Vector2i& new_sq
 
 	pieceAt(new_square) = pieceAt(old_square);
 	pieceAt(old_square) = Piece();
+
+	if (pieceAt(new_square).getType() == Type::King) {
+		if (pieceAt(new_square).getColor() == Color::White)
+			whiteKingPos = new_square;
+		if (pieceAt(new_square).getColor() == Color::Black)
+			blackKingPos = new_square;
+	}
 }
 
 void Board::castle(const sf::Vector2i& old_square, const sf::Vector2i& new_square)
@@ -849,7 +884,7 @@ bool Board::isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 		}
 	}
 
-	// Look for moves left // BROKEN
+	// Look for moves left
 	for (int x = sq.x - 1; x >= 0; x--) {
 		if (!pieceAt(x, sq.y)) {
 			if (sf::Vector2i(x, sq.y) == tgt)
@@ -862,7 +897,7 @@ bool Board::isRookAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 		}
 	}
 
-	// Look for moves right // Also broken
+	// Look for moves right
 	for (int x = sq.x + 1; x <= 7; x++) {
 		if (!pieceAt(x, sq.y)) {
 			if (sf::Vector2i(x, sq.y) == tgt)
@@ -886,53 +921,70 @@ bool Board::isKnightAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 
 bool Board::isBishopAttacking(const sf::Vector2i& sq, const sf::Vector2i& new_sq)
 {
-	// Generating up left
-	sf::Vector2i tgt(sq.x - 1, sq.y - 1);
-	while (tgt.x >= 0 && tgt.y >= 0) {
-		if (tgt == new_sq)
-			return true;
-		if (pieceAt(tgt))
-			break;
+	int dx = new_sq.x - sq.x;
+	int dy = new_sq.y - sq.y;
 
-		tgt.x -= 1;
-		tgt.y -= 1;
+	if (abs(dx) != abs(dy) || dx == 0)
+		return false;
+
+	// Check up left
+	if (sq.x > new_sq.x && sq.y > new_sq.y) {
+		sf::Vector2i tgt(sq.x - 1, sq.y - 1);
+		while (tgt.x >= 0 && tgt.y >= 0) {
+			if (tgt == new_sq)
+				return true;
+			if (pieceAt(tgt))
+				return false;
+
+			tgt.x -= 1;
+			tgt.y -= 1;
+		}
 	}
 
 	// Generate up right
-	tgt = sf::Vector2i(sq.x + 1, sq.y - 1);
-	while (tgt.x <= 7 && tgt.y >= 0) {
-		if (tgt == new_sq)
-			return true;
-		if (pieceAt(tgt))
-			break;
+	if (sq.x < new_sq.x && sq.y > new_sq.y) {
+		sf::Vector2i tgt = sf::Vector2i(sq.x + 1, sq.y - 1);
+		while (tgt.x <= 7 && tgt.y >= 0) {
+			if (tgt == new_sq)
+				return true;
+			if (pieceAt(tgt))
+				return false;
 
-		tgt.x += 1;
-		tgt.y -= 1;
+			tgt.x += 1;
+			tgt.y -= 1;
+		}
 	}
 
 	// Generate down left
-	tgt = sf::Vector2i(sq.x - 1, sq.y + 1);
-	while (tgt.x >= 0 && tgt.y <= 7) {
-		if (tgt == new_sq)
-			return true;
-		if (pieceAt(tgt))
-			break;
+	if (sq.x > new_sq.x && sq.y < new_sq.y) {
+		sf::Vector2i tgt = sf::Vector2i(sq.x - 1, sq.y + 1);
+		while (tgt.x >= 0 && tgt.y <= 7) {
+			if (tgt == new_sq)
+				return true;
+			if (pieceAt(tgt))
+				return false;
 
-		tgt.x -= 1;
-		tgt.y += 1;
+			tgt.x -= 1;
+			tgt.y += 1;
+		}
 	}
 
 	// Generate down right
-	tgt = sf::Vector2i(sq.x + 1, sq.y + 1);
-	while (tgt.x <= 7 && tgt.y <= 7) {
-		if (tgt == new_sq)
-			return true;
-		if (pieceAt(tgt))
-			break;
+	if (sq.x < new_sq.x && sq.y < new_sq.y) {
+		sf::Vector2i tgt = sf::Vector2i(sq.x + 1, sq.y + 1);
+		while (tgt.x <= 7 && tgt.y <= 7) {
+			if (tgt == new_sq)
+				return true;
+			if (pieceAt(tgt))
+				return false;
 
-		tgt.x += 1;
-		tgt.y += 1;
+			tgt.x += 1;
+			tgt.y += 1;
+		}
 	}
+
+	std:std::cerr << "Bishop move check fell through all cases" << std::endl;
+
 	return false;
 }
 
@@ -951,10 +1003,12 @@ bool Board::isQueenAttacking(const sf::Vector2i& sq, const sf::Vector2i& tgt)
 
 sf::Vector2i Board::getKingSquare(Color c)
 {
-	for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
-		if (pieceAt(x,y).getType() == Type::King && pieceAt(x,y).getColor() == c)
-			return sf::Vector2i(x,y);
+	switch (c) {
+		case Color::White:
+			return whiteKingPos;
+			break;
+		case Color::Black:
+			return blackKingPos;
+			break;
 	}
-
-	return sf::Vector2i(-1, -1);
 }

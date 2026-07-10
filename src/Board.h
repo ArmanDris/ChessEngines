@@ -1,13 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Piece.h"
+#include "SFML/System/Vector2.hpp"
 #include <string>
-#include <iostream>
 #include <vector>
-#include <fstream>
-#include <chrono>
 #include <ctime> // for std::time_t and std::tm
-#include <iomanip> // for std::put_time
 
 class Board
 {
@@ -57,6 +54,9 @@ protected:
 	const Piece& pieceAt(sf::Vector2i square) const { return pieceAt(square.x, square.y); }
 
 	std::vector<std::tuple<Piece, sf::Vector2i, Piece, sf::Vector2i>> log;
+
+	sf::Vector2i whiteKingPos = sf::Vector2i(-1, -1);
+	sf::Vector2i blackKingPos = sf::Vector2i(-1, -1);
 
 	bool whiteTurn = true;
 

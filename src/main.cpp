@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameBoard.h"
-#include "MinMaxNoPruning.h"
+#include "MinMaxEngine.h"
 #include "GetBinaryPath.h"
 
 int main() {
@@ -8,8 +8,8 @@ int main() {
     // Board initialization
     GameBoard b;
 
-    MinMaxNoPruning mm1;
-    MinMaxNoPruning mm2;
+    MinMaxEngine mm1;
+    MinMaxEngine mm2;
     b.setPlayer(&mm1, Color::White);
     b.setPlayer(&mm2, Color::Black);
 

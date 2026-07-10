@@ -1,5 +1,6 @@
 #include "MinMaxEngine.h"
 #include <climits>
+#include <iostream>
 
 std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& board)
 {
@@ -10,15 +11,21 @@ std::pair<sf::Vector2i, sf::Vector2i> MinMaxEngine::returnMove(const Board& boar
 	std::default_random_engine rng(rd());
 	std::shuffle(moves.begin(), moves.end(), rng);
 
+	bool whiteToMove = b.isWhiteTurn();
+	int best_eval = whiteToMove ? INT_MIN : INT_MAX;
+
 	move best_move = moves[0];
-	int best_eval = INT_MIN;
 
 	for (move m : moves) {
 		b.makeSafeMove(m.first, m.second);
-		int eval = -search(4, INT_MIN, INT_MAX, true);
+		int eval = search(4, INT_MIN, INT_MAX, !whiteToMove);
 		b.undoMove();
 
-		if (eval > best_eval) {
+		if (whiteToMove && eval > best_eval) {
+			best_eval = eval;
+			best_move = m;
+		}
+		if (!whiteToMove && eval < best_eval) {
 			best_eval = eval;
 			best_move = m;
 		}
@@ -36,7 +43,7 @@ int MinMaxEngine::search(int depth, int alpha, int beta, bool maximizing_player)
 	std::vector<move> legal_moves = b.getMoves();
 	if (legal_moves.size() == 0) {
 		if (b.isPlayerInCheck())
-			return -1000000;
+			return maximizing_player ? -1000000 - depth: 1000000 + depth;
 		else
 			return 0;
 	}
